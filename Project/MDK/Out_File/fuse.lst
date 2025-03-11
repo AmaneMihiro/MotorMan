@@ -1,0 +1,236 @@
+C251 COMPILER V5.60.0,  fuse                                                               20/03/25  16:34:12  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE fuse
+OBJECT MODULE PLACED IN .\Out_File\fuse.obj
+COMPILER INVOKED BY: D:\Keil_v5\C251\BIN\C251.EXE ..\USER\src\fuse.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\Li
+                    -braries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\src
+                    -) DEBUG PRINT(.\Out_File\fuse.lst) TABS(2) OBJECT(.\Out_File\fuse.obj) 
+
+stmt  level    source
+
+    1          #include "fuse.h"
+    2          #include "math.h"
+    3          
+    4          PID SpeedPID = {0};
+    5          PID L_SpeedPID = {0};
+    6          PID R_SpeedPID = {0};
+    7          PID TurnPID = {0};
+    8          float GORY_Z = 0;
+    9          /****************************PID参数初始化**************************************
+   10          函数：  void PID_int(void)
+   11          参数：  void
+   12          说明：  PID每个环参数初始化
+   13          返回值：void
+   14          ********************************************************************************/
+   15          void PID_int(void)
+   16          {
+   17   1        //  SpeedPID.Kp=50;     //0.6//速度环PID参数（D车用，速度环2ms）18
+   18   1        //  SpeedPID.Ki=10 ;     //0.5                                  2.5
+   19   1        //  SpeedPID.Kd=0;
+   20   1      
+   21   1        L_SpeedPID.Kp = 330; // 4  //左轮速度环PID参数（速度环20ms）（6）4.5
+   22   1        L_SpeedPID.Ki = 0.7; // 1
+   23   1        L_SpeedPID.Kd = 0;
+   24   1      
+   25   1        R_SpeedPID.Kp = 330; // 右速度环PID参数（速度环20ms）（6）5.5
+   26   1        R_SpeedPID.Ki = 0.7;
+   27   1        R_SpeedPID.Kd = 0;
+   28   1      
+   29   1        //  TurnPID.Kp=0;       //转向环PID参数
+   30   1        //  TurnPID.Ki=0; //0.08
+   31   1        //  TurnPID.Kd=0;
+   32   1        //
+   33   1        //  TurnPID.Kp=4;       //转向环PID参数
+   34   1        //  TurnPID.Ki=0; //0.08
+   35   1        //  TurnPID.Kd=3;
+   36   1        //
+   37   1        TurnPID.Kp = 1.3; // 转向环PID参数
+   38   1        TurnPID.Ki = 0;   // 0.08
+   39   1        TurnPID.Kd = 0.6;
+   40   1      
+   41   1        TurnPID.K_gory = 0;
+   42   1      }
+   43          // void PID_int(void)
+   44          //{
+   45          //  SpeedPID.Kp=18;     //0.6//速度环PID参数（D车用，速度环2ms）18
+   46          //  SpeedPID.Ki=3 ;     //0.5                                  2.5
+   47          //  SpeedPID.Kd=0;
+   48          //
+   49          //  L_SpeedPID.Kp=4; //4  //左轮速度环PID参数（速度环20ms）（6）4.5
+   50          //  L_SpeedPID.Ki=0.15;//1
+   51          //  L_SpeedPID.Kd=0;
+   52          //
+   53          //  R_SpeedPID.Kp=4;   //右速度环PID参数（速度环20ms）（6）5.5
+   54          //  R_SpeedPID.Ki=0.15;
+   55          //  R_SpeedPID.Kd=0;
+   56          //
+   57          //  TurnPID.Kp=87;       //转向环PID参数
+C251 COMPILER V5.60.0,  fuse                                                               20/03/25  16:34:12  PAGE 2   
+
+   58          //  TurnPID.Ki=0; //0.08
+   59          //  TurnPID.Kd=0.4;
+   60          //  TurnPID.K_gory=3.5;
+   61          // }
+   62          //  别名
+   63          static TASK_COMPONENTS TaskComps[] =
+   64            {
+   65              {0, 1, 1, Motor_output_control}, // 角速度内环和D车速度环2ms
+   66                               //    {0, 2, 2, Trailing_control},           //转向外环10ms
+   67                               //    {0, 4, 4, Speed_control},              //C车速度环20ms
+   68          };
+   69          /**************************************************************************************
+   70           * FunctionName   : TaskRemarks()
+   71           * Description    : 任务标志处理
+   72           * EntryParameter : None
+   73           * ReturnValue    : None
+   74           * attention      : ***在定时器中断中调用此函数即可***
+   75           **************************************************************************************/
+   76          void TaskRemarks(void)
+   77          {
+   78   1        uint8 i;
+   79   1        for (i = 0; i < TASKS_MAX; i++) // 逐个任务时间处理
+   80   1        {
+   81   2          if (TaskComps[i].Timer) // 时间不为0
+   82   2          {
+   83   3            TaskComps[i].Timer--;    // 减去一个节拍
+   84   3            if (TaskComps[i].Timer == 0) // 时间减完了
+   85   3            {
+   86   4              TaskComps[i].Timer = TaskComps[i].ItvTime; // 恢复计时器值，从新下一次
+   87   4              TaskComps[i].Run = 1;            // 任务可以运行
+   88   4            }
+   89   3          }
+   90   2        }
+   91   1      }
+   92          
+   93          /**************************************************************************************
+   94           * FunctionName   : TaskProcess()
+   95           * Description    : 任务处理|判断什么时候该执行那一个任务
+   96           * EntryParameter : None
+   97           * ReturnValue    : None
+   98           * * attention      : ***放在mian的while(1)即可***
+   99           **************************************************************************************/
+  100          void TaskProcess(void)
+  101          {
+  102   1        uint8 i;
+  103   1        for (i = 0; i < TASKS_MAX; i++) // 逐个任务时间处理
+  104   1        {
+  105   2          if (TaskComps[i].Run) // 时间不为0
+  106   2          {
+  107   3            TaskComps[i].TaskHook(); // 运行任务
+  108   3            TaskComps[i].Run = 0;  // 标志清0
+  109   3          }
+  110   2        }
+  111   1      }
+  112          /****************************角速度内环和D车速度环**************************************
+  113          函数：  void Motor_output_control()
+  114          参数：  void
+  115          说明：  角速度内环和D车速度环(D车/三轮车才会用)
+  116          返回值：void
+  117          ***************************************************************************************/
+  118          void Motor_output_control()
+  119          {
+  120   1        //    icm20602_get_gyro();
+  121   1        //    GORY_Z=icm20602_gyro_transition (icm20602_gyro_z);// 单位为°/s
+  122   1        speed_measure(); // 编码器测量,待修正编码器计数值转速度的单位
+  123   1        //    Get_deviation();       //电磁采集并获取赛道偏差
+C251 COMPILER V5.60.0,  fuse                                                               20/03/25  16:34:12  PAGE 3   
+
+  124   1        //    timed_task();          //定时操作
+  125   1        ADC_PWM = PID_Turn_DT(&TurnPID, Current_Dir, GORY_Z); // 动态位置式PID  left_real_speed
+  126   1      
+  127   1        // 待修改差速参数
+  128   1        Speed_pwm_left += IncPIDCalc(&L_SpeedPID, aim_speed + ADC_PWM, left_real_speed);
+  129   1        Speed_pwm_right += IncPIDCalc(&R_SpeedPID, aim_speed - ADC_PWM, right_real_speed);
+  130   1      
+  131   1        //    Speed_pwm_left =range_protect(Speed_pwm_left,  left_real_speed,  -aim_speed, 2*aim_speed);//减速�
+             -��幅（防止轮子反转太大导致假期望速度）
+  132   1        //    Speed_pwm_right=range_protect(Speed_pwm_right, right_real_speed, -aim_speed, 2*aim_speed);//减速�
+             -��幅（防止轮子反转太大导致假期望速度）
+  133   1        //    if(Speed_pwm_left<-aim_speed)
+  134   1        //    {
+  135   1        //    Speed_pwm_left=-aim_speed;
+  136   1        //    }
+  137   1        //    if(Speed_pwm_right<-aim_speed)
+  138   1        //    {
+  139   1        //    Speed_pwm_right=-aim_speed;
+  140   1        //    }
+  141   1        //    All_PWM_left  = Speed_pwm_all+ADC_PWM;
+  142   1        //    All_PWM_right = Speed_pwm_all-ADC_PWM;
+  143   1        go_motor(Speed_pwm_left, Speed_pwm_right); // 动力输出
+  144   1        Out_protect();                 // 出界保护
+  145   1        // P52=1;
+  146   1      }
+  147          /****************************转向环（D车转向外环）**************************************
+  148          函数：  void Trailing_control()
+  149          参数：  void
+  150          说明：  转向环（D车转向外环）（C车转向环）
+  151          返回值：void
+  152          ***************************************************************************************/
+  153          void Trailing_control()
+  154          {
+  155   1        //  Get_deviation();  //电磁采集并获取赛道偏差
+  156   1        //  speed_measure();       //编码器测量
+  157   1        //
+  158   1        //  ADC_PWM = LocP_DCalc(&TurnPID,Current_Dir,0);//位置式PD控制转向
+  159   1        ////  Out_protect();         //出界保护
+  160   1        //  ADC_PWM = PlacePID_Control(&TurnPID,Current_Dir,0);//动态位置式PID控制
+  161   1        //  ADC_PWM = PlacePID_Control(&TurnPID,Current_Dir,0);//动态位置式PID控制 (用于转向控制)
+  162   1        // Steering_Control_Out(ADC_PWM);//(C车用控制舵机转向)
+  163   1      }
+  164          /****************************速度环（C车用）**************************************
+  165          函数：  void Speed_control()
+  166          参数：  void
+  167          说明：  速度环（C车用）
+  168          ***************************************************************************************/
+  169          void Speed_control()
+  170          {
+  171   1        // timed_task();           //出库定时打开干簧管等
+  172   1        // speed_measure();      //编码器测量
+  173   1        // aim_speed = 450;      //目标速度
+  174   1      
+  175   1        // Speed_pwm_all = LocP_DCalc(&SpeedPID,aim_speed ,real_speed); //D车速度环（位置式）
+  176   1        // Speed_pwm_all += IncPIDCalc(&SpeedPID,aim_speed,real_speed);//D车速度环（增量式）
+  177   1      
+  178   1        // Speed_pwm_left += IncPIDCalc(&L_SpeedPID,aim_speed , left_speed); //C车左轮速度环（位置式�
+             -�
+  179   1        // Speed_pwm_right += IncPIDCalc(&R_SpeedPID, aim_speed, right_speed); //C车右轮速度环（位置式
+             -）
+  180   1        // go_motor(Speed_pwm_left,Speed_pwm_right);                         //动力输出
+  181   1      }
+  182          /***************************************************************************************
+  183          函数名：int16 range_protect(int16 duty, int16 min, int16 max)
+  184          功  能：限幅保护
+  185          参  数：
+C251 COMPILER V5.60.0,  fuse                                                               20/03/25  16:34:12  PAGE 4   
+
+  186          返回值：duty
+  187          **************************************************************************************/
+  188          // int16 range_protect(int16 input, int16 min, int16 max)//限幅保护
+  189          //{
+  190          
+  191          //}
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       286     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =       121     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =       145     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

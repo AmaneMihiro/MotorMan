@@ -1,0 +1,117 @@
+C251 COMPILER V5.60.0,  main                                                               20/03/25  16:34:11  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE main
+OBJECT MODULE PLACED IN .\Out_File\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C251\BIN\C251.EXE ..\USER\src\main.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\Li
+                    -braries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\src
+                    -) DEBUG PRINT(.\Out_File\main.lst) TABS(2) OBJECT(.\Out_File\main.obj) 
+
+stmt  level    source
+
+    1          
+    2          #include "headfile.h"
+    3          void main()
+    4          {
+    5   1        DisableGlobalIRQ();                                       //关闭总中断
+    6   1        board_init();                                             // 初始化寄存器,勿删除此句代码。
+    7   1        delay_ms(800);                                            //软件稍微延时一下
+    8   1      
+    9   1        ips114_init();                                            //1.14寸液晶屏初始化
+   10   1      
+   11   1        ADC_int();                                                //ADC采集初始化
+   12   1        ips114_showstr(0,0,(unsigned char*)"Electromagnetic-Car");//字符串显示
+   13   1        ips114_showstr(0,1,"interlize...");
+   14   1        delay_ms(500);                     
+   15   1        init_PWM(MOTOR_MODE_SELECT);                               //初始化DRV驱动方式（1-DRV/0-BTN）
+   16   1        encoder_init();                                            //编码器初始化
+   17   1        
+   18   1      //  uart_init(UART_4, UART4_RX_P02, UART4_TX_P03, 115200, TIM_2);//初始化无线串口
+   19   1      //  pwm_init(PWMB_CH4_P77, 50, 750);                         //初始化无刷电机20%占空比      
+   20   1      //  pwm_init(PWMB_CH3_P33, 50, 750);                         //(1.2ms/20ms * 10000)（10000是PWM的满占
+             -空比时候的值） 10000为PWM最大值
+   21   1        delay_ms(500);                                          //延时让无刷电机先转起来
+   22   1        gpio_mode(Reed_Switch_Pin,GPI_IMPEDANCE);                  //停车识别的干簧管IO初始化
+   23   1        PID_int();                                                 //PID参数初始化  
+   24   1        ips114_showstr(0,2,"icm20602_int...");  
+   25   1        icm20602_init();
+   26   1        ips114_showstr(0,3,"icm20602_intok...");
+   27   1        delay_ms(500);
+   28   1      
+   29   1        pit_timer_ms(TIM_1, 5);                                    //初始化定时器1作为周期中断触发
+             -器，1MS进一次中断
+   30   1        NVIC_SetPriority(TIMER1_IRQn, 3);                          //设置定时器1中断优先级为 3 级（
+             -最高级）
+   31   1        gpio_mode(P6_7,GPO_PP);                                    //蜂鸣器初始化
+   32   1        BUZZ_DiDiDi(250);                                          //蜂鸣器滴一声
+   33   1        
+   34   1        ips114_showstr(0,4,"intall_intok...");
+   35   1        delay_ms(500);
+   36   1        ips114_clear(BLUE);
+   37   1      //  EnableGlobalIRQ(); //初始化完毕，开启总中断
+   38   1        
+   39   1        /****下面的测试函数只是测试用，测试结束请注释关闭，一次只允许开一个测试
+             -函数！！******/
+   40   1      //  Test_Motor_Hardware();//调试电机使用
+   41   1      //  Test_Electric_Hardware();//测试电磁电感采集
+   42   1      //  Test_Encoder();//测试编码器采集//         
+   43   1        /*********************************************************************************/
+   44   1      
+   45   1        while (1)
+   46   1        {
+   47   2      
+   48   2      
+   49   2      //     Roundabout_debugshow();//环岛调试屏幕显示（调试环岛时打开）
+   50   2      //     Speed_debugshow();     //速度环调试屏幕显示（调试速度环时打开，速度环建议用
+             -上位机看波形）
+   51   2      //      datasend();          //上位机发送数据 
+   52   2      
+C251 COMPILER V5.60.0,  main                                                               20/03/25  16:34:11  PAGE 2   
+
+   53   2          //      �ٶ���ʾ
+   54   2          ips114_showint16(50, 0, left_real_speed);
+   55   2          ips114_showint16(50, 1, right_real_speed);
+   56   2          ips114_showint16(50, 2, real_speed);
+   57   2          ips114_showint16(50, 4, aim_speed);
+   58   2      
+   59   2          //          �����ʾ
+   60   2          ips114_showint16(0, 0, Left_Adc); // road_type.straight
+   61   2          ips114_showint16(0, 1, Left_Shu_Adc);
+   62   2          ips114_showint16(0, 2, Right_Shu_Adc);
+   63   2          ips114_showint16(0, 3, Right_Adc);
+   64   2          //      �����ʾ������ע�ͣ�
+   65   2      //    ips114_showuint16(100, 5, dl1a_distance_mm);
+   66   2      //    ips114_showuint16(100, 1, );
+   67   2      ////      赛道偏差显示
+   68   2          ips114_showfloat(0, 5, Current_Dir, 2, 1); // ��ʾ������   ������ʾ2λ   С
+             -����ʾ1λ
+   69   2      
+   70   2      //      电源电压显示  
+   71   2          ips114_showstr(140, 0, "Value:");
+   72   2          ips114_showfloat(190, 0, adc_valueM, 2, 2);
+   73   2        }
+   74   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       378     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =        90     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

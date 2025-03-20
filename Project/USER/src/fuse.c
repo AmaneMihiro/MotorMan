@@ -120,7 +120,7 @@ void Motor_output_control()
 	//	  icm20602_get_gyro();
 	//	  GORY_Z=icm20602_gyro_transition (icm20602_gyro_z);// 单位为°/s
 	speed_measure(); // 编码器测量,待修正编码器计数值转速度的单位
-	//	  Get_deviation();       //电磁采集并获取赛道偏差
+	Get_deviation();       //电磁采集并获取赛道偏差
 	//	  timed_task();          //定时操作
 	ADC_PWM = PID_Turn_DT(&TurnPID, Current_Dir, GORY_Z); // 动态位置式PID  left_real_speed
 

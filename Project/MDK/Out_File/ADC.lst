@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:10:41  PAGE 1   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:52:27  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ADC
@@ -27,541 +27,540 @@ stmt  level    source
    16          // 环道参数
    17          uint16 annulus_s;
    18          uint16 annulus_s2; // 环岛积分距离2
-   19          uint16 annulus_t;
-   20          uint16 annulus_z;
-   21          uint16 annulus_s3 = 0; // 环岛积分距离3
+   19          uint16 annulus_s3; // 环岛积分距离3
+   20          uint16 annulus_t;
+   21          uint16 annulus_z;
    22          
-   23          struct ROAD_TYPE road_type = {0};
-   24          int16 obstacle_Current_Dir[] = {
-   25            30,
-   26            31,
-   27            32,
-   28            33,
-   29            34,
-   30            35,
-   31            36,
-   32            37,
-   33            38,
-   34            39,
-   35            40,
-   36            41,
-   37            42,
-   38            43,
-   39            44,
-   40            45,
-   41            46,
-   42            47,
-   43            48,
-   44            49,
-   45            -69,
-   46            -68,
-   47            -67,
-   48            -66,
-   49            -65,
-   50            -64,
-   51            -63,
-   52            -62,
-   53            -61,
-   54            -60,
-   55            -59,
-   56            -58,
-   57            -57,
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:10:41  PAGE 2   
+   23          
+   24          struct ROAD_TYPE road_type = {0};
+   25          int16 obstacle_Current_Dir[] = {
+   26            30,
+   27            31,
+   28            32,
+   29            33,
+   30            34,
+   31            35,
+   32            36,
+   33            37,
+   34            38,
+   35            39,
+   36            40,
+   37            41,
+   38            42,
+   39            43,
+   40            44,
+   41            45,
+   42            46,
+   43            47,
+   44            48,
+   45            49,
+   46            -69,
+   47            -68,
+   48            -67,
+   49            -66,
+   50            -65,
+   51            -64,
+   52            -63,
+   53            -62,
+   54            -61,
+   55            -60,
+   56            -59,
+   57            -58,
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:52:27  PAGE 2   
 
-   58            -56,
-   59            -55,
-   60            -54,
-   61            -53,
-   62            -52,
-   63            -51,
-   64            -50,
-   65            -49,
-   66            -48,
-   67            -47,
-   68            -46,
-   69            -45,
-   70            -44,
-   71            -43,
-   72            -42,
-   73            -41,
-   74            -40,
-   75            -39,
-   76            -38,
-   77            -37,
-   78            -36,
-   79            -35,
-   80            -34,
-   81            -33,
-   82            -32,
-   83            -31,
-   84            -30,
-   85          };
-   86          /***当前位置*************/
-   87          float Current_Dir = 0;
-   88          int16 Set_gyro = 0;
-   89          int16 ADC_PWM = 0;
-   90          
-   91          uint8 temp = 0;
-   92          /***************************电感采集通道初始化****************************
-   93          函数：  void ADC_int(void)
-   94          功能：  电感采值进行初始化
-   95          参数：  void
-   96          说明：  电感采集初始化
-   97          返回值；无
-   98          ************************************************************************/
-   99          void ADC_int(void)
-  100          {
-  101   1        adc_init(Left_ADC_Pin, ADC_SYSclk_DIV_2);   // 初始化P0.0为ADC功能
-  102   1        adc_init(LeftXie_ADC_Pin, ADC_SYSclk_DIV_2);  // 初始化P0.1为ADC功能
-  103   1        adc_init(RightXie_ADC_Pin, ADC_SYSclk_DIV_2); // 初始化P0.5为ADC功能
-  104   1        adc_init(Right_ADC_Pin, ADC_SYSclk_DIV_2);    // 初始化P0.6为ADC功能
-  105   1      
-  106   1        adc_init(Mid_ADC_Pin, ADC_SYSclk_DIV_2); // 初始化P1.5为ADC功能
-  107   1      }
-  108          
-  109          /***************************中值滤波函数*********************************
-  110          函数：uint16 adc_mid(ADCN_enum adcn,ADCCH_enum ch)
-  111          功能： 3次电感采值进行中值滤波
-  112          参数： adcn        选择ADC通道       resolution      分辨率
-  113          说明： 8位ADC输出，0~255（2的8次方），5v电压平均分成255份，分辨率为5/255=0.196
-  114          返回值；k(uint8)中间那个值
-  115          ************************************************************************/
-  116          uint16 adc_mid(ADCN_enum adcn, ADCRES_enum ch)
-  117          {
-  118   1        uint16 i, j, k, tmp;
-  119   1        i = adc_once(adcn, ch);
-  120   1        j = adc_once(adcn, ch);
-  121   1        k = adc_once(adcn, ch);
-  122   1        if (i > j)
-  123   1        {
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:10:41  PAGE 3   
+   58            -57,
+   59            -56,
+   60            -55,
+   61            -54,
+   62            -53,
+   63            -52,
+   64            -51,
+   65            -50,
+   66            -49,
+   67            -48,
+   68            -47,
+   69            -46,
+   70            -45,
+   71            -44,
+   72            -43,
+   73            -42,
+   74            -41,
+   75            -40,
+   76            -39,
+   77            -38,
+   78            -37,
+   79            -36,
+   80            -35,
+   81            -34,
+   82            -33,
+   83            -32,
+   84            -31,
+   85            -30,
+   86          };
+   87          /***当前位置*************/
+   88          float Current_Dir = 0;
+   89          int16 Set_gyro = 0;
+   90          int16 ADC_PWM = 0;
+   91          
+   92          uint8 temp = 0;
+   93          /***************************电感采集通道初始化****************************
+   94          函数：  void ADC_int(void)
+   95          功能：  电感采值进行初始化
+   96          参数：  void
+   97          说明：  电感采集初始化
+   98          返回值；无
+   99          ************************************************************************/
+  100          void ADC_int(void)
+  101          {
+  102   1        adc_init(Left_ADC_Pin, ADC_SYSclk_DIV_2);   // 初始化P0.0为ADC功能
+  103   1        adc_init(LeftXie_ADC_Pin, ADC_SYSclk_DIV_2);  // 初始化P0.1为ADC功能
+  104   1        adc_init(RightXie_ADC_Pin, ADC_SYSclk_DIV_2); // 初始化P0.5为ADC功能
+  105   1        adc_init(Right_ADC_Pin, ADC_SYSclk_DIV_2);    // 初始化P0.6为ADC功能
+  106   1      
+  107   1        adc_init(Mid_ADC_Pin, ADC_SYSclk_DIV_2); // 初始化P1.5为ADC功能
+  108   1      }
+  109          
+  110          /***************************中值滤波函数*********************************
+  111          函数：uint16 adc_mid(ADCN_enum adcn,ADCCH_enum ch)
+  112          功能： 3次电感采值进行中值滤波
+  113          参数： adcn        选择ADC通道       resolution      分辨率
+  114          说明： 8位ADC输出，0~255（2的8次方），5v电压平均分成255份，分辨率为5/255=0.196
+  115          返回值；k(uint8)中间那个值
+  116          ************************************************************************/
+  117          uint16 adc_mid(ADCN_enum adcn, ADCRES_enum ch)
+  118          {
+  119   1        uint16 i, j, k, tmp;
+  120   1        i = adc_once(adcn, ch);
+  121   1        j = adc_once(adcn, ch);
+  122   1        k = adc_once(adcn, ch);
+  123   1        if (i > j)
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:52:27  PAGE 3   
 
-  124   2          tmp = i, i = j, j = tmp;
-  125   2        }
-  126   1        if (k > j)
-  127   1        {
-  128   2          tmp = j;
-  129   2        }
-  130   1        else if (k > i)
-  131   1        {
-  132   2          tmp = k;
-  133   2        }
-  134   1        else
-  135   1        {
-  136   2          tmp = i;
-  137   2        }
-  138   1        return (tmp);
-  139   1      }
-  140          
-  141          /***************************均值滤波函数****************************
-  142          函数：  uint16 adc_ave(ADCN_enum adcn,ADCCH_enum ch,uint8 N)
-  143          功能：  中值滤波后的5个电感值求平均值
-  144          参数：  adcn        选择ADC通道
-  145          说明：  该函数调用中值滤波函数，即电感值是中位置
-  146          返回值；tmp
-  147          示例：  adc_ave(ADC_P10, ADC_8BIT)-->ADC通道为P-10，分辨率为8bit
-  148          *******************************************************************/
-  149          uint16 adc_ave(ADCN_enum adcn, ADCRES_enum ch, uint8 N)
-  150          {
-  151   1        uint32 tmp = 0;
-  152   1        uint8 i;
-  153   1        for (i = 0; i < N; i++)
-  154   1        {
-  155   2          tmp += adc_mid(adcn, ch);
-  156   2        }
-  157   1        tmp = tmp / N;
-  158   1        return (tmp);
-  159   1      }
-  160          /***************************电感采值************************************
-  161          函数：  void ADC_Collect()
-  162          功能：  电感采值
-  163          参数：  void
-  164          说明：  8位ADC输出，0~255（2的8次方），5v电压平均分成255份，分辨率为5/255=0.196
-  165          返回值；void
-  166          ***********************************************************************/
-  167          void ADC_Collect()
-  168          {
-  169   1        adc_value[0] = adc_ave(Left_ADC_Pin, ADC_8BIT, 3);     // 左横电感
-  170   1        adc_value[1] = adc_ave(LeftXie_ADC_Pin, ADC_8BIT, 3);  // 左竖电感
-  171   1        adc_value[2] = adc_ave(RightXie_ADC_Pin, ADC_8BIT, 3);   // 右竖电感
-  172   1        adc_value[3] = adc_ave(Right_ADC_Pin, ADC_8BIT, 3);    // 右横电感
-  173   1        adc_valueM = adc_ave(Mid_ADC_Pin, ADC_8BIT, 3) * 0.2246; // 电源电压采集
-  174   1      }
-  175          /*********************************电感采值********************************
-  176          函数：  void Data_current_analyze()
-  177          功能：  电感采值原始值归一化（0~100）
-  178          参数：  void
-  179          说明：  归一化处理
-  180          返回值；void
-  181          *************************************************************************/
-  182          void Data_current_analyze()
-  183          {
-  184   1        uint8 i;
-  185   1        for (i = 0; i < NM; i++)
-  186   1        {
-  187   2          AD_V[i] = ((adc_value[i] - adc_min[i]) * 100) / (adc_max[i] - adc_min[i]);
-  188   2          if (AD_V[i] <= 0)
-  189   2          {
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:10:41  PAGE 4   
+  124   1        {
+  125   2          tmp = i, i = j, j = tmp;
+  126   2        }
+  127   1        if (k > j)
+  128   1        {
+  129   2          tmp = j;
+  130   2        }
+  131   1        else if (k > i)
+  132   1        {
+  133   2          tmp = k;
+  134   2        }
+  135   1        else
+  136   1        {
+  137   2          tmp = i;
+  138   2        }
+  139   1        return (tmp);
+  140   1      }
+  141          
+  142          /***************************均值滤波函数****************************
+  143          函数：  uint16 adc_ave(ADCN_enum adcn,ADCCH_enum ch,uint8 N)
+  144          功能：  中值滤波后的5个电感值求平均值
+  145          参数：  adcn        选择ADC通道
+  146          说明：  该函数调用中值滤波函数，即电感值是中位置
+  147          返回值；tmp
+  148          示例：  adc_ave(ADC_P10, ADC_8BIT)-->ADC通道为P-10，分辨率为8bit
+  149          *******************************************************************/
+  150          uint16 adc_ave(ADCN_enum adcn, ADCRES_enum ch, uint8 N)
+  151          {
+  152   1        uint32 tmp = 0;
+  153   1        uint8 i;
+  154   1        for (i = 0; i < N; i++)
+  155   1        {
+  156   2          tmp += adc_mid(adcn, ch);
+  157   2        }
+  158   1        tmp = tmp / N;
+  159   1        return (tmp);
+  160   1      }
+  161          /***************************电感采值************************************
+  162          函数：  void ADC_Collect()
+  163          功能：  电感采值
+  164          参数：  void
+  165          说明：  8位ADC输出，0~255（2的8次方），5v电压平均分成255份，分辨率为5/255=0.196
+  166          返回值；void
+  167          ***********************************************************************/
+  168          void ADC_Collect()
+  169          {
+  170   1        adc_value[0] = adc_ave(Left_ADC_Pin, ADC_8BIT, 3);     // 左横电感
+  171   1        adc_value[1] = adc_ave(LeftXie_ADC_Pin, ADC_8BIT, 3);  // 左竖电感
+  172   1        adc_value[2] = adc_ave(RightXie_ADC_Pin, ADC_8BIT, 3);   // 右竖电感
+  173   1        adc_value[3] = adc_ave(Right_ADC_Pin, ADC_8BIT, 3);    // 右横电感
+  174   1        adc_valueM = adc_ave(Mid_ADC_Pin, ADC_8BIT, 3) * 0.2246; // 电源电压采集
+  175   1      }
+  176          /*********************************电感采值********************************
+  177          函数：  void Data_current_analyze()
+  178          功能：  电感采值原始值归一化（0~100）
+  179          参数：  void
+  180          说明：  归一化处理
+  181          返回值；void
+  182          *************************************************************************/
+  183          void Data_current_analyze()
+  184          {
+  185   1        uint8 i;
+  186   1        for (i = 0; i < NM; i++)
+  187   1        {
+  188   2          AD_V[i] = ((adc_value[i] - adc_min[i]) * 100) / (adc_max[i] - adc_min[i]);
+  189   2          if (AD_V[i] <= 0)
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:52:27  PAGE 4   
 
-  190   3            AD_V[i] = 0;
-  191   3          }
-  192   2          else if (AD_V[i] >= 100)
-  193   2          {
-  194   3            AD_V[i] = 100;
-  195   3          }
-  196   2        }
-  197   1        Left_Adc = AD_V[0];    // 左电感最终值
-  198   1        Left_Shu_Adc = AD_V[1];  // 左竖电感最终值
-  199   1        Right_Shu_Adc = AD_V[2]; // 右竖电感最终值
-  200   1        Right_Adc = AD_V[3];   // 右电感最终值
-  201   1      }
-  202          
-  203          /*********************************差比和函数**********************************
-  204          函数：  float Cha_bi_he(int16 data1, int16 data2,int16 x)
-  205          功能：  差比和求赛道偏差
-  206          参数：  int16 data1, int16 data2,int16 x
-  207          说明：  差比和求赛道偏差
-  208          返回值；result
-  209          ****************************************************************************/
-  210          float Cha_bi_he(int16 data1, int16 data2, int16 x)
-  211          {
-  212   1        float cha;
-  213   1        float he;
-  214   1        float result;
-  215   1      
-  216   1        cha = (data1) - (data2);
-  217   1        he = data1 + data2 + 1;
-  218   1        result = (cha * x) / (1.0 * he);
-  219   1      
-  220   1        return result;
-  221   1      }
-  222          // 差比和差加权，变式
-  223          float Cha_bi_he_cha(int16 data1, int16 data2, int16 data3, int16 data4, int16 x, int16 y)
-  224          {
-  225   1        float cha;
-  226   1        float he;
-  227   1        float cha1;
-  228   1        float he1;
-  229   1      
-  230   1        float result;
-  231   1      
-  232   1        cha = (data1) - (data2);
-  233   1        cha1 = (data3) - (data4);
-  234   1      
-  235   1        he = data1 + data2 + 1;
-  236   1        he1 = data3 + data4 + 1;
-  237   1      
-  238   1        //    result = (cha*x)/(1.0*he);
-  239   1        result = ((cha * x) + (cha1 * y)) / ((1.0 * he) + (1.0 * he1));
-  240   1        return result;
-  241   1      }
-  242          // 向量差比和
-  243          float Cha_x_bi_he(int16 data1, int16 data2, int16 data3, int16 data4)
-  244          {
-  245   1        float left_value;
-  246   1        float right_value;
-  247   1        float ad_sum;
-  248   1        float ad_diff;
-  249   1        float error_x;
-  250   1        left_value = sqrt(data1 * data1 + data2 * data2);
-  251   1      
-  252   1        right_value = sqrt(data3 * data3 + data4 * data4);
-  253   1      
-  254   1        ad_sum = left_value + right_value + 1; // 计算电感之和
-  255   1      
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:10:41  PAGE 5   
+  190   2          {
+  191   3            AD_V[i] = 0;
+  192   3          }
+  193   2          else if (AD_V[i] >= 100)
+  194   2          {
+  195   3            AD_V[i] = 100;
+  196   3          }
+  197   2        }
+  198   1        Left_Adc = AD_V[0];    // 左电感最终值
+  199   1        Left_Shu_Adc = AD_V[1];  // 左竖电感最终值
+  200   1        Right_Shu_Adc = AD_V[2]; // 右竖电感最终值
+  201   1        Right_Adc = AD_V[3];   // 右电感最终值
+  202   1      }
+  203          
+  204          /*********************************差比和函数**********************************
+  205          函数：  float Cha_bi_he(int16 data1, int16 data2,int16 x)
+  206          功能：  差比和求赛道偏差
+  207          参数：  int16 data1, int16 data2,int16 x
+  208          说明：  差比和求赛道偏差
+  209          返回值；result
+  210          ****************************************************************************/
+  211          float Cha_bi_he(int16 data1, int16 data2, int16 x)
+  212          {
+  213   1        float cha;
+  214   1        float he;
+  215   1        float result;
+  216   1      
+  217   1        cha = (data1) - (data2);
+  218   1        he = data1 + data2 + 1;
+  219   1        result = (cha * x) / (1.0 * he);
+  220   1      
+  221   1        return result;
+  222   1      }
+  223          // 差比和差加权，变式
+  224          float Cha_bi_he_cha(int16 data1, int16 data2, int16 data3, int16 data4, int16 x, int16 y)
+  225          {
+  226   1        float cha;
+  227   1        float he;
+  228   1        float cha1;
+  229   1        float he1;
+  230   1      
+  231   1        float result;
+  232   1      
+  233   1        cha = (data1) - (data2);
+  234   1        cha1 = (data3) - (data4);
+  235   1      
+  236   1        he = data1 + data2 + 1;
+  237   1        he1 = data3 + data4 + 1;
+  238   1      
+  239   1        //    result = (cha*x)/(1.0*he);
+  240   1        result = ((cha * x) + (cha1 * y)) / ((1.0 * he) + (1.0 * he1));
+  241   1        return result;
+  242   1      }
+  243          // 向量差比和
+  244          float Cha_x_bi_he(int16 data1, int16 data2, int16 data3, int16 data4)
+  245          {
+  246   1        float left_value;
+  247   1        float right_value;
+  248   1        float ad_sum;
+  249   1        float ad_diff;
+  250   1        float error_x;
+  251   1        left_value = sqrt(data1 * data1 + data2 * data2);
+  252   1      
+  253   1        right_value = sqrt(data3 * data3 + data4 * data4);
+  254   1      
+  255   1        ad_sum = left_value + right_value + 1; // 计算电感之和
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:52:27  PAGE 5   
 
-  256   1        // 计算电感之差
-  257   1      
-  258   1        ad_diff = (int16)right_value - left_value;
-  259   1        error_x = ad_diff / ad_sum;
-  260   1      
-  261   1        return error_x;
-  262   1      }
-  263          /*****************************************出界保护函数*************************************
-  264          函数：  void Out_protect()
-  265          参数：  无
-  266          说明：  防止车冲出赛道后撞坏东西,检测出赛道后中断失能，电机停转，放回赛
+  256   1      
+  257   1        // 计算电感之差
+  258   1      
+  259   1        ad_diff = (int16)right_value - left_value;
+  260   1        error_x = ad_diff / ad_sum;
+  261   1      
+  262   1        return error_x;
+  263   1      }
+  264          /*****************************************出界保护函数*************************************
+  265          函数：  void Out_protect()
+  266          参数：  无
+  267          说明：  防止车冲出赛道后撞坏东西,检测出赛道后中断失能，电机停转，放回赛
              -道中断使能继续跑
-  267          
-  268          *注意：！！！平时调试时可以打开，加了避障处理后需要关闭此函数，不然有�
+  268          
+  269          *注意：！！！平时调试时可以打开，加了避障处理后需要关闭此函数，不然有�
              -�能无法实现避障功能！！！
-  269          返回值：无
-  270          ******************************************************************************************/
-  271          void Out_protect(void)
-  272          {
-  273   1        if (road_type.annulus || road_type.in_annulus_left || road_type.in_annulus_right || road_type.on_annulus
+  270          返回值：无
+  271          ******************************************************************************************/
+  272          void Out_protect(void)
+  273          {
+  274   1        if (road_type.annulus || road_type.in_annulus_left || road_type.in_annulus_right || road_type.on_annulus
              -_left || road_type.on_annulus_right || road_type.out_annulus)
-  274   1        {
-  275   2          if (Left_Adc < OUTSIDE || Right_Adc < OUTSIDE)
-  276   2          {
-  277   3            while (1)
-  278   3            {
-  279   4              go_motor(-2000, -2000);
-  280   4              delay_ms(400);
-  281   4              while (1)
-  282   4              {
-  283   5                go_motor(0, 0);
-  284   5                pwm_duty(PWMB_CH4_P77, 500);
-  285   5                pwm_duty(PWMB_CH3_P33, 500);
-  286   5              }
-  287   4            }
-  288   3          }
-  289   2        }
-  290   1      }
-  291          
-  292          void Annulus_assist(void)
-  293          {
-  294   1        if (road_type.annulus == 1 && road_type.in_annulus_right == 0 && road_type.on_annulus_right == 0 && road
+  275   1        {
+  276   2          if (Left_Adc < OUTSIDE || Right_Adc < OUTSIDE)
+  277   2          {
+  278   3            while (1)
+  279   3            {
+  280   4              go_motor(-2000, -2000);
+  281   4              delay_ms(400);
+  282   4              while (1)
+  283   4              {
+  284   5                go_motor(0, 0);
+  285   5                pwm_duty(PWMB_CH4_P77, 500);
+  286   5                pwm_duty(PWMB_CH3_P33, 500);
+  287   5              }
+  288   4            }
+  289   3          }
+  290   2        }
+  291   1      }
+  292          
+  293          void Annulus_assist(void)
+  294          {
+  295   1        if (road_type.annulus == 1 && road_type.in_annulus_right == 0 && road_type.on_annulus_right == 0 && road
              -_type.out_annulus == 0) //&&road_type.in_annulus_left==0
-  295   1        {
-  296   2          annulus_s += fabs(last_speed) * 1;
-  297   2        }
-  298   1        if (road_type.in_annulus_right == 1) // road_type.in_annulus_left==1 ||                 && road_type.on_
+  296   1        {
+  297   2          annulus_s += fabs(last_speed) * 1;
+  298   2        }
+  299   1        if (road_type.in_annulus_right == 1) // road_type.in_annulus_left==1 ||                 && road_type.on_
              -annulus_left==0���⣩&& road_type.on_annulus_right==0
-  299   1        {
-  300   2          annulus_z += fabs(GORY_Z);
-  301   2          annulus_s2 += fabs(last_speed) * 1; // ���ݻ��־���ͱ�������ֵ���ģ
+  300   1        {
+  301   2          annulus_z += fabs(GORY_Z);
+  302   2          annulus_s2 += fabs(last_speed) * 1; // ���ݻ��־���ͱ�������ֵ���ģ
              -�0.1��
-  302   2        }
-  303   1        if (road_type.on_annulus_right == 1) // road_type.in_annulus_left==1 ||                 && road_type.on_
+  303   2        }
+  304   1        if (road_type.on_annulus_right == 1) // road_type.in_annulus_left==1 ||                 && road_type.on_
              -annulus_left==0���⣩&& road_type.on_annulus_right==0
-  304   1        {
-  305   2          //        annulus_z += fabs(GORY_Z);
-  306   2          annulus_s3 += fabs(last_speed) * 1; // ���ݻ��־���ͱ�������ֵ���ģ
+  305   1        {
+  306   2          //        annulus_z += fabs(GORY_Z);
+  307   2          annulus_s3 += fabs(last_speed) * 1; // ���ݻ��־���ͱ�������ֵ���ģ
              -�0.1��
-  307   2        }
-  308   1        if (road_type.out_annulus == 1)
-  309   1        {
-  310   2          annulus_t = fabs(last_speed) * 1;
-  311   2          //          annulus_t=annulus_t+5;
-  312   2        }
-  313   1      }
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:10:41  PAGE 6   
+  308   2        }
+  309   1        if (road_type.out_annulus == 1)
+  310   1        {
+  311   2          annulus_t = fabs(last_speed) * 1;
+  312   2          //          annulus_t=annulus_t+5;
+  313   2        }
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:52:27  PAGE 6   
 
-  314          
-  315          int8 testflag;
-  316          /*************************************������������*******************************
+  314   1      }
+  315          
+  316          int8 testflag;
+  317          /*************************************������������*******************************
              -******
-  317          函数：  void Annulus_handle(void)
-  318          参数：  无
-  319          说明：  环岛处理函数
-  320          
-  321          *注意：用两个竖电感引导进环
-  322          返回值：无
-  323          ******************************************************************************************/
-  324          void Annulus_handle(void)
-  325          {
-  326   1        if ((Left_Adc + Right_Adc) > IN_ANNULUS_H_LIMIT && road_type.annulus == 0)
-  327   1        {
-  328   2          testflag = 1;
-  329   2          road_type.annulus = 1;
-  330   2          BUZZ_ON;
-  331   2        }
-  332   1        //    //左环进环判断
-  333   1        //    if(annulus_s > DISTANCE_ANNULUS_S
-  334   1        //       &&(Left_Shu_Adc>20)
-  335   1        //       &&road_type.annulus==1
-  336   1        //       &&road_type.in_annulus_left==0
-  337   1        //       &&road_type.in_annulus_right==0
-  338   1        //       &&road_type.on_annulus_left==0
-  339   1        //       &&road_type.on_annulus_right==0
-  340   1        //       &&road_type.out_annulus==0)
-  341   1        //    {
-  342   1        //      road_type.in_annulus_left = 1;
-  343   1        //      P52                      = 0;
-  344   1        //      testflag = 2;
-  345   1        //    }
-  346   1        // 右环进环判断
-  347   1        if (annulus_s > DISTANCE_ANNULUS_S
-  348   1          //    && (Right_Shu_Adc > 20)
-  349   1          && road_type.annulus == 1 && road_type.in_annulus_left == 0 && road_type.in_annulus_right == 0 && road_
+  318          函数：  void Annulus_handle(void)
+  319          参数：  无
+  320          说明：  环岛处理函数
+  321          
+  322          *注意：用两个竖电感引导进环
+  323          返回值：无
+  324          ******************************************************************************************/
+  325          void Annulus_handle(void)
+  326          {
+  327   1        if ((Left_Adc + Right_Adc) > IN_ANNULUS_H_LIMIT && road_type.annulus == 0)
+  328   1        {
+  329   2          testflag = 1;
+  330   2          road_type.annulus = 1;
+  331   2          BUZZ_ON;
+  332   2        }
+  333   1        //    //左环进环判断
+  334   1        //    if(annulus_s > DISTANCE_ANNULUS_S
+  335   1        //       &&(Left_Shu_Adc>20)
+  336   1        //       &&road_type.annulus==1
+  337   1        //       &&road_type.in_annulus_left==0
+  338   1        //       &&road_type.in_annulus_right==0
+  339   1        //       &&road_type.on_annulus_left==0
+  340   1        //       &&road_type.on_annulus_right==0
+  341   1        //       &&road_type.out_annulus==0)
+  342   1        //    {
+  343   1        //      road_type.in_annulus_left = 1;
+  344   1        //      P52                      = 0;
+  345   1        //      testflag = 2;
+  346   1        //    }
+  347   1        // 右环进环判断
+  348   1        if (annulus_s > DISTANCE_ANNULUS_S
+  349   1          //    && (Right_Shu_Adc > 20)
+  350   1          && road_type.annulus == 1 && road_type.in_annulus_left == 0 && road_type.in_annulus_right == 0 && road_
              -type.on_annulus_left == 0 && road_type.on_annulus_right == 0 && road_type.out_annulus == 0)
-  350   1        {
-  351   2          testflag = 3;
-  352   2          road_type.in_annulus_right = 1;
-  353   2          BUZZ_ON;
-  354   2        }
-  355   1        //    //左环上环处理
-  356   1        //    if(annulus_s2 > 40
-  357   1        ////       &&annulus_z > DISTANCE_ANNULUS_Z
-  358   1        //       &&road_type.annulus==1
-  359   1        //       &&road_type.in_annulus_left==1
-  360   1        //       &&road_type.in_annulus_right==0
-  361   1        //       &&road_type.on_annulus_left==0
-  362   1        //       &&road_type.on_annulus_right==0
-  363   1        //       &&road_type.out_annulus==0)
-  364   1        //    {
-  365   1        //        testflag = 4;
-  366   1        //        road_type.in_annulus_left =0;
-  367   1        //        road_type.on_annulus_left = 1;
-  368   1        //        BUZZ_ON;
-  369   1        //        P52                      = 1;
-  370   1        //    }
-  371   1        // 右环上环处理
-  372   1        if (annulus_s2 > 1300 && road_type.annulus == 1 && road_type.in_annulus_left == 0 && road_type.in_annulu
+  351   1        {
+  352   2          testflag = 3;
+  353   2          road_type.in_annulus_right = 1;
+  354   2          BUZZ_ON;
+  355   2        }
+  356   1        //    //左环上环处理
+  357   1        //    if(annulus_s2 > 40
+  358   1        ////       &&annulus_z > DISTANCE_ANNULUS_Z
+  359   1        //       &&road_type.annulus==1
+  360   1        //       &&road_type.in_annulus_left==1
+  361   1        //       &&road_type.in_annulus_right==0
+  362   1        //       &&road_type.on_annulus_left==0
+  363   1        //       &&road_type.on_annulus_right==0
+  364   1        //       &&road_type.out_annulus==0)
+  365   1        //    {
+  366   1        //        testflag = 4;
+  367   1        //        road_type.in_annulus_left =0;
+  368   1        //        road_type.on_annulus_left = 1;
+  369   1        //        BUZZ_ON;
+  370   1        //        P52                      = 1;
+  371   1        //    }
+  372   1        // 右环上环处理
+  373   1        if (annulus_s2 > 1300 && road_type.annulus == 1 && road_type.in_annulus_left == 0 && road_type.in_annulu
              -s_right == 1 && road_type.on_annulus_left == 0 && road_type.on_annulus_right == 0 && road_type.out_annulus == 0)
-  373   1        {
-  374   2          testflag = 5;
-  375   2          road_type.in_annulus_right = 0;
-  376   2          road_type.on_annulus_right = 1;
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:10:41  PAGE 7   
+  374   1        {
+  375   2          testflag = 5;
+  376   2          road_type.in_annulus_right = 0;
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:52:27  PAGE 7   
 
-  377   2          BUZZ_ON;
-  378   2        }
-  379   1        if (((road_type.on_annulus_right == 1) 
-  380   1        || (road_type.on_annulus_left == 1)) 
-  381   1        && Left_Adc + Right_Adc > OUT_ANNULUS_S_LIMIT 
-  382   1        && annulus_s3 > 200)
-  383   1        {
-  384   2          testflag = 6;
-  385   2          road_type.on_annulus_right = 0;
-  386   2          road_type.on_annulus_left = 0;
-  387   2          road_type.out_annulus = 1;
-  388   2          annulus_s = 0;
-  389   2          annulus_z = 0;
-  390   2          annulus_s2 = 0;
-  391   2          BUZZ_ON;
-  392   2        }
-  393   1        // 出环处理
-  394   1        if (annulus_t > DISTANCE_ANNULUS_T 
-  395   1          && road_type.out_annulus == 1)
-  396   1        {
-  397   2          testflag = 7;
-  398   2          road_type.out_annulus = 0;
-  399   2          annulus_t = 0;
-  400   2          BUZZ_OFF;
-  401   2          //          while(1)
-  402   2          //          {
-  403   2          //            go_motor(0,0);
-  404   2          //          }
-  405   2        }
-  406   1      
-  407   1        // if (annulus_t > DISTANCE_ANNULUS_T)
-  408   1        // {
-  409   1        //  road_type.annulus = 0;
-  410   1        //  road_type.in_annulus_left = 0;
-  411   1        //  road_type.in_annulus_right = 0;
-  412   1        //  road_type.on_annulus_left = 0;
-  413   1        //  road_type.on_annulus_right = 0;
-  414   1        //  road_type.out_annulus = 0;
-  415   1        //  annulus_t = 0;
-  416   1      
-  417   1        //  BUZZ_OFF;
-  418   1        // }
-  419   1      }
-  420          /*************************根据赛道类型选择不同的方向偏差计算方法**********************
+  377   2          road_type.on_annulus_right = 1;
+  378   2          BUZZ_ON;
+  379   2        }
+  380   1        if (((road_type.on_annulus_right == 1) 
+  381   1        || (road_type.on_annulus_left == 1)) 
+  382   1        && Left_Adc + Right_Adc > OUT_ANNULUS_S_LIMIT 
+  383   1        && annulus_s3 > 200)
+  384   1        {
+  385   2          testflag = 6;
+  386   2          road_type.on_annulus_right = 0;
+  387   2          road_type.on_annulus_left = 0;
+  388   2          road_type.out_annulus = 1;
+  389   2          annulus_s = 0;
+  390   2          annulus_z = 0;
+  391   2          annulus_s2 = 0;
+  392   2          BUZZ_ON;
+  393   2        }
+  394   1        // 出环处理
+  395   1        if (annulus_t > DISTANCE_ANNULUS_T 
+  396   1          && road_type.out_annulus == 1)
+  397   1        {
+  398   2          testflag = 7;
+  399   2          road_type.out_annulus = 0;
+  400   2          annulus_t = 0;
+  401   2          BUZZ_OFF;
+  402   2          //          while(1)
+  403   2          //          {
+  404   2          //            go_motor(0,0);
+  405   2          //          }
+  406   2        }
+  407   1      
+  408   1        // if (annulus_t > DISTANCE_ANNULUS_T)
+  409   1        // {
+  410   1        //  road_type.annulus = 0;
+  411   1        //  road_type.in_annulus_left = 0;
+  412   1        //  road_type.in_annulus_right = 0;
+  413   1        //  road_type.on_annulus_left = 0;
+  414   1        //  road_type.on_annulus_right = 0;
+  415   1        //  road_type.out_annulus = 0;
+  416   1        //  annulus_t = 0;
+  417   1      
+  418   1        //  BUZZ_OFF;
+  419   1        // }
+  420   1      }
+  421          /*************************根据赛道类型选择不同的方向偏差计算方法**********************
              -***
-  421          函数：  int16 Direction_error(void)
-  422          功能：  根据赛道类型选择不同的方向偏差
-  423          参数：  无
-  424          说明：  根据赛道类型选择不同的方向偏差
-  425          返回值：error--返回赛道偏差
-  426          ****************************************************************************************/
-  427          float Direction_error(void)
-  428          {
-  429   1        float error = 0;
-  430   1      
-  431   1        // ��������ƫ�����
-  432   1        if (road_type.annulus == 1)
-  433   1        {
-  434   2          // ׼���뻷������ƫ�����
-  435   2          //        if(road_type.annulus==1&&road_type.in_annulus_left==0 && road_type.in_annulus_right==0 && roa
+  422          函数：  int16 Direction_error(void)
+  423          功能：  根据赛道类型选择不同的方向偏差
+  424          参数：  无
+  425          说明：  根据赛道类型选择不同的方向偏差
+  426          返回值：error--返回赛道偏差
+  427          ****************************************************************************************/
+  428          float Direction_error(void)
+  429          {
+  430   1        float error = 0;
+  431   1      
+  432   1        // ��������ƫ�����
+  433   1        if (road_type.annulus == 1)
+  434   1        {
+  435   2          // ׼���뻷������ƫ�����
+  436   2          //        if(road_type.annulus==1&&road_type.in_annulus_left==0 && road_type.in_annulus_right==0 && roa
              -d_type.on_annulus_left==0 && road_type.on_annulus_right==0 && road_type.out_annulus==0)
-  436   2          //        {
-  437   2          //          error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;
-  438   2          //        //���󻷵�����ƫ�����
-  439   2          //        if(road_type.in_annulus_left ==1 && road_type.on_annulus_left==0 )
-  440   2          //        {
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:10:41  PAGE 8   
+  437   2          //        {
+  438   2          //          error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;
+  439   2          //        //���󻷵�����ƫ�����
+  440   2          //        if(road_type.in_annulus_left ==1 && road_type.on_annulus_left==0 )
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:52:27  PAGE 8   
 
-  441   2          //            //error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;
-  442   2          //            error = -15;
-  443   2          //          road_type.annulus=0;//��������־λ����
-  444   2          //        }
-  445   2          // ���һ�������ƫ�����
-  446   2          if (road_type.in_annulus_right == 1 )
-  447   2          {
-  448   3            // error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;          // error = 3;
-  449   3            error = 0.5; // �߼��෴��ѭ��
-  450   3      
-  451   3            //        while(1)//��ǽڵ�2
-  452   3            //          {
-  453   3            //            go_motor(0,0);
-  454   3            //          }
-  455   3          }
-  456   2          // �ڻ���ƫ��
-  457   2          if (road_type.on_annulus_right == 1)
-  458   2          {
-  459   3            road_type.annulus = 0; // �뻷����־λ����
-  460   3            road_type.in_annulus_right = 0;
-  461   3            //          error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;
-  462   3            error = (Cha_bi_he(Right_Adc, Left_Adc, 20));
-  463   3      
-  464   3            //        while(1)//����ѭ���ڵ�4
-  465   3            //          {
-  466   3            //            go_motor(0,0);
-  467   3            //          }
-  468   3          }
-  469   2          // ����������ƫ�����
-  470   2          if (road_type.out_annulus == 1 && road_type.on_annulus_right == 1)
-  471   2          {
-  472   3            //            error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*7;
-  473   3            error = -3;
-  474   3            //          error = Cha_bi_he(Right_Adc,Left_Adc,5);
-  475   3            road_type.annulus = 0; // ��������־λ����
-  476   3                         //       while(1)//�����ڵ�6
-  477   3                         //         {
-  478   3                         //           go_motor(0,0);
-  479   3                         //         }
-  480   3          }
-  481   2        }
-  482   1        // ��������
-  483   1      
-  484   1        else
-  485   1        {
-  486   2      
-  487   2          //    aim_speed = ZxjsWdjs(Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc),400)+100;
-  488   2          error = Cha_x_bi_he(Left_Adc, Left_Shu_Adc * 2, Right_Adc, Right_Shu_Adc * 2) * 20; // ��Ļ��ʾ
+  441   2          //        {
+  442   2          //            //error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;
+  443   2          //            error = -15;
+  444   2          //          road_type.annulus=0;//��������־λ����
+  445   2          //        }
+  446   2          // ���һ�������ƫ�����
+  447   2          if (road_type.in_annulus_right == 1 )
+  448   2          {
+  449   3            // error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;          // error = 3;
+  450   3            error = 0.5; // �߼��෴��ѭ��
+  451   3      
+  452   3            //        while(1)//��ǽڵ�2
+  453   3            //          {
+  454   3            //            go_motor(0,0);
+  455   3            //          }
+  456   3          }
+  457   2          // �ڻ���ƫ��
+  458   2          if (road_type.on_annulus_right == 1)
+  459   2          {
+  460   3            //          error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;
+  461   3            error = (Cha_bi_he(Right_Adc, Left_Adc, 20));
+  462   3      
+  463   3            //        while(1)//����ѭ���ڵ�4
+  464   3            //          {
+  465   3            //            go_motor(0,0);
+  466   3            //          }
+  467   3          }
+  468   2          // ����������ƫ�����
+  469   2          if (road_type.out_annulus == 1 && road_type.on_annulus_right == 1)
+  470   2          {
+  471   3            //            error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*7;
+  472   3            error = -3;
+  473   3            //          error = Cha_bi_he(Right_Adc,Left_Adc,5);
+  474   3            road_type.annulus = 0; // ��������־λ����
+  475   3                         //       while(1)//�����ڵ�6
+  476   3                         //         {
+  477   3                         //           go_motor(0,0);
+  478   3                         //         }
+  479   3          }
+  480   2        }
+  481   1        // ��������
+  482   1      
+  483   1        else
+  484   1        {
+  485   2      
+  486   2          //    aim_speed = ZxjsWdjs(Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc),400)+100;
+  487   2          error = Cha_x_bi_he(Left_Adc, Left_Shu_Adc * 2, Right_Adc, Right_Shu_Adc * 2) * 20; // ��Ļ��ʾ
              -������ƫ��ֵ
-  489   2      
-  490   2          //      errorh=1.0f/exp(errors*errors);                       //���ٺ���
-  491   2          //      aim_speedb=aim_speed*errorh;                        //��̬�����ٶȣ�ֱ����˥����
+  488   2      
+  489   2          //      errorh=1.0f/exp(errors*errors);                       //���ٺ���
+  490   2          //      aim_speedb=aim_speed*errorh;                        //��̬�����ٶȣ�ֱ����˥����
              -���˥����
-  492   2                      //      if(Left_Adc==0&&Left_Shu_Adc==0&&Right_Adc==0&&Right_Shu_Adc==0)
-  493   2                      //      {
-  494   2                      //      aim_speedb = -10;                             //���ߵ���
-  495   2                      //      }
-  496   2      
-  497   2          //  }
-  498   2        }
-  499   1        return error;
-  500   1      }
-  501          
-  502          /**********************************电磁所有总处理***************************************
-  503          函数：  void Get_deviation(void)
-  504          功能：  电磁所有总处理
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:10:41  PAGE 9   
+  491   2                      //      if(Left_Adc==0&&Left_Shu_Adc==0&&Right_Adc==0&&Right_Shu_Adc==0)
+  492   2                      //      {
+  493   2                      //      aim_speedb = -10;                             //���ߵ���
+  494   2                      //      }
+  495   2      
+  496   2          //  }
+  497   2        }
+  498   1        return error;
+  499   1      }
+  500          
+  501          /**********************************电磁所有总处理***************************************
+  502          函数：  void Get_deviation(void)
+  503          功能：  电磁所有总处理
+  504          参数：  无
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  18:52:27  PAGE 9   
 
-  505          参数：  无
-  506          说明：  放中断调用此函数即可
-  507          返回值：无
-  508          ****************************************************************************************/
-  509          void Get_deviation(void)
-  510          {
-  511   1      
-  512   1        ADC_Collect();           
-  513   1        Data_current_analyze();      
-  514   1        Annulus_handle();        
-  515   1        Annulus_assist();        
-  516   1        Current_Dir = Direction_error(); 
-  517   1      }
+  505          说明：  放中断调用此函数即可
+  506          返回值：无
+  507          ****************************************************************************************/
+  508          void Get_deviation(void)
+  509          {
+  510   1      
+  511   1        ADC_Collect();           
+  512   1        Data_current_analyze();      
+  513   1        Annulus_handle();        
+  514   1        Annulus_assist();        
+  515   1        Current_Dir = Direction_error(); 
+  516   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =      1395     ------
+  code size            =      1386     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
@@ -576,7 +575,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =       209     ------
+  hconst size          =       203     ------
 End of Module Information.
 
 

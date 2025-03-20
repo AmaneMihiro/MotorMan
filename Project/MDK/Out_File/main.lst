@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               20/03/25  18:10:40  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               20/03/25  18:52:26  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -61,41 +61,38 @@ stmt  level    source
    46   1        {
    47   2      
    48   2      
-   49   2      //     Roundabout_debugshow();//环岛调试屏幕显示（调试环岛时打开）
+   49   2          Roundabout_debugshow();//环岛调试屏幕显示（调试环岛时打开）
    50   2      //     Speed_debugshow();     //速度环调试屏幕显示（调试速度环时打开，速度环建议用
              -上位机看波形）
    51   2      //      datasend();          //上位机发送数据 
    52   2      
-C251 COMPILER V5.60.0,  main                                                               20/03/25  18:10:40  PAGE 2   
+C251 COMPILER V5.60.0,  main                                                               20/03/25  18:52:26  PAGE 2   
 
-   53   2          //      �ٶ���ʾ
-   54   2          ips114_showint16(50, 0, left_real_speed);
-   55   2          ips114_showint16(50, 1, right_real_speed);
-   56   2          ips114_showint16(50, 2, real_speed);
-   57   2          ips114_showint16(50, 4, aim_speed);
+   53   2          // ips114_showint16(50, 0, left_real_speed);
+   54   2          // ips114_showint16(50, 1, right_real_speed);
+   55   2          // ips114_showint16(50, 2, real_speed);
+   56   2          // ips114_showint16(50, 4, aim_speed);
+   57   2      
    58   2      
-   59   2          //          �����ʾ
-   60   2          ips114_showint16(0, 0, Left_Adc); // road_type.straight
-   61   2          ips114_showint16(0, 1, Left_Shu_Adc);
-   62   2          ips114_showint16(0, 2, Right_Shu_Adc);
-   63   2          ips114_showint16(0, 3, Right_Adc);
-   64   2          //      �����ʾ������ע�ͣ�
-   65   2      //    ips114_showuint16(100, 5, dl1a_distance_mm);
-   66   2      //    ips114_showuint16(100, 1, );
-   67   2      ////      赛道偏差显示
-   68   2          ips114_showfloat(0, 5, Current_Dir, 2, 1); // ��ʾ������   ������ʾ2λ   С
-             -����ʾ1λ
-   69   2      
-   70   2      //      电源电压显示  
-   71   2          ips114_showstr(140, 0, "Value:");
-   72   2          ips114_showfloat(190, 0, adc_valueM, 2, 2);
-   73   2        }
-   74   1      }
+   59   2          // ips114_showint16(0, 0, Left_Adc); // road_type.straight
+   60   2          // ips114_showint16(0, 1, Left_Shu_Adc);
+   61   2          // ips114_showint16(0, 2, Right_Shu_Adc);
+   62   2          // ips114_showint16(0, 3, Right_Adc);
+   63   2      //    ips114_showuint16(100, 5, dl1a_distance_mm);
+   64   2      //    ips114_showuint16(100, 1, );
+   65   2      ////      赛道偏差显示
+   66   2          // ips114_showfloat(0, 5, Current_Dir, 2, 1);        
+   67   2      
+   68   2      //      电源电压显示  
+   69   2          ips114_showstr(140, 0, "Value:");
+   70   2          ips114_showfloat(190, 0, adc_valueM, 2, 2);
+   71   2        }
+   72   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       378     ------
+  code size            =       243     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------

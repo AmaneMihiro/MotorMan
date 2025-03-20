@@ -457,8 +457,6 @@ float Direction_error(void)
 		// �ڻ���ƫ��
 		if (road_type.on_annulus_right == 1)
 		{
-			road_type.annulus = 0; // �뻷����־λ����
-			road_type.in_annulus_right = 0;
 			//					error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;
 			error = (Cha_bi_he(Right_Adc, Left_Adc, 20));
 

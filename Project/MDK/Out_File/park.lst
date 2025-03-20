@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  park                                                               20/03/25  17:37:52  PAGE 1   
+C251 COMPILER V5.60.0,  park                                                               20/03/25  18:10:42  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE park
@@ -66,7 +66,7 @@ stmt  level    source
    53   2            if(!flag_start)
    54   2            {
    55   3              //pwm_duty(PWMB_CH1_P74,STEER_MID);            //（C车用）
-C251 COMPILER V5.60.0,  park                                                               20/03/25  17:37:52  PAGE 2   
+C251 COMPILER V5.60.0,  park                                                               20/03/25  18:10:42  PAGE 2   
 
    56   3             go_motor(1500, 1500);
    57   3             if (T_outku >= T_OUT_PARK1) 
@@ -134,7 +134,7 @@ stmt  level    source
   119   4              ips114_showint16(0,3,S_daoku);
   120   4              BUZZ_ON;
   121   4              while(S_daoku>450)
-C251 COMPILER V5.60.0,  park                                                               20/03/25  17:37:52  PAGE 3   
+C251 COMPILER V5.60.0,  park                                                               20/03/25  18:10:42  PAGE 3   
 
   122   4              {
   123   5                speed_measure();      //编码器测量
@@ -203,7 +203,7 @@ Module Information          Static   Overlayable
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
-C251 COMPILER V5.60.0,  park                                                               20/03/25  17:37:52  PAGE 4   
+C251 COMPILER V5.60.0,  park                                                               20/03/25  18:10:42  PAGE 4   
 
   xdata size           =    ------     ------
   xdata-const size     =    ------     ------

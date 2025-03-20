@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  main                                                               20/03/25  17:37:51  PAGE 1   
+C251 COMPILER V5.60.0,  main                                                               20/03/25  18:10:40  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE main
@@ -66,7 +66,7 @@ stmt  level    source
              -上位机看波形）
    51   2      //      datasend();          //上位机发送数据 
    52   2      
-C251 COMPILER V5.60.0,  main                                                               20/03/25  17:37:51  PAGE 2   
+C251 COMPILER V5.60.0,  main                                                               20/03/25  18:10:40  PAGE 2   
 
    53   2          //      �ٶ���ʾ
    54   2          ips114_showint16(50, 0, left_real_speed);

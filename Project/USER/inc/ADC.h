@@ -41,6 +41,7 @@ extern float adc_valueM;
 extern int8 NM;
 extern uint16 annulus_s;
 extern uint16 annulus_s2; // 环岛积分距离2
+extern uint16 annulus_s3;
 extern uint16 annulus_t;
 extern uint16 annulus_z;
 extern float Current_Dir;

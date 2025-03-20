@@ -46,26 +46,24 @@ void main()
 	{
 
 
-//     Roundabout_debugshow();//环岛调试屏幕显示（调试环岛时打开）
+    Roundabout_debugshow();//环岛调试屏幕显示（调试环岛时打开）
 //		 Speed_debugshow();     //速度环调试屏幕显示（调试速度环时打开，速度环建议用上位机看波形）
 //		  datasend();          //上位机发送数据 
 
-		//			�ٶ���ʾ
-		ips114_showint16(50, 0, left_real_speed);
-		ips114_showint16(50, 1, right_real_speed);
-		ips114_showint16(50, 2, real_speed);
-		ips114_showint16(50, 4, aim_speed);
+		// ips114_showint16(50, 0, left_real_speed);
+		// ips114_showint16(50, 1, right_real_speed);
+		// ips114_showint16(50, 2, real_speed);
+		// ips114_showint16(50, 4, aim_speed);
 
-		//          �����ʾ
-		ips114_showint16(0, 0, Left_Adc); // road_type.straight
-		ips114_showint16(0, 1, Left_Shu_Adc);
-		ips114_showint16(0, 2, Right_Shu_Adc);
-		ips114_showint16(0, 3, Right_Adc);
-		//			�����ʾ������ע�ͣ�
+
+		// ips114_showint16(0, 0, Left_Adc); // road_type.straight
+		// ips114_showint16(0, 1, Left_Shu_Adc);
+		// ips114_showint16(0, 2, Right_Shu_Adc);
+		// ips114_showint16(0, 3, Right_Adc);
 //		ips114_showuint16(100, 5, dl1a_distance_mm);
 //		ips114_showuint16(100, 1, );
 ////			赛道偏差显示
-		ips114_showfloat(0, 5, Current_Dir, 2, 1); // ��ʾ������   ������ʾ2λ   С����ʾ1λ
+		// ips114_showfloat(0, 5, Current_Dir, 2, 1);        
 
 //			电源电压显示	
 		ips114_showstr(140, 0, "Value:");

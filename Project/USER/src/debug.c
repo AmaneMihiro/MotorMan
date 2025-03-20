@@ -454,7 +454,7 @@ void Roundabout_debugshow(void)
   ips114_showuint8(0,3,Right_Adc);     //右横电感值
 	ips114_showint16(0,4,Left_Adc+Right_Adc);
 	ips114_showint16(0,5,Left_Adc+Right_Adc+Left_Shu_Adc+Right_Shu_Adc);
-//	ips114_showfloat(0,6,error,2,1);//显示浮点数   整数显示2位   小数显示1位	
+	ips114_showfloat(0,6,Current_Dir,2,1);//显示浮点数   整数显示2位   小数显示1位	
 
 
 	ips114_showint8(50,0,road_type.annulus);           //环岛标志位
@@ -469,7 +469,7 @@ void Roundabout_debugshow(void)
 	
 	ips114_showfloat(100,0,annulus_s,4,1);          				//过环岛三角区编码器积分距离
 	ips114_showfloat(100,1,annulus_s2,4,1);                  //进环打角陀螺仪积分角度值
-	ips114_showfloat(100,2,GORY_Z,4,1); 								//
+	ips114_showfloat(100,2,annulus_s3,4,1); 								//
 	ips114_showint16(100,3,annulus_t);                  //出环岛定时清0时间
 	
 	ips114_showint16(100,4,left_real_speed);

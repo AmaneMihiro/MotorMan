@@ -16,9 +16,10 @@ int8 NM = 4; // 电感个数
 // 环道参数
 uint16 annulus_s;
 uint16 annulus_s2; // 环岛积分距离2
+uint16 annulus_s3; // 环岛积分距离3
 uint16 annulus_t;
 uint16 annulus_z;
-uint16 annulus_s3 = 0; // 环岛积分距离3
+
 
 struct ROAD_TYPE road_type = {0};
 int16 obstacle_Current_Dir[] = {

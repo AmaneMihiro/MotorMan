@@ -1,178 +1,182 @@
 #include "park.h"
 #include "math.h"
 
-int8 flag_start = 0;	 // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É±ï¿½Ö¾Î»
-int8 flag_open_reed = 0; // ï¿½ò¿ª¸É»É¹ï¿½
-int8 reed_state = 0;	 // ï¿½É»É¹ï¿½×´Ì¬
-int8 flag_end = 0;		 // ï¿½ï¿½Ê¼Í£ï¿½ï¿½ï¿½ï¿½Ö¾Î»
-uint16 T_outku = 0;		 // ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ßºÍ´ï¿½Ç¶ï¿½Ê±
-uint16 J_outku = 0;
-uint16 T_inku_wait = 0;
-uint16 T_inku_J = 0;
-uint16 T_inku_S = 0;
-uint16 T_inku = 0;
+int8   flag_start           = 0;    //³ö¿âÍê³É±êÖ¾Î»
+int8   flag_open_reed       = 0;    //´ò¿ª¸É»É¹Ü
+int8   reed_state           = 0;    //¸É»É¹Ü×´Ì¬
+int8   flag_end             = 0;    //¿ªÊ¼Í£³µ±êÖ¾Î»
+uint16 T_outku              = 0;    //³ö¿âÖ±×ßºÍ´ò½Ç¶¨Ê±
+uint16 J_outku              = 0;
+uint16 T_inku_wait=0;
+uint16 T_inku_J=0;
+uint16 T_inku_S=0;
+uint16 T_inku=0;
 
-uint16 S_daoku = 0;	  //
-uint16 S_daoku_2 = 0; //
-uint16 S_daoku_3 = 0; //
+uint16 S_daoku              = 0;    //
+uint16 S_daoku_2              = 0;    //
+uint16 S_daoku_3              = 0;    //
 
 uint8 Library_selection = 1;
 
-/*****************************************ï¿½ï¿½ï¿½âº¯ï¿½ï¿½***************************************
-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  void Handle_Barn_Out(uint8 type)
-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  type-----1Îªï¿½ï¿½ï¿½ï¿½â£¬2Îªï¿½Ò³ï¿½ï¿½ï¿½
-Ëµï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½âº¯ï¿½ï¿½
+/*****************************************³ö¿âº¯Êý***************************************
+º¯Êý£º  void Handle_Barn_Out(uint8 type) 
+²ÎÊý£º  type-----1Îª×ó³ö¿â£¬2ÎªÓÒ³ö¿â
+ËµÃ÷£º  ³ö¿âº¯Êý
 
-*×¢ï¿½â£ºï¿½ï¿½ï¿½Ã´Ëºï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½Ð³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ßµï¿½Ê±ï¿½ï¿½Í´ï¿½ï¿½Ê±ï¿½ä¼°Õ¼ï¿½Õ±È°ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½Þ¸Äµï¿½ï¿½ï¿½
-ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½
+*×¢Òâ£ºµ÷ÓÃ´Ëº¯ÊýºóÖ´ÐÐ³ö¿â²Ù×÷£¬Ö±×ßµÄÊ±¼äºÍ´ò½ÇÊ±¼ä¼°Õ¼¿Õ±È°´Ðè×Ô¼ºÐÞ¸Äµ÷ÊÔ
+·µ»ØÖµ£ºÎÞ  
 ******************************************************************************************/
 void Handle_Barn_Out(uint8 type)
 {
-	// 1Îªï¿½ï¿½ï¿½ï¿½â£¬2Îªï¿½Ò³ï¿½ï¿½ï¿½
-	if (type == 1)
-	{
-		if (!flag_start)
-		{
-			// pwm_duty(PWMB_CH1_P74,STEER_MID);              //ï¿½ï¿½Cï¿½ï¿½ï¿½Ã£ï¿½
-			go_motor(1500, 1500);		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½Ñ¹ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Ó°ï¿½ì£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Øµï¿½
-			if (T_outku >= T_OUT_PARK1) // T_OUT_PARK1----ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ßµï¿½Ê±ï¿½ï¿½
+	//1Îª×ó³ö¿â£¬2ÎªÓÒ³ö¿â
+    if(type ==1)
+    {
+		 if(!flag_start)
+		 {
+			  //pwm_duty(PWMB_CH1_P74,STEER_MID);              //£¨C³µÓÃ£©
+			 go_motor(1500, 1500);        //¿ª»·µç³ØµçÑ¹¶Ô×ªËÙÓÒÓ°Ïì£¬¾¡Á¿ÓÃÂúµçµÄµç³Øµ÷
+			 if(T_outku >= T_OUT_PARK1)   //T_OUT_PARK1----³ö¿âÖ±×ßµÄÊ±¼ä
+			 {
+				 //pwm_duty(PWMB_CH1_P74,STEER_MID+STEER_LIM);	//£¨C³µÓÃ£©
+				 go_motor(0, 2000);         //×ó´ò½Ç
+				 //ips114_showuint16(0,1,J_outku);
+			 }
+			 if(T_outku > T_OUT_PARK2)  //T_OUT_PARK2----³ö¿â´ò½ÇÊ±¼ä£¨´ò½ÇÊ±¼äÎªT_OUT_PARK2-T_OUT_PARK1£©
+			 {
+				  flag_start = 1;
+				  T_outku=0;
+			 }		
+		  }	
+	  }
+		if(type ==2)
+    {
+			if(!flag_start)
 			{
-				// pwm_duty(PWMB_CH1_P74,STEER_MID+STEER_LIM);	//ï¿½ï¿½Cï¿½ï¿½ï¿½Ã£ï¿½
-				go_motor(0, 2000); // ï¿½ï¿½ï¿½ï¿½
-				// ips114_showuint16(0,1,J_outku);
+				//pwm_duty(PWMB_CH1_P74,STEER_MID);            //£¨C³µÓÃ£©
+			 go_motor(1500, 1500);
+			 if (T_outku >= T_OUT_PARK1) 
+			 {
+				 //pwm_duty(PWMB_CH1_P74,STEER_MID+STEER_LIM); //£¨C³µÓÃ£©
+				 go_motor(2000, 0);  //ÓÒ´ò½Ç
+			 }
+			 if(T_outku > T_OUT_PARK2)
+			 {
+				  flag_start = 1;
+				  T_outku=0;
+			 }															
 			}
-			if (T_outku > T_OUT_PARK2) // T_OUT_PARK2----ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£¨ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ÎªT_OUT_PARK2-T_OUT_PARK1ï¿½ï¿½
-			{
-				flag_start = 1;
-				T_outku = 0;
-			}
-		}
-	}
-	if (type == 2)
-	{
-		if (!flag_start)
-		{
-			// pwm_duty(PWMB_CH1_P74,STEER_MID);            //ï¿½ï¿½Cï¿½ï¿½ï¿½Ã£ï¿½
-			go_motor(1500, 1500);
-			if (T_outku >= T_OUT_PARK1)
-			{
-				// pwm_duty(PWMB_CH1_P74,STEER_MID+STEER_LIM); //ï¿½ï¿½Cï¿½ï¿½ï¿½Ã£ï¿½
-				go_motor(2000, 0); // ï¿½Ò´ï¿½ï¿½
-			}
-			if (T_outku > T_OUT_PARK2)
-			{
-				flag_start = 1;
-				T_outku = 0;
-			}
-		}
-	}
+    }
 }
-/*****************************************ï¿½É»É¹Ü¼ï¿½ï¿½Í£ï¿½ï¿½***************************************
-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  void Reed(void)
-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  void
-Ëµï¿½ï¿½ï¿½ï¿½  ï¿½É»É¹Ü¼ï¿½ï¿½Í£ï¿½ï¿½
+/*****************************************¸É»É¹Ü¼ì²âÍ£³µ***************************************
+º¯Êý£º  void Reed(void) 
+²ÎÊý£º  void
+ËµÃ÷£º  ¸É»É¹Ü¼ì²âÍ£³µ
 
-*×¢ï¿½â£º ï¿½É»É¹ï¿½Ê¹ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ÍºÍ°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½Í¨ï¿½ï¿½ï¿½ï¿½È¡IOï¿½Úµï¿½Æ½ï¿½ï¿½ï¿½ï¿½
-ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½void
+*×¢Òâ£º ¸É»É¹ÜÊ¹ÓÃ·½·¨¾ÍºÍ°´¼üÀàËÆ£¬Í¨¹ý¶ÁÈ¡IO¿ÚµçÆ½¼´¿É
+·µ»ØÖµ£ºvoid  
 *********************************************************************************************/
 void Reed(void)
 {
-	if (flag_start) // ï¿½ï¿½Ê¼Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É»É¹Ü¼ï¿½â£¬ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½
+	if(flag_start)//¿ªÊ¼Ê±²»¿ªÆô¸É»É¹Ü¼ì²â£¬·ÀÖ¹³ö¿âÊ±Îó²â
 	{
-		// ï¿½ß¹ï¿½Ò»ï¿½Î¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É»É¹Ü¼ï¿½ï¿½
-		if (Open_pack_time > START_T)
+		//×ß¹ýÒ»¶Î¾àÀëºó¿ªÆô¸É»É¹Ü¼ì²â
+		if(Open_pack_time > START_T)
 		{
 			flag_open_reed = 1;
-			Open_pack_time = 0;
+			Open_pack_time=0;
 		}
 	}
-	if (flag_open_reed == 0) // ï¿½É»É¹Ü¼ï¿½ï¿½ï¿½Ö¾Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¿ï¿½Ê¼ï¿½ï¿½ï¿½
+	if(flag_open_reed==0)             //¸É»É¹Ü¼ì²â±êÖ¾Î»³ÉÁ¢ºó²Å¿ªÊ¼¼ì²â
 	{
-		reed_state = Reed_Switch_Pin; // ï¿½É»É¹ï¿½×´Ì¬
-		if (reed_state == 0)
+		reed_state = Reed_Switch_Pin;//¸É»É¹Ü×´Ì¬
+		if(reed_state==0)
 		{
-			flag_end += 1; // Ê¶ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½Ö¾Î»ï¿½ï¿½ï¿½ï¿½
+			flag_end += 1;              //Ê¶±ðµ½Í£³µ±êÖ¾Î»¿ªÆô
 		}
-	}
+	 }
 }
-/*****************************************ï¿½ï¿½âº¯ï¿½ï¿½***************************************
-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  void Reed(void)
-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  void
-Ëµï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½âº¯ï¿½ï¿½
+/*****************************************Èë¿âº¯Êý***************************************
+º¯Êý£º  void Reed(void) 
+²ÎÊý£º  void
+ËµÃ÷£º  Èë¿âº¯Êý
 
 
-ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½void
+·µ»ØÖµ£ºvoid  
 *********************************************************************************************/
 void In_park(uint8 type)
 {
-	if (type == 1)
-	{
-		if (flag_end == 1)
+	if(type ==1)
+  {
+		if(flag_end==1)
 		{
-			go_motor(0, 0);
-			aim_speed = 0;
-			while (1)
+		  go_motor(0,0);
+			aim_speed =0;
+			while(1)
 			{
-				speed_measure(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-				S_daoku += fabs(real_speed) * 0.1;
-				go_motor(-1500, -1500);
-				ips114_showint16(0, 3, S_daoku);
+				speed_measure();      //±àÂëÆ÷²âÁ¿
+	      S_daoku += fabs(real_speed)*0.1;
+				go_motor(-1500,-1500);
+				ips114_showint16(0,3,S_daoku);
 				BUZZ_ON;
-				while (S_daoku > 450)
-				{
-					speed_measure(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-					go_motor(1500, 1500);
-					S_daoku_2 += fabs(real_speed) * 0.1;
-					ips114_showint16(0, 4, S_daoku_2);
-					while (S_daoku_2 > 100)
+			  while(S_daoku>450)
+			  {
+					speed_measure();      //±àÂëÆ÷²âÁ¿
+				  go_motor(1500,1500);
+					S_daoku_2+= fabs(real_speed)*0.1;
+					ips114_showint16(0,4,S_daoku_2);
+					while(S_daoku_2>100)
 					{
-						speed_measure(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-						go_motor(0, 2000);
-						S_daoku_3 += fabs(real_speed) * 0.1;
-						ips114_showint16(0, 5, S_daoku_3);
-						while (S_daoku_3 > 150)
-						{
-							go_motor(0, 0);
-							BUZZ_OFF;
+						speed_measure();      //±àÂëÆ÷²âÁ¿
+						go_motor(0,2000);
+						S_daoku_3+= fabs(real_speed)*0.1;
+						ips114_showint16(0,5,S_daoku_3);
+					  while(S_daoku_3>150)
+						{	
+						 go_motor(0,0);
+					   BUZZ_OFF;
 						}
 					}
-				}
+			  }
 			}
 		}
-	}
-	if (type == 2)
-	{
-		if (flag_end == 1)
+ }
+	if(type ==2)
+  {
+		if(flag_end==1)
 		{
-			go_motor(0, 0);
-			aim_speed = 0;
-			while (1)
+			 		  go_motor(0,0);
+			aim_speed =0;
+			while(1)
 			{
-				speed_measure(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-				S_daoku += fabs(real_speed) * 0.1;
-				go_motor(-1500, -1500);
-				ips114_showint16(0, 3, S_daoku);
+				speed_measure();      //±àÂëÆ÷²âÁ¿
+	      S_daoku += fabs(real_speed)*0.1;
+				go_motor(-1500,-1500);
+				ips114_showint16(0,3,S_daoku);
 				BUZZ_ON;
-				while (S_daoku > 450)
-				{
-					speed_measure(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-					go_motor(1500, 1500);
-					S_daoku_2 += fabs(real_speed) * 0.1;
-					ips114_showint16(0, 4, S_daoku_2);
-					while (S_daoku_2 > 100)
+			  while(S_daoku>450)
+			  {
+					speed_measure();      //±àÂëÆ÷²âÁ¿
+				  go_motor(1500,1500);
+					S_daoku_2+= fabs(real_speed)*0.1;
+					ips114_showint16(0,4,S_daoku_2);
+					while(S_daoku_2>100)
 					{
-						speed_measure(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-						go_motor(2000, 0);
-						S_daoku_3 += fabs(real_speed) * 0.1;
-						ips114_showint16(0, 5, S_daoku_3);
-						while (S_daoku_3 > 150)
-						{
-							go_motor(0, 0);
-							BUZZ_OFF;
+						speed_measure();      //±àÂëÆ÷²âÁ¿
+						go_motor(2000,0);
+						S_daoku_3+= fabs(real_speed)*0.1;
+						ips114_showint16(0,5,S_daoku_3);
+					  while(S_daoku_3>150)
+						{	
+						 go_motor(0,0);
+					   BUZZ_OFF;
 						}
 					}
-				}
+			  }
 			}
 		}
-	}
+ }
+	
 }
+
+
+	

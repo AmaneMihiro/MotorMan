@@ -1,115 +1,115 @@
 #include "PID.h"
 #include "math.h"
 /************************************************
-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IncPIDInit(PID *sptr)
-ï¿½ï¿½  ï¿½Ü£ï¿½PIDï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
-ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½
-ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½void
+º¯ÊýÃû£ºIncPIDInit(PID *sptr)
+¹¦  ÄÜ£ºPID²ÎÊý³õÊ¼»¯
+²Î  Êý£º
+·µ»ØÖµ£ºvoid
 ************************************************/
 void IncPIDInit(PID *sptr)
 {
-    sptr->SumError = 0;
-    sptr->LastError = 0;
-    sptr->LLastError = 0;
+    sptr->SumError=0;
+    sptr->LastError=0;
+    sptr->LLastError=0;
 
-    sptr->Kp = 0;
-    sptr->Ki = 0;
-    sptr->Kd = 0;
+    sptr->Kp=0;
+    sptr->Ki=0;
+    sptr->Kd=0;
 }
 
 /************************************************
-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½LocP_DCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
-ï¿½ï¿½  ï¿½Ü£ï¿½Î»ï¿½ï¿½Ê½PIDï¿½ï¿½ï¿½ï¿½
-ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½PID *sptr,int16 Setpoint,int16 Turepoint
-ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½float
+º¯ÊýÃû£ºLocP_DCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
+¹¦  ÄÜ£ºÎ»ÖÃÊ½PID¿ØÖÆ
+²Î  Êý£ºPID *sptr,int16 Setpoint,int16 Turepoint
+·µ»ØÖµ£ºfloat 
 ************************************************/
-int16 LocP_DCalc(PID *sptr, int16 Setpoint, int16 Turepoint)
+int16 LocP_DCalc(PID*sptr,int16 Setpoint,int16 Turepoint)
 {
-    int16 iError, dError;
+    int16 iError,dError;
     int16 output;
 
-    iError = Setpoint - Turepoint;                // Æ«ï¿½ï¿½
-    sptr->SumError += iError;                     // ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ü¶ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ò»ï¿½×²ï¿½Ö´ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Î¢ï¿½Ö£ï¿½ï¿½ï¿½ï¿½Û¼Ó´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
-    dError = (int16)(iError - (sptr->LastError)); // Î¢ï¿½ï¿½
-    sptr->LastError = iError;
-    if (sptr->SumError > 2000)
-        sptr->SumError = 2000; // ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½
-    if (sptr->SumError < -2000)
-        sptr->SumError = -2000;
-    output = (int16)(sptr->Kp * iError             // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-                     + (sptr->Ki * sptr->SumError) // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-                     + sptr->Kd * dError);         // Î¢ï¿½ï¿½ï¿½ï¿½
-    return (output);
+    iError=Setpoint-Turepoint;  //Æ«²î
+    sptr->SumError+=iError;            //»ý·Ö(²ÉÑùÊ±¼äºÜ¶ÌÊ±£¬ÓÃÒ»½×²î·Ö´úÌæÒ»½×Î¢·Ö£¬ÓÃÀÛ¼Ó´úÌæ»ý·Ö)
+    dError=(int16)(iError-(sptr->LastError));     //Î¢·Ö
+    sptr->LastError=iError;
+    if(sptr->SumError>2000) sptr->SumError=2000;   //»ý·ÖÏÞ·ù
+    if(sptr->SumError<-2000) sptr->SumError=-2000;
+    output=(int16)(sptr->Kp*iError  //±ÈÀýÏî
+          +(sptr->Ki*sptr->SumError)//»ý·ÖÏî
+          +sptr->Kd*dError);        //Î¢·ÖÏî
+    return(output);
 }
 /************************************************
-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IncPIDCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
-ï¿½ï¿½  ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Ê½PIDï¿½ï¿½ï¿½ï¿½
-ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½PID *sptr,int16 Setpoint,int16 Turepoint
-ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½int32 iIncpid
+º¯ÊýÃû£ºIncPIDCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
+¹¦  ÄÜ£ºÔöÁ¿Ê½PID¿ØÖÆ
+²Î  Êý£ºPID *sptr,int16 Setpoint,int16 Turepoint
+·µ»ØÖµ£ºint32 iIncpid
 ************************************************/
-int16 IncPIDCalc(PID *sptr, int16 Setpoint, int16 Turepoint)
+int16 IncPIDCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
 {
-    int16 iError, iIncpid;
-    // ï¿½ï¿½Ç°ï¿½ï¿½ï¿½
-    iError = Setpoint - Turepoint; // Æ«ï¿½ï¿½
-
-    iIncpid = sptr->Kp * (iError - sptr->LastError) + sptr->Ki * iError;
-    //    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î£¬ï¿½ï¿½ï¿½ï¿½ï¿½Â´Î¼ï¿½ï¿½ï¿½
-    //    if(iIncpid>=100)   //Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½
-    //		{
-    //			iIncpid=100;
-    //		}
-    //	  if(iIncpid<=-100)
-    //		{
-    //			iIncpid=-100;
-    //		}
-    sptr->LastError = iError;
-    return (iIncpid);
+    int16 iError,iIncpid;
+    //µ±Ç°Îó²î
+    iError=Setpoint-Turepoint;      //Æ«²î
+     
+    iIncpid=sptr->Kp*(iError-sptr->LastError)
+             +sptr->Ki*iError;
+//    //´¢´æÎó²î£¬ÓÃÓÚÏÂ´Î¼ÆËã
+//    if(iIncpid>=100)   //Ã¿´ÎÊä³öÔöÁ¿ÏÞ·ù
+//		{			
+//			iIncpid=100;
+//		}
+//	  if(iIncpid<=-100)  
+//		{			
+//			iIncpid=-100;
+//		}
+			sptr->LastError=iError;
+      return(iIncpid);
 }
 /************************************************
-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PlacePID_Control(PID *sptr, int16 Setpoint,int16 Turepiont)
-ï¿½ï¿½  ï¿½Ü£ï¿½ï¿½ï¿½Ì¬Î»ï¿½ï¿½Ê½PIDï¿½ï¿½ï¿½ï¿½ (Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½)
-ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½PID *sptr,int16 Setpoint,int16 Turepoint
-ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½int32 Actual
+º¯ÊýÃû£ºPlacePID_Control(PID *sptr, int16 Setpoint,int16 Turepiont)
+¹¦  ÄÜ£º¶¯Ì¬Î»ÖÃÊ½PID¿ØÖÆ (Ò»°ãÓÃÓÚ×ªÏò¿ØÖÆ)
+²Î  Êý£ºPID *sptr,int16 Setpoint,int16 Turepoint
+·µ»ØÖµ£ºint32 Actual
 ************************************************/
-int16 PlacePID_Control(PID *sptr, int16 Setpoint, int16 Turepiont)
+int16 PlacePID_Control(PID *sptr, int16 Setpoint,int16 Turepiont)
 {
-    int16 iError, Actual;
-    float KP; // ï¿½ï¿½Ì¬Pï¿½ï¿½×¢ï¿½ï¿½ï¿½ï¿½Kpï¿½ï¿½ï¿½ï¿½
+    int16 iError,Actual;
+    float KP;  //¶¯Ì¬P£¬×¢ÒâÓëKpÇø·Ö
 
     iError = Setpoint - Turepiont;
-    KP = (iError)*sptr->Ki + sptr->Kp; // ï¿½ï¿½Ì¬Pï¿½Ä¼ï¿½ï¿½ï¿½
-    // sptr->SumError+=iError;
+    KP = (iError)*sptr->Ki +sptr->Kp;    //¶¯Ì¬PµÄ¼ÆËã
+    //sptr->SumError+=iError;
 
-    Actual = KP * iError + sptr->Kd * (iError - sptr->LastError);
+    Actual =KP * iError
+            + sptr->Kd* (iError - sptr->LastError);
 
     sptr->LastError = iError;
     return Actual;
 }
 /************************************************
-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½LocP_DCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
-ï¿½ï¿½  ï¿½Ü£ï¿½Dï¿½ï¿½Î»ï¿½ï¿½Ê½PIDï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-ï¿½ï¿½  ï¿½ï¿½ï¿½ï¿½PID *sptr,int16 Setpoint,int16 Turepoint
-ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½float
+º¯ÊýÃû£ºLocP_DCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
+¹¦  ÄÜ£ºD³µÎ»ÖÃÊ½PID¿ØÖÆ£¬¼ÓÁËÍÓÂÝÒÇ
+²Î  Êý£ºPID *sptr,int16 Setpoint,int16 Turepoint
+·µ»ØÖµ£ºfloat 
 ************************************************/
-int16 PID_Turn_DT(PID *sptr, int16 Error, int16 Gory_z)
+int16 PID_Turn_DT(PID*sptr,int16 Error,int16 Gory_z)
 {
-    int16 iError, dError, gory_z;
-    float KP; // ï¿½ï¿½Ì¬Pï¿½ï¿½×¢ï¿½ï¿½ï¿½ï¿½Kpï¿½ï¿½ï¿½ï¿½
+    int16 iError,dError,gory_z;
+	  float KP;            //¶¯Ì¬P£¬×¢ÒâÓëKpÇø·Ö
     int16 output;
 
-    iError = Error; // Æ«ï¿½ï¿½
-    gory_z = Gory_z;
-
-    KP = (iError * iError) * sptr->Ki + sptr->Kp; // ï¿½ï¿½Ì¬Pï¿½Ä¼ï¿½ï¿½ï¿½
-
-    dError = (iError - (sptr->LastError)); // Î¢ï¿½ï¿½
-
-    output = KP * iError              // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ì¬p)
-             + sptr->Kd * dError      // Î¢ï¿½ï¿½ï¿½ï¿½
-             + sptr->K_gory * gory_z; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-
-    sptr->LastError = iError;
-
-    return (output);
+    iError=Error;  //Æ«²î
+	  gory_z=Gory_z;
+	
+	  KP = (iError*iError)*sptr->Ki + sptr->Kp;    //¶¯Ì¬PµÄ¼ÆËã
+	
+    dError=(iError-(sptr->LastError));     //Î¢·Ö
+	
+    output=KP*iError               //±ÈÀýÏî(¶¯Ì¬p)
+          +sptr->Kd*dError         //Î¢·ÖÏî
+	        +sptr->K_gory*gory_z;    //ÍÓÂÝÒÇÐÞÕý
+	
+	  sptr->LastError=iError;
+	
+    return(output);
 }

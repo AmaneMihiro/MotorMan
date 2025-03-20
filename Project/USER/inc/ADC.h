@@ -4,15 +4,15 @@
 #include "headfile.h"
 
 //环岛检测电感阈值
-#define IN_ANNULUS_H_LIMIT      80
+#define IN_ANNULUS_H_LIMIT       80
 //出环检测电感阈值  
-#define OUT_ANNULUS_S_LIMIT     30
+#define OUT_ANNULUS_S_LIMIT      250
 //环岛积分距离
-#define DISTANCE_ANNULUS_S        10    
+#define DISTANCE_ANNULUS_S        300    
 //环岛打角积分
 #define DISTANCE_ANNULUS_Z        0
 //环岛定时积分
-#define DISTANCE_ANNULUS_T        500  
+#define DISTANCE_ANNULUS_T        2500    
 //出界判断
 #define OUTSIDE                   1
 //避障模块设定距离(根据实际情况修改)

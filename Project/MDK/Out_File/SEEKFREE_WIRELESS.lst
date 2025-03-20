@@ -1,12 +1,12 @@
-C251 COMPILER V5.60.0,  SEEKFREE_WIRELESS                                                  07/03/25  00:48:39  PAGE 1   
+C251 COMPILER V5.60.0,  SEEKFREE_WIRELESS                                                  20/03/25  21:17:15  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE SEEKFREE_WIRELESS
 OBJECT MODULE PLACED IN .\Out_File\SEEKFREE_WIRELESS.obj
-COMPILER INVOKED BY: E:\keil5\C251\BIN\C251.EXE ..\..\Libraries\seekfree_peripheral\SEEKFREE_WIRELESS.c XSMALL INTR2 WAR
-                    -NINGLEVEL(3) BROWSE INCDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_periphe
-                    -ral;..\CODE;..\USER\inc;..\USER\src) DEBUG PRINT(.\Out_File\SEEKFREE_WIRELESS.lst) OBJECT(.\Out_File\SEEKFREE_WIRELESS.o
-                    -bj) 
+COMPILER INVOKED BY: D:\keil\C251\BIN\C251.EXE ..\..\Libraries\seekfree_peripheral\SEEKFREE_WIRELESS.c XSMALL INTR2 WARN
+                    -INGLEVEL(3) BROWSE INCDIR(..\..\Libraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripher
+                    -al;..\CODE;..\USER\inc;..\USER\src) DEBUG PRINT(.\Out_File\SEEKFREE_WIRELESS.lst) OBJECT(.\Out_File\SEEKFREE_WIRELESS.ob
+                    -j) 
 
 stmt  level    source
 
@@ -66,7 +66,7 @@ stmt  level    source
    50   1          //接到一个字节后单片机将会进入串口中断，通过在此处读取wireless_uart_data可以取走数据
    51   1                wireless_uart_data = WIRELESS_DATA_BUF;
    52   1          fifo_write_buffer(&wireless_uart_fifo, &wireless_uart_data, 1);       // 存入 FIFO
-C251 COMPILER V5.60.0,  SEEKFREE_WIRELESS                                                  07/03/25  00:48:39  PAGE 2   
+C251 COMPILER V5.60.0,  SEEKFREE_WIRELESS                                                  20/03/25  21:17:15  PAGE 2   
 
    53   1      }
    54          
@@ -134,7 +134,7 @@ stmt  level    source
              -------------
   111          //  @brief      无线转 串口模块初始化
   112          //  @param      NULL
-C251 COMPILER V5.60.0,  SEEKFREE_WIRELESS                                                  07/03/25  00:48:39  PAGE 3   
+C251 COMPILER V5.60.0,  SEEKFREE_WIRELESS                                                  20/03/25  21:17:15  PAGE 3   
 
   113          //  @return     void                                    
   114          //  @since      v1.0

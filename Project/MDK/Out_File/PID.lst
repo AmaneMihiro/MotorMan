@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  PID                                                                20/03/25  18:52:26  PAGE 1   
+C251 COMPILER V5.60.0,  PID                                                                20/03/25  22:07:03  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE PID
@@ -66,7 +66,7 @@ stmt  level    source
    54   1          iIncpid=sptr->Kp*(iError-sptr->LastError)
    55   1                   +sptr->Ki*iError;
    56   1      //    //储存误差，用于下次计算
-C251 COMPILER V5.60.0,  PID                                                                20/03/25  18:52:26  PAGE 2   
+C251 COMPILER V5.60.0,  PID                                                                20/03/25  22:07:03  PAGE 2   
 
    57   1      //    if(iIncpid>=100)   //每次输出增量限幅
    58   1      //    {     
@@ -135,7 +135,7 @@ Module Information          Static   Overlayable
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
-C251 COMPILER V5.60.0,  PID                                                                20/03/25  18:52:26  PAGE 3   
+C251 COMPILER V5.60.0,  PID                                                                20/03/25  22:07:03  PAGE 3   
 
   pdata size           =    ------     ------
   xdata size           =    ------     ------

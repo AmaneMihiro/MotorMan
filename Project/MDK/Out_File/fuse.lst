@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  fuse                                                               20/03/25  18:52:27  PAGE 1   
+C251 COMPILER V5.60.0,  fuse                                                               20/03/25  22:07:04  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE fuse
@@ -66,7 +66,7 @@ stmt  level    source
    55          //  R_SpeedPID.Kd=0;
    56          //
    57          //  TurnPID.Kp=87;       //转向环PID参数
-C251 COMPILER V5.60.0,  fuse                                                               20/03/25  18:52:27  PAGE 2   
+C251 COMPILER V5.60.0,  fuse                                                               20/03/25  22:07:04  PAGE 2   
 
    58          //  TurnPID.Ki=0; //0.08
    59          //  TurnPID.Kd=0.4;
@@ -134,7 +134,7 @@ stmt  level    source
   121   1        //    GORY_Z=icm20602_gyro_transition (icm20602_gyro_z);// 单位为°/s
   122   1        speed_measure(); // 编码器测量,待修正编码器计数值转速度的单位
   123   1        Get_deviation();       //电磁采集并获取赛道偏差
-C251 COMPILER V5.60.0,  fuse                                                               20/03/25  18:52:27  PAGE 3   
+C251 COMPILER V5.60.0,  fuse                                                               20/03/25  22:07:04  PAGE 3   
 
   124   1        //    timed_task();          //定时操作
   125   1        ADC_PWM = PID_Turn_DT(&TurnPID, Current_Dir, GORY_Z); // 动态位置式PID  left_real_speed
@@ -202,7 +202,7 @@ stmt  level    source
   183          函数名：int16 range_protect(int16 duty, int16 min, int16 max)
   184          功  能：限幅保护
   185          参  数：
-C251 COMPILER V5.60.0,  fuse                                                               20/03/25  18:52:27  PAGE 4   
+C251 COMPILER V5.60.0,  fuse                                                               20/03/25  22:07:04  PAGE 4   
 
   186          返回值：duty
   187          **************************************************************************************/

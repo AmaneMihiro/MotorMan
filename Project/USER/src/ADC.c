@@ -9,9 +9,14 @@ int16 AD_V[4];		// 储存电感采集值归一化值中间变量 （无需关心
 // int16 adc_max[4]={90,90,90,95}; //电感采值最大值 需要自己采集
 int16 adc_max[4] = {250, 200, 175, 250};				// 电感采值最大值 需要自己采集
 int16 adc_min[4] = {1, 1, 1, 1};						// 电感采值最小值  1,4,14,1
-uint8 Left_Adc, Right_Adc, Left_Shu_Adc, Right_Shu_Adc; // 电感值
+uint8 Left_Adc = 0;
+uint8 Right_Adc = 0;
+uint8 Left_Shu_Adc = 0;
+uint8 Right_Shu_Adc = 0;// 电感值
 float adc_valueM;
 int8 NM = 4; // 电感个数
+
+//编码器值转真实距离为1280转40cm
 
 // 环道参数
 uint16 annulus_s;
@@ -275,6 +280,7 @@ void Out_protect(void)
 	{
 		if (Left_Adc < OUTSIDE || Right_Adc < OUTSIDE)
 		{
+			testflag = 100;
 			while (1)
 			{
 				go_motor(-2000, -2000);
@@ -282,8 +288,6 @@ void Out_protect(void)
 				while (1)
 				{
 					go_motor(0, 0);
-					pwm_duty(PWMB_CH4_P77, 500);
-					pwm_duty(PWMB_CH3_P33, 500);
 				}
 			}
 		}
@@ -298,7 +302,7 @@ void Annulus_assist(void)
 	}
 	if (road_type.in_annulus_right == 1) // road_type.in_annulus_left==1 ||                 && road_type.on_annulus_left==0���⣩&& road_type.on_annulus_right==0
 	{
-		annulus_z += fabs(GORY_Z);
+		// annulus_z += fabs(GORY_Z);
 		annulus_s2 += fabs(last_speed) * 1; // ���ݻ��־���ͱ�������ֵ���ģ�0.1��
 	}
 	if (road_type.on_annulus_right == 1) // road_type.in_annulus_left==1 ||                 && road_type.on_annulus_left==0���⣩&& road_type.on_annulus_right==0
@@ -324,11 +328,16 @@ int8 testflag;
 ******************************************************************************************/
 void Annulus_handle(void)
 {
-	if ((Left_Adc + Right_Adc) > IN_ANNULUS_H_LIMIT && road_type.annulus == 0)
+	//右环岛特化检测
+	if ((Left_Adc + Right_Adc+Left_Shu_Adc+Right_Shu_Adc) > IN_ANNULUS_H_LIMIT 
+	&& (road_type.annulus == 0)
+	&&(Left_Adc>3*Right_Adc)
+	&&(Left_Adc>Left_Shu_Adc))
 	{
 		testflag = 1;
 		road_type.annulus = 1;
 		BUZZ_ON;
+
 	}
 	//	  //左环进环判断
 	//		if(annulus_s > DISTANCE_ANNULUS_S
@@ -345,13 +354,21 @@ void Annulus_handle(void)
 	//			testflag = 2;
 	//		}
 	// 右环进环判断
-	if (annulus_s > DISTANCE_ANNULUS_S
-		//		&& (Right_Shu_Adc > 20)
-		&& road_type.annulus == 1 && road_type.in_annulus_left == 0 && road_type.in_annulus_right == 0 && road_type.on_annulus_left == 0 && road_type.on_annulus_right == 0 && road_type.out_annulus == 0)
+	if ((annulus_s > DISTANCE_ANNULUS_S)
+	&& (road_type.annulus == 1) 
+	&& (road_type.in_annulus_left == 0) 
+	&& (road_type.in_annulus_right == 0) 
+	&& (road_type.on_annulus_left == 0) 
+	&& (road_type.on_annulus_right == 0) 
+	&& (road_type.out_annulus == 0))
 	{
 		testflag = 3;
 		road_type.in_annulus_right = 1;
 		BUZZ_ON;
+		// while(1)
+		// {
+		// 	go_motor(0,0);
+		// }
 	}
 	//		//左环上环处理
 	//		if(annulus_s2 > 40
@@ -380,7 +397,7 @@ void Annulus_handle(void)
 	if (((road_type.on_annulus_right == 1) 
 	|| (road_type.on_annulus_left == 1)) 
 	&& Left_Adc + Right_Adc > OUT_ANNULUS_S_LIMIT 
-	&& annulus_s3 > 200)
+	&& annulus_s3 > 3200)
 	{
 		testflag = 6;
 		road_type.on_annulus_right = 0;
@@ -404,19 +421,6 @@ void Annulus_handle(void)
 		//						go_motor(0,0);
 		//					}
 	}
-
-	// if (annulus_t > DISTANCE_ANNULUS_T)
-	// {
-	// 	road_type.annulus = 0;
-	// 	road_type.in_annulus_left = 0;
-	// 	road_type.in_annulus_right = 0;
-	// 	road_type.on_annulus_left = 0;
-	// 	road_type.on_annulus_right = 0;
-	// 	road_type.out_annulus = 0;
-	// 	annulus_t = 0;
-
-	// 	BUZZ_OFF;
-	// }
 }
 /*************************根据赛道类型选择不同的方向偏差计算方法*************************
 函数：  int16 Direction_error(void)
@@ -429,71 +433,26 @@ float Direction_error(void)
 {
 	float error = 0;
 
-	// ��������ƫ�����
 	if (road_type.annulus == 1)
 	{
-		// ׼���뻷������ƫ�����
-		//        if(road_type.annulus==1&&road_type.in_annulus_left==0 && road_type.in_annulus_right==0 && road_type.on_annulus_left==0 && road_type.on_annulus_right==0 && road_type.out_annulus==0)
-		//				{
-		//					error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;
-		//        //���󻷵�����ƫ�����
-		//        if(road_type.in_annulus_left ==1 && road_type.on_annulus_left==0 )
-		//				{
-		//				    //error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;
-		//					  error = -15;
-		//					road_type.annulus=0;//��������־λ����
-		//				}
-		// ���һ�������ƫ�����
+		error = Cha_x_bi_he(Left_Adc, Left_Shu_Adc*5, Right_Adc/3, Right_Shu_Adc) * 10;
 		if (road_type.in_annulus_right == 1 )
 		{
-			// error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;					 // error = 3;
-			error = 0.5; // �߼��෴��ѭ��
-
-			//				while(1)//��ǽڵ�2
-			//					{
-			//						go_motor(0,0);
-			//					}
+			error = 0.5; 
 		}
-		// �ڻ���ƫ��
 		if (road_type.on_annulus_right == 1)
 		{
-			//					error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;
 			error = (Cha_bi_he(Right_Adc, Left_Adc, 20));
-
-			//				while(1)//����ѭ���ڵ�4
-			//					{
-			//						go_motor(0,0);
-			//					}
 		}
-		// ����������ƫ�����
 		if (road_type.out_annulus == 1 && road_type.on_annulus_right == 1)
 		{
-			//				    error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*7;
 			error = -3;
-			//					error = Cha_bi_he(Right_Adc,Left_Adc,5);
-			road_type.annulus = 0; // ��������־λ����
-								   //				while(1)//�����ڵ�6
-								   //					{
-								   //						go_motor(0,0);
-								   //					}
+			road_type.annulus = 0;
 		}
 	}
-	// ��������
-
 	else
 	{
-
-		//		aim_speed = ZxjsWdjs(Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc),400)+100;
-		error = Cha_x_bi_he(Left_Adc, Left_Shu_Adc * 2, Right_Adc, Right_Shu_Adc * 2) * 20; // ��Ļ��ʾ������ƫ��ֵ
-
-		//			errorh=1.0f/exp(errors*errors);												//���ٺ���
-		//			aim_speedb=aim_speed*errorh;												//��̬�����ٶȣ�ֱ����˥�����˥����
-								//			if(Left_Adc==0&&Left_Shu_Adc==0&&Right_Adc==0&&Right_Shu_Adc==0)
-								//			{
-								//			aim_speedb = -10;															//���ߵ���
-								//			}
-
-		//	}
+		error = Cha_x_bi_he(Left_Adc, Left_Shu_Adc * 2, Right_Adc, Right_Shu_Adc * 2) * 20; 
 	}
 	return error;
 }

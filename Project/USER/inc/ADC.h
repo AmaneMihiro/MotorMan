@@ -8,7 +8,7 @@
 // 出环检测电感阈值
 #define OUT_ANNULUS_S_LIMIT 30
 // 环岛积分距离
-#define DISTANCE_ANNULUS_S 10
+#define DISTANCE_ANNULUS_S 600
 // 环岛打角积分
 #define DISTANCE_ANNULUS_Z 0
 // 环岛定时积分

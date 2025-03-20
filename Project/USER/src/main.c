@@ -1,5 +1,6 @@
 
 #include "headfile.h"
+
 void main()
 {
 	DisableGlobalIRQ();     																	//关闭总中断
@@ -45,7 +46,7 @@ void main()
 	while (1)
 	{
 
-
+	  
     Roundabout_debugshow();//环岛调试屏幕显示（调试环岛时打开）
 //		 Speed_debugshow();     //速度环调试屏幕显示（调试速度环时打开，速度环建议用上位机看波形）
 //		  datasend();          //上位机发送数据 
@@ -66,7 +67,7 @@ void main()
 		// ips114_showfloat(0, 5, Current_Dir, 2, 1);        
 
 //			电源电压显示	
-		ips114_showstr(140, 0, "Value:");
+//		ips114_showstr(140, 0, "Value:");
 		ips114_showfloat(190, 0, adc_valueM, 2, 2);
 	}
 }

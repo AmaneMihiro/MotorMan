@@ -1,60 +1,73 @@
 
 #include "headfile.h"
+
 void main()
 {
-	DisableGlobalIRQ();     																	//¹Ø±Õ×ÜÖĞ¶Ï
-	board_init();		       																		// ³õÊ¼»¯¼Ä´æÆ÷,ÎğÉ¾³ı´Ë¾ä´úÂë¡£
-	delay_ms(800);          																	//Èí¼şÉÔÎ¢ÑÓÊ±Ò»ÏÂ
+	DisableGlobalIRQ();     																	//å…³é—­æ€»ä¸­æ–­
+	board_init();		       																		// åˆå§‹åŒ–å¯„å­˜å™¨,å‹¿åˆ é™¤æ­¤å¥ä»£ç ã€‚
+	delay_ms(800);          																	//è½¯ä»¶ç¨å¾®å»¶æ—¶ä¸€ä¸‹
 
+	ips114_init();    																				//1.14å¯¸æ¶²æ™¶å±åˆå§‹åŒ–
 
-//	lcd_init();
-	ips114_init();    																				//1.14´çÒº¾§ÆÁ³õÊ¼»¯
-
-	ADC_int();      																					//ADC²É¼¯³õÊ¼»¯
-	ips114_showstr(0,0,(unsigned char*)"Electromagnetic-Car");//×Ö·û´®ÏÔÊ¾
+	ADC_int();      																					//ADCé‡‡é›†åˆå§‹åŒ–
+	ips114_showstr(0,0,(unsigned char*)"Electromagnetic-Car");//å­—ç¬¦ä¸²æ˜¾ç¤º
 	ips114_showstr(0,1,"interlize...");
 	delay_ms(500);                     
-//	init_Steer_PWM();                                          //¶æ»ú³õÊ¼»¯
-	init_PWM(MOTOR_MODE_SELECT);                               //³õÊ¼»¯DRVÇı¶¯·½Ê½£¨1-DRV/0-BTN£©
-	encoder_init();                                            //±àÂëÆ÷³õÊ¼»¯
+	init_PWM(MOTOR_MODE_SELECT);                               //åˆå§‹åŒ–DRVé©±åŠ¨æ–¹å¼ï¼ˆ1-DRV/0-BTNï¼‰
+	encoder_init();                                            //ç¼–ç å™¨åˆå§‹åŒ–
 	
-//	uart_init(UART_4, UART4_RX_P02, UART4_TX_P03, 115200, TIM_2);//³õÊ¼»¯ÎŞÏß´®¿Ú
-//	pwm_init(PWMB_CH4_P77, 50, 750);                         //³õÊ¼»¯ÎŞË¢µç»ú20%Õ¼¿Õ±È			
-//	pwm_init(PWMB_CH3_P33, 50, 750);                         //(1.2ms/20ms * 10000)£¨10000ÊÇPWMµÄÂúÕ¼¿Õ±ÈÊ±ºòµÄÖµ£© 10000ÎªPWM×î´óÖµ
-	delay_ms(500);                                          //ÑÓÊ±ÈÃÎŞË¢µç»úÏÈ×ªÆğÀ´
-	gpio_mode(Reed_Switch_Pin,GPI_IMPEDANCE);                  //Í£³µÊ¶±ğµÄ¸É»É¹ÜIO³õÊ¼»¯
-	PID_int();                                                 //PID²ÎÊı³õÊ¼»¯  
+//	uart_init(UART_4, UART4_RX_P02, UART4_TX_P03, 115200, TIM_2);//åˆå§‹åŒ–æ— çº¿ä¸²å£
+//	pwm_init(PWMB_CH4_P77, 50, 750);                         //åˆå§‹åŒ–æ— åˆ·ç”µæœº20%å ç©ºæ¯”			
+//	pwm_init(PWMB_CH3_P33, 50, 750);                         //(1.2ms/20ms * 10000)ï¼ˆ10000æ˜¯PWMçš„æ»¡å ç©ºæ¯”æ—¶å€™çš„å€¼ï¼‰ 10000ä¸ºPWMæœ€å¤§å€¼
+	delay_ms(500);                                          //å»¶æ—¶è®©æ— åˆ·ç”µæœºå…ˆè½¬èµ·æ¥
+	gpio_mode(Reed_Switch_Pin,GPI_IMPEDANCE);                  //åœè½¦è¯†åˆ«çš„å¹²ç°§ç®¡IOåˆå§‹åŒ–
+	PID_int();                                                 //PIDå‚æ•°åˆå§‹åŒ–  
 	ips114_showstr(0,2,"icm20602_int...");  
 	icm20602_init();
 	ips114_showstr(0,3,"icm20602_intok...");
 	delay_ms(500);
-	ips114_showstr(0,4,"dlla_int...");                       
-	delay_ms(500);
-  
-//	dl1a_init();                                               //±ÜÕÏÄ£¿é³õÊ¼»¯
-	ips114_showstr(0,5,"dlla_intok...");
-	pit_timer_ms(TIM_1, 5);                                    //³õÊ¼»¯¶¨Ê±Æ÷1×÷ÎªÖÜÆÚÖĞ¶Ï´¥·¢Æ÷£¬1MS½øÒ»´ÎÖĞ¶Ï
-	NVIC_SetPriority(TIMER1_IRQn, 3);	                         //ÉèÖÃ¶¨Ê±Æ÷1ÖĞ¶ÏÓÅÏÈ¼¶Îª 3 ¼¶£¨×î¸ß¼¶£©
-	gpio_mode(P6_7,GPO_PP);                                    //·äÃùÆ÷³õÊ¼»¯
-	BUZZ_DiDiDi(250);                                          //·äÃùÆ÷µÎÒ»Éù
+
+	pit_timer_ms(TIM_1, 5);                                    //åˆå§‹åŒ–å®šæ—¶å™¨1ä½œä¸ºå‘¨æœŸä¸­æ–­è§¦å‘å™¨ï¼Œ1MSè¿›ä¸€æ¬¡ä¸­æ–­
+	NVIC_SetPriority(TIMER1_IRQn, 3);	                         //è®¾ç½®å®šæ—¶å™¨1ä¸­æ–­ä¼˜å…ˆçº§ä¸º 3 çº§ï¼ˆæœ€é«˜çº§ï¼‰
+	gpio_mode(P6_7,GPO_PP);                                    //èœ‚é¸£å™¨åˆå§‹åŒ–
+	BUZZ_DiDiDi(250);                                          //èœ‚é¸£å™¨æ»´ä¸€å£°
 	
-	ips114_showstr(0,6,"intall_intok...");
+	ips114_showstr(0,4,"intall_intok...");
 	delay_ms(500);
 	ips114_clear(BLUE);
-	EnableGlobalIRQ(); //³õÊ¼»¯Íê±Ï£¬¿ªÆô×ÜÖĞ¶Ï
+//	EnableGlobalIRQ(); //åˆå§‹åŒ–å®Œæ¯•ï¼Œå¼€å¯æ€»ä¸­æ–­
 	
-	/****ÏÂÃæµÄ²âÊÔº¯ÊıÖ»ÊÇ²âÊÔÓÃ£¬²âÊÔ½áÊøÇë×¢ÊÍ¹Ø±Õ£¬Ò»´ÎÖ»ÔÊĞí¿ªÒ»¸ö²âÊÔº¯Êı£¡£¡******/
-//	Test_Servo_Hardware();//²âÊÔ¶æ»úµ÷Öµ
-//	Test_Motor_Hardware();//µ÷ÊÔµç»úÊ¹ÓÃ
-//	Test_Electric_Hardware();//²âÊÔµç´Åµç¸Ğ²É¼¯
-//	Test_Encoder();//²âÊÔ±àÂëÆ÷²É¼¯//         
+	/****ä¸‹é¢çš„æµ‹è¯•å‡½æ•°åªæ˜¯æµ‹è¯•ç”¨ï¼Œæµ‹è¯•ç»“æŸè¯·æ³¨é‡Šå…³é—­ï¼Œä¸€æ¬¡åªå…è®¸å¼€ä¸€ä¸ªæµ‹è¯•å‡½æ•°ï¼ï¼******/
+//	Test_Motor_Hardware();//è°ƒè¯•ç”µæœºä½¿ç”¨
+//	Test_Electric_Hardware();//æµ‹è¯•ç”µç£ç”µæ„Ÿé‡‡é›†
+//	Test_Encoder();//æµ‹è¯•ç¼–ç å™¨é‡‡é›†//         
 	/*********************************************************************************/
 
-  while(1)
-	{	
-		    Roundabout_debugshow();//»·µºµ÷ÊÔÆÁÄ»ÏÔÊ¾£¨µ÷ÊÔ»·µºÊ±´ò¿ª£©
+	while (1)
+	{
 
-//			µçÔ´µçÑ¹ÏÔÊ¾			
-			ips114_showfloat(190,0,adc_valueM,2,2);  			
-  }
+	  
+    Roundabout_debugshow();//ç¯å²›è°ƒè¯•å±å¹•æ˜¾ç¤ºï¼ˆè°ƒè¯•ç¯å²›æ—¶æ‰“å¼€ï¼‰
+//		 Speed_debugshow();     //é€Ÿåº¦ç¯è°ƒè¯•å±å¹•æ˜¾ç¤ºï¼ˆè°ƒè¯•é€Ÿåº¦ç¯æ—¶æ‰“å¼€ï¼Œé€Ÿåº¦ç¯å»ºè®®ç”¨ä¸Šä½æœºçœ‹æ³¢å½¢ï¼‰
+//		  datasend();          //ä¸Šä½æœºå‘é€æ•°æ® 
+
+		// ips114_showint16(50, 0, left_real_speed);
+		// ips114_showint16(50, 1, right_real_speed);
+		// ips114_showint16(50, 2, real_speed);
+		// ips114_showint16(50, 4, aim_speed);
+
+
+		// ips114_showint16(0, 0, Left_Adc); // road_type.straight
+		// ips114_showint16(0, 1, Left_Shu_Adc);
+		// ips114_showint16(0, 2, Right_Shu_Adc);
+		// ips114_showint16(0, 3, Right_Adc);
+//		ips114_showuint16(100, 5, dl1a_distance_mm);
+//		ips114_showuint16(100, 1, );
+////			èµ›é“åå·®æ˜¾ç¤º
+		// ips114_showfloat(0, 5, Current_Dir, 2, 1);        
+
+//			ç”µæºç”µå‹æ˜¾ç¤º	
+//		ips114_showstr(140, 0, "Value:");
+		ips114_showfloat(190, 0, adc_valueM, 2, 2);
+	}
 }

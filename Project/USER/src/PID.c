@@ -1,10 +1,10 @@
 #include "PID.h"
 #include "math.h"
 /************************************************
-º¯ÊýÃû£ºIncPIDInit(PID *sptr)
-¹¦  ÄÜ£ºPID²ÎÊý³õÊ¼»¯
-²Î  Êý£º
-·µ»ØÖµ£ºvoid
+å‡½æ•°åï¼šIncPIDInit(PID *sptr)
+åŠŸ  èƒ½ï¼šPIDå‚æ•°åˆå§‹åŒ–
+å‚  æ•°ï¼š
+è¿”å›žå€¼ï¼švoid
 ************************************************/
 void IncPIDInit(PID *sptr)
 {
@@ -18,43 +18,43 @@ void IncPIDInit(PID *sptr)
 }
 
 /************************************************
-º¯ÊýÃû£ºLocP_DCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
-¹¦  ÄÜ£ºÎ»ÖÃÊ½PID¿ØÖÆ
-²Î  Êý£ºPID *sptr,int16 Setpoint,int16 Turepoint
-·µ»ØÖµ£ºfloat 
+å‡½æ•°åï¼šLocP_DCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
+åŠŸ  èƒ½ï¼šä½ç½®å¼PIDæŽ§åˆ¶
+å‚  æ•°ï¼šPID *sptr,int16 Setpoint,int16 Turepoint
+è¿”å›žå€¼ï¼šfloat 
 ************************************************/
 int16 LocP_DCalc(PID*sptr,int16 Setpoint,int16 Turepoint)
 {
     int16 iError,dError;
     int16 output;
 
-    iError=Setpoint-Turepoint;  //Æ«²î
-    sptr->SumError+=iError;            //»ý·Ö(²ÉÑùÊ±¼äºÜ¶ÌÊ±£¬ÓÃÒ»½×²î·Ö´úÌæÒ»½×Î¢·Ö£¬ÓÃÀÛ¼Ó´úÌæ»ý·Ö)
-    dError=(int16)(iError-(sptr->LastError));     //Î¢·Ö
+    iError=Setpoint-Turepoint;  //åå·®
+    sptr->SumError+=iError;            //ç§¯åˆ†(é‡‡æ ·æ—¶é—´å¾ˆçŸ­æ—¶ï¼Œç”¨ä¸€é˜¶å·®åˆ†ä»£æ›¿ä¸€é˜¶å¾®åˆ†ï¼Œç”¨ç´¯åŠ ä»£æ›¿ç§¯åˆ†)
+    dError=(int16)(iError-(sptr->LastError));     //å¾®åˆ†
     sptr->LastError=iError;
-    if(sptr->SumError>2000) sptr->SumError=2000;   //»ý·ÖÏÞ·ù
+    if(sptr->SumError>2000) sptr->SumError=2000;   //ç§¯åˆ†é™å¹…
     if(sptr->SumError<-2000) sptr->SumError=-2000;
-    output=(int16)(sptr->Kp*iError  //±ÈÀýÏî
-          +(sptr->Ki*sptr->SumError)//»ý·ÖÏî
-          +sptr->Kd*dError);        //Î¢·ÖÏî
+    output=(int16)(sptr->Kp*iError  //æ¯”ä¾‹é¡¹
+          +(sptr->Ki*sptr->SumError)//ç§¯åˆ†é¡¹
+          +sptr->Kd*dError);        //å¾®åˆ†é¡¹
     return(output);
 }
 /************************************************
-º¯ÊýÃû£ºIncPIDCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
-¹¦  ÄÜ£ºÔöÁ¿Ê½PID¿ØÖÆ
-²Î  Êý£ºPID *sptr,int16 Setpoint,int16 Turepoint
-·µ»ØÖµ£ºint32 iIncpid
+å‡½æ•°åï¼šIncPIDCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
+åŠŸ  èƒ½ï¼šå¢žé‡å¼PIDæŽ§åˆ¶
+å‚  æ•°ï¼šPID *sptr,int16 Setpoint,int16 Turepoint
+è¿”å›žå€¼ï¼šint32 iIncpid
 ************************************************/
 int16 IncPIDCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
 {
     int16 iError,iIncpid;
-    //µ±Ç°Îó²î
-    iError=Setpoint-Turepoint;      //Æ«²î
+    //å½“å‰è¯¯å·®
+    iError=Setpoint-Turepoint;      //åå·®
      
     iIncpid=sptr->Kp*(iError-sptr->LastError)
              +sptr->Ki*iError;
-//    //´¢´æÎó²î£¬ÓÃÓÚÏÂ´Î¼ÆËã
-//    if(iIncpid>=100)   //Ã¿´ÎÊä³öÔöÁ¿ÏÞ·ù
+//    //å‚¨å­˜è¯¯å·®ï¼Œç”¨äºŽä¸‹æ¬¡è®¡ç®—
+//    if(iIncpid>=100)   //æ¯æ¬¡è¾“å‡ºå¢žé‡é™å¹…
 //		{			
 //			iIncpid=100;
 //		}
@@ -66,18 +66,18 @@ int16 IncPIDCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
       return(iIncpid);
 }
 /************************************************
-º¯ÊýÃû£ºPlacePID_Control(PID *sptr, int16 Setpoint,int16 Turepiont)
-¹¦  ÄÜ£º¶¯Ì¬Î»ÖÃÊ½PID¿ØÖÆ (Ò»°ãÓÃÓÚ×ªÏò¿ØÖÆ)
-²Î  Êý£ºPID *sptr,int16 Setpoint,int16 Turepoint
-·µ»ØÖµ£ºint32 Actual
+å‡½æ•°åï¼šPlacePID_Control(PID *sptr, int16 Setpoint,int16 Turepiont)
+åŠŸ  èƒ½ï¼šåŠ¨æ€ä½ç½®å¼PIDæŽ§åˆ¶ (ä¸€èˆ¬ç”¨äºŽè½¬å‘æŽ§åˆ¶)
+å‚  æ•°ï¼šPID *sptr,int16 Setpoint,int16 Turepoint
+è¿”å›žå€¼ï¼šint32 Actual
 ************************************************/
 int16 PlacePID_Control(PID *sptr, int16 Setpoint,int16 Turepiont)
 {
     int16 iError,Actual;
-    float KP;  //¶¯Ì¬P£¬×¢ÒâÓëKpÇø·Ö
+    float KP;  //åŠ¨æ€Pï¼Œæ³¨æ„ä¸ŽKpåŒºåˆ†
 
     iError = Setpoint - Turepiont;
-    KP = (iError)*sptr->Ki +sptr->Kp;    //¶¯Ì¬PµÄ¼ÆËã
+    KP = (iError)*sptr->Ki +sptr->Kp;    //åŠ¨æ€Pçš„è®¡ç®—
     //sptr->SumError+=iError;
 
     Actual =KP * iError
@@ -87,27 +87,27 @@ int16 PlacePID_Control(PID *sptr, int16 Setpoint,int16 Turepiont)
     return Actual;
 }
 /************************************************
-º¯ÊýÃû£ºLocP_DCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
-¹¦  ÄÜ£ºD³µÎ»ÖÃÊ½PID¿ØÖÆ£¬¼ÓÁËÍÓÂÝÒÇ
-²Î  Êý£ºPID *sptr,int16 Setpoint,int16 Turepoint
-·µ»ØÖµ£ºfloat 
+å‡½æ•°åï¼šLocP_DCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
+åŠŸ  èƒ½ï¼šDè½¦ä½ç½®å¼PIDæŽ§åˆ¶ï¼ŒåŠ äº†é™€èžºä»ª
+å‚  æ•°ï¼šPID *sptr,int16 Setpoint,int16 Turepoint
+è¿”å›žå€¼ï¼šfloat 
 ************************************************/
 int16 PID_Turn_DT(PID*sptr,int16 Error,int16 Gory_z)
 {
     int16 iError,dError,gory_z;
-	  float KP;            //¶¯Ì¬P£¬×¢ÒâÓëKpÇø·Ö
+	  float KP;            //åŠ¨æ€Pï¼Œæ³¨æ„ä¸ŽKpåŒºåˆ†
     int16 output;
 
-    iError=Error;  //Æ«²î
+    iError=Error;  //åå·®
 	  gory_z=Gory_z;
 	
-	  KP = (iError*iError)*sptr->Ki + sptr->Kp;    //¶¯Ì¬PµÄ¼ÆËã
+	  KP = (iError*iError)*sptr->Ki + sptr->Kp;    //åŠ¨æ€Pçš„è®¡ç®—
 	
-    dError=(iError-(sptr->LastError));     //Î¢·Ö
+    dError=(iError-(sptr->LastError));     //å¾®åˆ†
 	
-    output=KP*iError               //±ÈÀýÏî(¶¯Ì¬p)
-          +sptr->Kd*dError         //Î¢·ÖÏî
-	        +sptr->K_gory*gory_z;    //ÍÓÂÝÒÇÐÞÕý
+    output=KP*iError               //æ¯”ä¾‹é¡¹(åŠ¨æ€p)
+          +sptr->Kd*dError         //å¾®åˆ†é¡¹
+	        +sptr->K_gory*gory_z;    //é™€èžºä»ªä¿®æ­£
 	
 	  sptr->LastError=iError;
 	

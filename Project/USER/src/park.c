@@ -1,11 +1,11 @@
 #include "park.h"
 #include "math.h"
 
-int8   flag_start           = 0;    //³ö¿âÍê³É±êÖ¾Î»
-int8   flag_open_reed       = 0;    //´ò¿ª¸É»É¹Ü
-int8   reed_state           = 0;    //¸É»É¹Ü×´Ì¬
-int8   flag_end             = 0;    //¿ªÊ¼Í£³µ±êÖ¾Î»
-uint16 T_outku              = 0;    //³ö¿âÖ±×ßºÍ´ò½Ç¶¨Ê±
+int8   flag_start           = 0;    //å‡ºåº“å®Œæˆæ ‡å¿—ä½
+int8   flag_open_reed       = 0;    //æ‰“å¼€å¹²ç°§ç®¡
+int8   reed_state           = 0;    //å¹²ç°§ç®¡çŠ¶æ€
+int8   flag_end             = 0;    //å¼€å§‹åœè½¦æ ‡å¿—ä½
+uint16 T_outku              = 0;    //å‡ºåº“ç›´èµ°å’Œæ‰“è§’å®šæ—¶
 uint16 J_outku              = 0;
 uint16 T_inku_wait=0;
 uint16 T_inku_J=0;
@@ -18,30 +18,30 @@ uint16 S_daoku_3              = 0;    //
 
 uint8 Library_selection = 1;
 
-/*****************************************³ö¿âº¯Êı***************************************
-º¯Êı£º  void Handle_Barn_Out(uint8 type) 
-²ÎÊı£º  type-----1Îª×ó³ö¿â£¬2ÎªÓÒ³ö¿â
-ËµÃ÷£º  ³ö¿âº¯Êı
+/*****************************************å‡ºåº“å‡½æ•°***************************************
+å‡½æ•°ï¼š  void Handle_Barn_Out(uint8 type) 
+å‚æ•°ï¼š  type-----1ä¸ºå·¦å‡ºåº“ï¼Œ2ä¸ºå³å‡ºåº“
+è¯´æ˜ï¼š  å‡ºåº“å‡½æ•°
 
-*×¢Òâ£ºµ÷ÓÃ´Ëº¯ÊıºóÖ´ĞĞ³ö¿â²Ù×÷£¬Ö±×ßµÄÊ±¼äºÍ´ò½ÇÊ±¼ä¼°Õ¼¿Õ±È°´Ğè×Ô¼ºĞŞ¸Äµ÷ÊÔ
-·µ»ØÖµ£ºÎŞ  
+*æ³¨æ„ï¼šè°ƒç”¨æ­¤å‡½æ•°åæ‰§è¡Œå‡ºåº“æ“ä½œï¼Œç›´èµ°çš„æ—¶é—´å’Œæ‰“è§’æ—¶é—´åŠå ç©ºæ¯”æŒ‰éœ€è‡ªå·±ä¿®æ”¹è°ƒè¯•
+è¿”å›å€¼ï¼šæ—   
 ******************************************************************************************/
 void Handle_Barn_Out(uint8 type)
 {
-	//1Îª×ó³ö¿â£¬2ÎªÓÒ³ö¿â
+	//1ä¸ºå·¦å‡ºåº“ï¼Œ2ä¸ºå³å‡ºåº“
     if(type ==1)
     {
 		 if(!flag_start)
 		 {
-			  //pwm_duty(PWMB_CH1_P74,STEER_MID);              //£¨C³µÓÃ£©
-			 go_motor(1500, 1500);        //¿ª»·µç³ØµçÑ¹¶Ô×ªËÙÓÒÓ°Ïì£¬¾¡Á¿ÓÃÂúµçµÄµç³Øµ÷
-			 if(T_outku >= T_OUT_PARK1)   //T_OUT_PARK1----³ö¿âÖ±×ßµÄÊ±¼ä
+			  //pwm_duty(PWMB_CH1_P74,STEER_MID);              //ï¼ˆCè½¦ç”¨ï¼‰
+			 go_motor(1500, 1500);        //å¼€ç¯ç”µæ± ç”µå‹å¯¹è½¬é€Ÿå³å½±å“ï¼Œå°½é‡ç”¨æ»¡ç”µçš„ç”µæ± è°ƒ
+			 if(T_outku >= T_OUT_PARK1)   //T_OUT_PARK1----å‡ºåº“ç›´èµ°çš„æ—¶é—´
 			 {
-				 //pwm_duty(PWMB_CH1_P74,STEER_MID+STEER_LIM);	//£¨C³µÓÃ£©
-				 go_motor(0, 2000);         //×ó´ò½Ç
+				 //pwm_duty(PWMB_CH1_P74,STEER_MID+STEER_LIM);	//ï¼ˆCè½¦ç”¨ï¼‰
+				 go_motor(0, 2000);         //å·¦æ‰“è§’
 				 //ips114_showuint16(0,1,J_outku);
 			 }
-			 if(T_outku > T_OUT_PARK2)  //T_OUT_PARK2----³ö¿â´ò½ÇÊ±¼ä£¨´ò½ÇÊ±¼äÎªT_OUT_PARK2-T_OUT_PARK1£©
+			 if(T_outku > T_OUT_PARK2)  //T_OUT_PARK2----å‡ºåº“æ‰“è§’æ—¶é—´ï¼ˆæ‰“è§’æ—¶é—´ä¸ºT_OUT_PARK2-T_OUT_PARK1ï¼‰
 			 {
 				  flag_start = 1;
 				  T_outku=0;
@@ -52,12 +52,12 @@ void Handle_Barn_Out(uint8 type)
     {
 			if(!flag_start)
 			{
-				//pwm_duty(PWMB_CH1_P74,STEER_MID);            //£¨C³µÓÃ£©
+				//pwm_duty(PWMB_CH1_P74,STEER_MID);            //ï¼ˆCè½¦ç”¨ï¼‰
 			 go_motor(1500, 1500);
 			 if (T_outku >= T_OUT_PARK1) 
 			 {
-				 //pwm_duty(PWMB_CH1_P74,STEER_MID+STEER_LIM); //£¨C³µÓÃ£©
-				 go_motor(2000, 0);  //ÓÒ´ò½Ç
+				 //pwm_duty(PWMB_CH1_P74,STEER_MID+STEER_LIM); //ï¼ˆCè½¦ç”¨ï¼‰
+				 go_motor(2000, 0);  //å³æ‰“è§’
 			 }
 			 if(T_outku > T_OUT_PARK2)
 			 {
@@ -67,41 +67,41 @@ void Handle_Barn_Out(uint8 type)
 			}
     }
 }
-/*****************************************¸É»É¹Ü¼ì²âÍ£³µ***************************************
-º¯Êı£º  void Reed(void) 
-²ÎÊı£º  void
-ËµÃ÷£º  ¸É»É¹Ü¼ì²âÍ£³µ
+/*****************************************å¹²ç°§ç®¡æ£€æµ‹åœè½¦***************************************
+å‡½æ•°ï¼š  void Reed(void) 
+å‚æ•°ï¼š  void
+è¯´æ˜ï¼š  å¹²ç°§ç®¡æ£€æµ‹åœè½¦
 
-*×¢Òâ£º ¸É»É¹ÜÊ¹ÓÃ·½·¨¾ÍºÍ°´¼üÀàËÆ£¬Í¨¹ı¶ÁÈ¡IO¿ÚµçÆ½¼´¿É
-·µ»ØÖµ£ºvoid  
+*æ³¨æ„ï¼š å¹²ç°§ç®¡ä½¿ç”¨æ–¹æ³•å°±å’ŒæŒ‰é”®ç±»ä¼¼ï¼Œé€šè¿‡è¯»å–IOå£ç”µå¹³å³å¯
+è¿”å›å€¼ï¼švoid  
 *********************************************************************************************/
 void Reed(void)
 {
-	if(flag_start)//¿ªÊ¼Ê±²»¿ªÆô¸É»É¹Ü¼ì²â£¬·ÀÖ¹³ö¿âÊ±Îó²â
+	if(flag_start)//å¼€å§‹æ—¶ä¸å¼€å¯å¹²ç°§ç®¡æ£€æµ‹ï¼Œé˜²æ­¢å‡ºåº“æ—¶è¯¯æµ‹
 	{
-		//×ß¹ıÒ»¶Î¾àÀëºó¿ªÆô¸É»É¹Ü¼ì²â
+		//èµ°è¿‡ä¸€æ®µè·ç¦»åå¼€å¯å¹²ç°§ç®¡æ£€æµ‹
 		if(Open_pack_time > START_T)
 		{
 			flag_open_reed = 1;
 			Open_pack_time=0;
 		}
 	}
-	if(flag_open_reed==0)             //¸É»É¹Ü¼ì²â±êÖ¾Î»³ÉÁ¢ºó²Å¿ªÊ¼¼ì²â
+	if(flag_open_reed==0)             //å¹²ç°§ç®¡æ£€æµ‹æ ‡å¿—ä½æˆç«‹åæ‰å¼€å§‹æ£€æµ‹
 	{
-		reed_state = Reed_Switch_Pin;//¸É»É¹Ü×´Ì¬
+		reed_state = Reed_Switch_Pin;//å¹²ç°§ç®¡çŠ¶æ€
 		if(reed_state==0)
 		{
-			flag_end += 1;              //Ê¶±ğµ½Í£³µ±êÖ¾Î»¿ªÆô
+			flag_end += 1;              //è¯†åˆ«åˆ°åœè½¦æ ‡å¿—ä½å¼€å¯
 		}
 	 }
 }
-/*****************************************Èë¿âº¯Êı***************************************
-º¯Êı£º  void Reed(void) 
-²ÎÊı£º  void
-ËµÃ÷£º  Èë¿âº¯Êı
+/*****************************************å…¥åº“å‡½æ•°***************************************
+å‡½æ•°ï¼š  void Reed(void) 
+å‚æ•°ï¼š  void
+è¯´æ˜ï¼š  å…¥åº“å‡½æ•°
 
 
-·µ»ØÖµ£ºvoid  
+è¿”å›å€¼ï¼švoid  
 *********************************************************************************************/
 void In_park(uint8 type)
 {
@@ -113,20 +113,20 @@ void In_park(uint8 type)
 			aim_speed =0;
 			while(1)
 			{
-				speed_measure();      //±àÂëÆ÷²âÁ¿
+				speed_measure();      //ç¼–ç å™¨æµ‹é‡
 	      S_daoku += fabs(real_speed)*0.1;
 				go_motor(-1500,-1500);
 				ips114_showint16(0,3,S_daoku);
 				BUZZ_ON;
 			  while(S_daoku>450)
 			  {
-					speed_measure();      //±àÂëÆ÷²âÁ¿
+					speed_measure();      //ç¼–ç å™¨æµ‹é‡
 				  go_motor(1500,1500);
 					S_daoku_2+= fabs(real_speed)*0.1;
 					ips114_showint16(0,4,S_daoku_2);
 					while(S_daoku_2>100)
 					{
-						speed_measure();      //±àÂëÆ÷²âÁ¿
+						speed_measure();      //ç¼–ç å™¨æµ‹é‡
 						go_motor(0,2000);
 						S_daoku_3+= fabs(real_speed)*0.1;
 						ips114_showint16(0,5,S_daoku_3);
@@ -148,20 +148,20 @@ void In_park(uint8 type)
 			aim_speed =0;
 			while(1)
 			{
-				speed_measure();      //±àÂëÆ÷²âÁ¿
+				speed_measure();      //ç¼–ç å™¨æµ‹é‡
 	      S_daoku += fabs(real_speed)*0.1;
 				go_motor(-1500,-1500);
 				ips114_showint16(0,3,S_daoku);
 				BUZZ_ON;
 			  while(S_daoku>450)
 			  {
-					speed_measure();      //±àÂëÆ÷²âÁ¿
+					speed_measure();      //ç¼–ç å™¨æµ‹é‡
 				  go_motor(1500,1500);
 					S_daoku_2+= fabs(real_speed)*0.1;
 					ips114_showint16(0,4,S_daoku_2);
 					while(S_daoku_2>100)
 					{
-						speed_measure();      //±àÂëÆ÷²âÁ¿
+						speed_measure();      //ç¼–ç å™¨æµ‹é‡
 						go_motor(2000,0);
 						S_daoku_3+= fabs(real_speed)*0.1;
 						ips114_showint16(0,5,S_daoku_3);
@@ -177,6 +177,3 @@ void In_park(uint8 type)
  }
 	
 }
-
-
-	

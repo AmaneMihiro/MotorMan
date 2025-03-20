@@ -1,11 +1,11 @@
-C251 COMPILER V5.60.0,  fuse                                                               20/03/25  21:17:17  PAGE 1   
+C251 COMPILER V5.60.0,  fuse                                                               20/03/25  23:56:15  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE fuse
 OBJECT MODULE PLACED IN .\Out_File\fuse.obj
-COMPILER INVOKED BY: D:\keil\C251\BIN\C251.EXE ..\USER\src\fuse.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\Libra
-                    -ries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\src) D
-                    -EBUG PRINT(.\Out_File\fuse.lst) OBJECT(.\Out_File\fuse.obj) 
+COMPILER INVOKED BY: D:\Keil_v5\C251\BIN\C251.EXE ..\USER\src\fuse.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\Li
+                    -braries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\src
+                    -) DEBUG PRINT(.\Out_File\fuse.lst) TABS(2) OBJECT(.\Out_File\fuse.obj) 
 
 stmt  level    source
 
@@ -13,245 +13,215 @@ stmt  level    source
     2          #include "math.h"
     3          
     4          PID SpeedPID = {0};
-    5          PID L_SpeedPID ={0};
-    6          PID R_SpeedPID ={0};
-    7          PID TurnPID ={0};
-    8          
-    9          int16 GORY_Z=0;
-   10          /****************************PID²ÎÊı³õÊ¼»¯**************************************
-   11          º¯Êı£º  void PID_int(void)
-   12          ²ÎÊı£º  void
-   13          ËµÃ÷£º  PIDÃ¿¸ö»·²ÎÊı³õÊ¼»¯
-   14          ·µ»ØÖµ£ºvoid
-   15          ********************************************************************************/
-   16          void PID_int(void)
-   17          {
-   18   1      //      SpeedPID.Kp=50;     //0.6//ËÙ¶È»·PID²ÎÊı£¨D³µÓÃ£¬ËÙ¶È»·2ms£©18
-   19   1      //      SpeedPID.Ki=10 ;     //0.5                                  2.5
-   20   1      //      SpeedPID.Kd=0;
-   21   1              
-   22   1              L_SpeedPID.Kp=330; //4  //×óÂÖËÙ¶È»·PID²ÎÊı£¨ËÙ¶È»·20ms£©£¨6£©4.5
-   23   1              L_SpeedPID.Ki=0.7;//1
-   24   1              L_SpeedPID.Kd=0;
-   25   1              
-   26   1              R_SpeedPID.Kp=330;   //ÓÒËÙ¶È»·PID²ÎÊı£¨ËÙ¶È»·20ms£©£¨6£©5.5
-   27   1              R_SpeedPID.Ki=0.7;
-   28   1              R_SpeedPID.Kd=0;
-   29   1              
-   30   1      //      TurnPID.Kp=0;       //×ªÏò»·PID²ÎÊı 
-   31   1      //      TurnPID.Ki=0; //0.08
-   32   1      //      TurnPID.Kd=0;
-   33   1      //      
-   34   1      //      TurnPID.Kp=4;       //×ªÏò»·PID²ÎÊı 
-   35   1      //      TurnPID.Ki=0; //0.08
-   36   1      //      TurnPID.Kd=3;
-   37   1      //      
-   38   1              TurnPID.Kp=1.3;       //×ªÏò»·PID²ÎÊı 
-   39   1              TurnPID.Ki=0; //0.08
-   40   1              TurnPID.Kd=4;
-   41   1              
-   42   1              TurnPID.K_gory=0;
-   43   1      }
-   44          //void PID_int(void)
-   45          //{
-   46          //      SpeedPID.Kp=18;     //0.6//ËÙ¶È»·PID²ÎÊı£¨D³µÓÃ£¬ËÙ¶È»·2ms£©18
-   47          //      SpeedPID.Ki=3 ;     //0.5                                  2.5
-   48          //      SpeedPID.Kd=0;
-   49          //      
-   50          //      L_SpeedPID.Kp=4; //4  //×óÂÖËÙ¶È»·PID²ÎÊı£¨ËÙ¶È»·20ms£©£¨6£©4.5
-   51          //      L_SpeedPID.Ki=0.15;//1
-   52          //      L_SpeedPID.Kd=0;
-   53          //      
-   54          //      R_SpeedPID.Kp=4;   //ÓÒËÙ¶È»·PID²ÎÊı£¨ËÙ¶È»·20ms£©£¨6£©5.5
-   55          //      R_SpeedPID.Ki=0.15;
-   56          //      R_SpeedPID.Kd=0;
-   57          //      
-C251 COMPILER V5.60.0,  fuse                                                               20/03/25  21:17:17  PAGE 2   
+    5          PID L_SpeedPID = {0};
+    6          PID R_SpeedPID = {0};
+    7          PID TurnPID = {0};
+    8          float GORY_Z = 0;
+    9          /****************************PIDå‚æ•°åˆå§‹åŒ–**************************************
+   10          å‡½æ•°ï¼š  void PID_int(void)
+   11          å‚æ•°ï¼š  void
+   12          è¯´æ˜ï¼š  PIDæ¯ä¸ªç¯å‚æ•°åˆå§‹åŒ–
+   13          è¿”å›å€¼ï¼švoid
+   14          ********************************************************************************/
+   15          void PID_int(void)
+   16          {
+   17   1        //  SpeedPID.Kp=50;     //0.6//é€Ÿåº¦ç¯PIDå‚æ•°ï¼ˆDè½¦ç”¨ï¼Œé€Ÿåº¦ç¯2msï¼‰18
+   18   1        //  SpeedPID.Ki=10 ;     //0.5                                  2.5
+   19   1        //  SpeedPID.Kd=0;
+   20   1      
+   21   1        L_SpeedPID.Kp = 330; // 4  //å·¦è½®é€Ÿåº¦ç¯PIDå‚æ•°ï¼ˆé€Ÿåº¦ç¯20msï¼‰ï¼ˆ6ï¼‰4.5
+   22   1        L_SpeedPID.Ki = 0.7; // 1
+   23   1        L_SpeedPID.Kd = 0;
+   24   1      
+   25   1        R_SpeedPID.Kp = 330; // å³é€Ÿåº¦ç¯PIDå‚æ•°ï¼ˆé€Ÿåº¦ç¯20msï¼‰ï¼ˆ6ï¼‰5.5
+   26   1        R_SpeedPID.Ki = 0.7;
+   27   1        R_SpeedPID.Kd = 0;
+   28   1      
+   29   1        //  TurnPID.Kp=0;       //è½¬å‘ç¯PIDå‚æ•°
+   30   1        //  TurnPID.Ki=0; //0.08
+   31   1        //  TurnPID.Kd=0;
+   32   1        //
+   33   1        //  TurnPID.Kp=4;       //è½¬å‘ç¯PIDå‚æ•°
+   34   1        //  TurnPID.Ki=0; //0.08
+   35   1        //  TurnPID.Kd=3;
+   36   1        //
+   37   1        TurnPID.Kp = 1.3; // è½¬å‘ç¯PIDå‚æ•°
+   38   1        TurnPID.Ki = 0;   // 0.08
+   39   1        TurnPID.Kd = 0.6;
+   40   1      
+   41   1        TurnPID.K_gory = 0;
+   42   1      }
+   43          // void PID_int(void)
+   44          //{
+   45          //  SpeedPID.Kp=18;     //0.6//é€Ÿåº¦ç¯PIDå‚æ•°ï¼ˆDè½¦ç”¨ï¼Œé€Ÿåº¦ç¯2msï¼‰18
+   46          //  SpeedPID.Ki=3 ;     //0.5                                  2.5
+   47          //  SpeedPID.Kd=0;
+   48          //
+   49          //  L_SpeedPID.Kp=4; //4  //å·¦è½®é€Ÿåº¦ç¯PIDå‚æ•°ï¼ˆé€Ÿåº¦ç¯20msï¼‰ï¼ˆ6ï¼‰4.5
+   50          //  L_SpeedPID.Ki=0.15;//1
+   51          //  L_SpeedPID.Kd=0;
+   52          //
+   53          //  R_SpeedPID.Kp=4;   //å³é€Ÿåº¦ç¯PIDå‚æ•°ï¼ˆé€Ÿåº¦ç¯20msï¼‰ï¼ˆ6ï¼‰5.5
+   54          //  R_SpeedPID.Ki=0.15;
+   55          //  R_SpeedPID.Kd=0;
+   56          //
+   57          //  TurnPID.Kp=87;       //è½¬å‘ç¯PIDå‚æ•°
+C251 COMPILER V5.60.0,  fuse                                                               20/03/25  23:56:15  PAGE 2   
 
-   58          //      TurnPID.Kp=87;       //×ªÏò»·PID²ÎÊı 
-   59          //      TurnPID.Ki=0; //0.08
-   60          //      TurnPID.Kd=0.4;
-   61          //      TurnPID.K_gory=3.5;
-   62          //}
-   63          // ±ğÃû
-   64          static TASK_COMPONENTS TaskComps[] =
-   65          {
-   66              {0,  1,  1, Motor_output_control},         //½ÇËÙ¶ÈÄÚ»·ºÍD³µËÙ¶È»·2ms
-   67          //    {0, 2, 2, Trailing_control},           //×ªÏòÍâ»·10ms
-   68          //    {0, 4, 4, Speed_control},              //C³µËÙ¶È»·20ms
-   69          };
-   70          /**************************************************************************************
-   71          * FunctionName   : TaskRemarks()
-   72          * Description    : ÈÎÎñ±êÖ¾´¦Àí
-   73          * EntryParameter : None
-   74          * ReturnValue    : None
-   75          * attention      : ***ÔÚ¶¨Ê±Æ÷ÖĞ¶ÏÖĞµ÷ÓÃ´Ëº¯Êı¼´¿É***
-   76          **************************************************************************************/
-   77          void TaskRemarks(void)
-   78          {
-   79   1          uint8 i;
-   80   1          for (i=0; i<TASKS_MAX; i++)          // Öğ¸öÈÎÎñÊ±¼ä´¦Àí
-   81   1          {
-   82   2              if (TaskComps[i].Timer)          // Ê±¼ä²»Îª0
-   83   2              {
-   84   3                 TaskComps[i].Timer--;         // ¼õÈ¥Ò»¸ö½ÚÅÄ
-   85   3                 if (TaskComps[i].Timer == 0)       // Ê±¼ä¼õÍêÁË
-   86   3                 {
-   87   4                   TaskComps[i].Timer = TaskComps[i].ItvTime; // »Ö¸´¼ÆÊ±Æ÷Öµ£¬´ÓĞÂÏÂÒ»´Î
-   88   4                   TaskComps[i].Run = 1;           // ÈÎÎñ¿ÉÒÔÔËĞĞ
-   89   4                 }
-   90   3              }
-   91   2         }
-   92   1      }
-   93          
-   94          /**************************************************************************************
-   95          * FunctionName   : TaskProcess()
-   96          * Description    : ÈÎÎñ´¦Àí|ÅĞ¶ÏÊ²Ã´Ê±ºò¸ÃÖ´ĞĞÄÇÒ»¸öÈÎÎñ
-   97          * EntryParameter : None
-   98          * ReturnValue    : None
-   99          * * attention      : ***·ÅÔÚmianµÄwhile(1)¼´¿É***
-  100          **************************************************************************************/
-  101          void TaskProcess(void)
-  102          {
-  103   1          uint8 i; 
-  104   1                for (i=0; i<TASKS_MAX; i++)           // Öğ¸öÈÎÎñÊ±¼ä´¦Àí
-  105   1          {
-  106   2              if (TaskComps[i].Run)           // Ê±¼ä²»Îª0
-  107   2              {
-  108   3                  TaskComps[i].TaskHook();       // ÔËĞĞÈÎÎñ
-  109   3                  TaskComps[i].Run = 0;          // ±êÖ¾Çå0
-  110   3              }
-  111   2          }
-  112   1      }
-  113          /****************************½ÇËÙ¶ÈÄÚ»·ºÍD³µËÙ¶È»·**************************************
-  114          º¯Êı£º  void Motor_output_control()
-  115          ²ÎÊı£º  void
-  116          ËµÃ÷£º  ½ÇËÙ¶ÈÄÚ»·ºÍD³µËÙ¶È»·(D³µ/ÈıÂÖ³µ²Å»áÓÃ)
-  117          ·µ»ØÖµ£ºvoid
-  118          ***************************************************************************************/
-  119          void Motor_output_control()
-  120          {
-  121   1      //      P52=0;
-  122   1              
-  123   1                //imu660ra_get_gyro();   //»ñÈ¡660ÍÓÂİÒÇ½ÇËÙ¶ÈÖµ
-C251 COMPILER V5.60.0,  fuse                                                               20/03/25  21:17:17  PAGE 3   
+   58          //  TurnPID.Ki=0; //0.08
+   59          //  TurnPID.Kd=0.4;
+   60          //  TurnPID.K_gory=3.5;
+   61          // }
+   62          //  åˆ«å
+   63          static TASK_COMPONENTS TaskComps[] =
+   64            {
+   65              {0, 1, 1, Motor_output_control}, // è§’é€Ÿåº¦å†…ç¯å’ŒDè½¦é€Ÿåº¦ç¯2ms
+   66                               //    {0, 2, 2, Trailing_control},           //è½¬å‘å¤–ç¯10ms
+   67                               //    {0, 4, 4, Speed_control},              //Cè½¦é€Ÿåº¦ç¯20ms
+   68          };
+   69          /**************************************************************************************
+   70           * FunctionName   : TaskRemarks()
+   71           * Description    : ä»»åŠ¡æ ‡å¿—å¤„ç†
+   72           * EntryParameter : None
+   73           * ReturnValue    : None
+   74           * attention      : ***åœ¨å®šæ—¶å™¨ä¸­æ–­ä¸­è°ƒç”¨æ­¤å‡½æ•°å³å¯***
+   75           **************************************************************************************/
+   76          void TaskRemarks(void)
+   77          {
+   78   1        uint8 i;
+   79   1        for (i = 0; i < TASKS_MAX; i++) // é€ä¸ªä»»åŠ¡æ—¶é—´å¤„ç†
+   80   1        {
+   81   2          if (TaskComps[i].Timer) // æ—¶é—´ä¸ä¸º0
+   82   2          {
+   83   3            TaskComps[i].Timer--;    // å‡å»ä¸€ä¸ªèŠ‚æ‹
+   84   3            if (TaskComps[i].Timer == 0) // æ—¶é—´å‡å®Œäº†
+   85   3            {
+   86   4              TaskComps[i].Timer = TaskComps[i].ItvTime; // æ¢å¤è®¡æ—¶å™¨å€¼ï¼Œä»æ–°ä¸‹ä¸€æ¬¡
+   87   4              TaskComps[i].Run = 1;            // ä»»åŠ¡å¯ä»¥è¿è¡Œ
+   88   4            }
+   89   3          }
+   90   2        }
+   91   1      }
+   92          
+   93          /**************************************************************************************
+   94           * FunctionName   : TaskProcess()
+   95           * Description    : ä»»åŠ¡å¤„ç†|åˆ¤æ–­ä»€ä¹ˆæ—¶å€™è¯¥æ‰§è¡Œé‚£ä¸€ä¸ªä»»åŠ¡
+   96           * EntryParameter : None
+   97           * ReturnValue    : None
+   98           * * attention      : ***æ”¾åœ¨miançš„while(1)å³å¯***
+   99           **************************************************************************************/
+  100          void TaskProcess(void)
+  101          {
+  102   1        uint8 i;
+  103   1        for (i = 0; i < TASKS_MAX; i++) // é€ä¸ªä»»åŠ¡æ—¶é—´å¤„ç†
+  104   1        {
+  105   2          if (TaskComps[i].Run) // æ—¶é—´ä¸ä¸º0
+  106   2          {
+  107   3            TaskComps[i].TaskHook(); // è¿è¡Œä»»åŠ¡
+  108   3            TaskComps[i].Run = 0;  // æ ‡å¿—æ¸…0
+  109   3          }
+  110   2        }
+  111   1      }
+  112          /****************************è§’é€Ÿåº¦å†…ç¯å’ŒDè½¦é€Ÿåº¦ç¯**************************************
+  113          å‡½æ•°ï¼š  void Motor_output_control()
+  114          å‚æ•°ï¼š  void
+  115          è¯´æ˜ï¼š  è§’é€Ÿåº¦å†…ç¯å’ŒDè½¦é€Ÿåº¦ç¯(Dè½¦/ä¸‰è½®è½¦æ‰ä¼šç”¨)
+  116          è¿”å›å€¼ï¼švoid
+  117          ***************************************************************************************/
+  118          void Motor_output_control()
+  119          {
+  120   1        //    icm20602_get_gyro();
+  121   1        //    GORY_Z=icm20602_gyro_transition (icm20602_gyro_z);// å•ä½ä¸ºÂ°/s
+  122   1        speed_measure(); // ç¼–ç å™¨æµ‹é‡,å¾…ä¿®æ­£ç¼–ç å™¨è®¡æ•°å€¼è½¬é€Ÿåº¦çš„å•ä½
+  123   1        Get_deviation();       //ç”µç£é‡‡é›†å¹¶è·å–èµ›é“åå·®
+C251 COMPILER V5.60.0,  fuse                                                               20/03/25  23:56:15  PAGE 3   
 
-  124   1                icm20602_get_gyro();  
-  125   1                GORY_Z=icm20602_gyro_transition (icm20602_gyro_z);
-  126   1                //GORY_Z= imu660ra_gyro_transition(imu660ra_gyro_z);         // µ¥Î»Îª¡ã/s
-  127   1                speed_measure();       //±àÂëÆ÷²âÁ¿
-  128   1                Get_deviation();       //µç´Å²É¼¯²¢»ñÈ¡ÈüµÀÆ«²î
-  129   1      
-  130   1              
-  131   1      //        timed_task();          //¶¨Ê±²Ù×÷
-  132   1              
-  133   1                ADC_PWM = PID_Turn_DT(&TurnPID,Current_Dir,GORY_Z);//¶¯Ì¬Î»ÖÃÊ½PID  left_real_speed
-  134   1      //        ADC_PWM=range_protect(ADC_PWM, -500, 500);
-  135   1      //        Speed_pwm_all  += IncPIDCalc(&SpeedPID,aim_speed,real_speed); 
-  136   1      //    Real_Speed_left+=fabs(real_speed)*0.1;
-  137   1      //        if(Real_Speed_left>800)
-  138   1      //              {
-  139   1      //                      aim_speed=0;
-  140   1      //                      Out_protect();         //³ö½ç±£»¤
-  141   1      //              }
-  142   1               
-  143   1      
-  144   1                Speed_pwm_left  += IncPIDCalc(&L_SpeedPID,aim_speedb+ADC_PWM,left_real_speed);  
-  145   1                Speed_pwm_right += IncPIDCalc(&R_SpeedPID,aim_speedb-ADC_PWM,right_real_speed); 
-  146   1                
-  147   1      //        Speed_pwm_left=range_protect(Speed_pwm_left, -aim_speed, 2*aim_speed);//¼õËÙÏŞ·ù£¨·ÀÖ¹ÂÖ×Ó·´×ªÌ«´óµ¼
-             -ÖÂ¼ÙÆÚÍûËÙ¶È£©
-  148   1      //        Speed_pwm_right=range_protect(Speed_pwm_right, -aim_speed,2*aim_speed);//¼õËÙÏŞ·ù£¨·ÀÖ¹ÂÖ×Ó·´×ªÌ«´óµ
-             -¼ÖÂ¼ÙÆÚÍûËÙ¶È£©
-  149   1      //        if(Speed_pwm_left<-aim_speed)
-  150   1      //        {
-  151   1      //        Speed_pwm_left=-aim_speed;
-  152   1      //        }
-  153   1      //        if(Speed_pwm_right<-aim_speed)
-  154   1      //        {
-  155   1      //        Speed_pwm_right=-aim_speed;
-  156   1      //        }
-  157   1      //        All_PWM_left  = Speed_pwm_all+ADC_PWM; 
-  158   1      //        All_PWM_right = Speed_pwm_all-ADC_PWM;
-  159   1                
-  160   1                go_motor(Speed_pwm_left,Speed_pwm_right);                         //¶¯Á¦Êä³ö
-  161   1      
-  162   1      //        pwm_duty(PWMB_CH4_P77, 800);
-  163   1      //              pwm_duty(PWMB_CH3_P33, 800);
-  164   1                 //go_motor(2000,2000);  
-  165   1      //              Out_protect();         //³ö½ç±£»¤
-  166   1      //P52=1;
-  167   1      }
-  168          /****************************×ªÏò»·£¨D³µ×ªÏòÍâ»·£©**************************************
-  169          º¯Êı£º  void Trailing_control()
-  170          ²ÎÊı£º  void
-  171          ËµÃ÷£º  ×ªÏò»·£¨D³µ×ªÏòÍâ»·£©£¨C³µ×ªÏò»·£©
-  172          ·µ»ØÖµ£ºvoid
-  173          ***************************************************************************************/
-  174          void Trailing_control()
-  175          {
-  176   1      //      Get_deviation();  //µç´Å²É¼¯²¢»ñÈ¡ÈüµÀÆ«²î
-  177   1      //      speed_measure();       //±àÂëÆ÷²âÁ¿
-  178   1      //      
-  179   1      //      ADC_PWM = LocP_DCalc(&TurnPID,Current_Dir,0);//Î»ÖÃÊ½PD¿ØÖÆ×ªÏò
-  180   1      ////    Out_protect();         //³ö½ç±£»¤
-  181   1      //      ADC_PWM = PlacePID_Control(&TurnPID,Current_Dir,0);//¶¯Ì¬Î»ÖÃÊ½PID¿ØÖÆ 
-  182   1      //      ADC_PWM = PlacePID_Control(&TurnPID,Current_Dir,0);//¶¯Ì¬Î»ÖÃÊ½PID¿ØÖÆ (ÓÃÓÚ×ªÏò¿ØÖÆ)
-  183   1                //Steering_Control_Out(ADC_PWM);//(C³µÓÃ¿ØÖÆ¶æ»ú×ªÏò)
-  184   1      }
-  185          /****************************ËÙ¶È»·£¨C³µÓÃ£©**************************************
-  186          º¯Êı£º  void Speed_control()
-  187          ²ÎÊı£º  void
-C251 COMPILER V5.60.0,  fuse                                                               20/03/25  21:17:17  PAGE 4   
+  124   1        //    timed_task();          //å®šæ—¶æ“ä½œ
+  125   1        ADC_PWM = PID_Turn_DT(&TurnPID, Current_Dir, GORY_Z); // åŠ¨æ€ä½ç½®å¼PID  left_real_speed
+  126   1      
+  127   1        // å¾…ä¿®æ”¹å·®é€Ÿå‚æ•°
+  128   1        Speed_pwm_left += IncPIDCalc(&L_SpeedPID, aim_speed + ADC_PWM, left_real_speed);
+  129   1        Speed_pwm_right += IncPIDCalc(&R_SpeedPID, aim_speed - ADC_PWM, right_real_speed);
+  130   1      
+  131   1        //    Speed_pwm_left =range_protect(Speed_pwm_left,  left_real_speed,  -aim_speed, 2*aim_speed);//å‡é€Ÿé
+             -™å¹…ï¼ˆé˜²æ­¢è½®å­åè½¬å¤ªå¤§å¯¼è‡´å‡æœŸæœ›é€Ÿåº¦ï¼‰
+  132   1        //    Speed_pwm_right=range_protect(Speed_pwm_right, right_real_speed, -aim_speed, 2*aim_speed);//å‡é€Ÿé
+             -™å¹…ï¼ˆé˜²æ­¢è½®å­åè½¬å¤ªå¤§å¯¼è‡´å‡æœŸæœ›é€Ÿåº¦ï¼‰
+  133   1        //    if(Speed_pwm_left<-aim_speed)
+  134   1        //    {
+  135   1        //    Speed_pwm_left=-aim_speed;
+  136   1        //    }
+  137   1        //    if(Speed_pwm_right<-aim_speed)
+  138   1        //    {
+  139   1        //    Speed_pwm_right=-aim_speed;
+  140   1        //    }
+  141   1        //    All_PWM_left  = Speed_pwm_all+ADC_PWM;
+  142   1        //    All_PWM_right = Speed_pwm_all-ADC_PWM;
+  143   1        go_motor(Speed_pwm_left, Speed_pwm_right); // åŠ¨åŠ›è¾“å‡º
+  144   1        Out_protect();                 // å‡ºç•Œä¿æŠ¤
+  145   1        // P52=1;
+  146   1      }
+  147          /****************************è½¬å‘ç¯ï¼ˆDè½¦è½¬å‘å¤–ç¯ï¼‰**************************************
+  148          å‡½æ•°ï¼š  void Trailing_control()
+  149          å‚æ•°ï¼š  void
+  150          è¯´æ˜ï¼š  è½¬å‘ç¯ï¼ˆDè½¦è½¬å‘å¤–ç¯ï¼‰ï¼ˆCè½¦è½¬å‘ç¯ï¼‰
+  151          è¿”å›å€¼ï¼švoid
+  152          ***************************************************************************************/
+  153          void Trailing_control()
+  154          {
+  155   1        //  Get_deviation();  //ç”µç£é‡‡é›†å¹¶è·å–èµ›é“åå·®
+  156   1        //  speed_measure();       //ç¼–ç å™¨æµ‹é‡
+  157   1        //
+  158   1        //  ADC_PWM = LocP_DCalc(&TurnPID,Current_Dir,0);//ä½ç½®å¼PDæ§åˆ¶è½¬å‘
+  159   1        ////  Out_protect();         //å‡ºç•Œä¿æŠ¤
+  160   1        //  ADC_PWM = PlacePID_Control(&TurnPID,Current_Dir,0);//åŠ¨æ€ä½ç½®å¼PIDæ§åˆ¶
+  161   1        //  ADC_PWM = PlacePID_Control(&TurnPID,Current_Dir,0);//åŠ¨æ€ä½ç½®å¼PIDæ§åˆ¶ (ç”¨äºè½¬å‘æ§åˆ¶)
+  162   1        // Steering_Control_Out(ADC_PWM);//(Cè½¦ç”¨æ§åˆ¶èˆµæœºè½¬å‘)
+  163   1      }
+  164          /****************************é€Ÿåº¦ç¯ï¼ˆCè½¦ç”¨ï¼‰**************************************
+  165          å‡½æ•°ï¼š  void Speed_control()
+  166          å‚æ•°ï¼š  void
+  167          è¯´æ˜ï¼š  é€Ÿåº¦ç¯ï¼ˆCè½¦ç”¨ï¼‰
+  168          ***************************************************************************************/
+  169          void Speed_control()
+  170          {
+  171   1        // timed_task();           //å‡ºåº“å®šæ—¶æ‰“å¼€å¹²ç°§ç®¡ç­‰
+  172   1        // speed_measure();      //ç¼–ç å™¨æµ‹é‡
+  173   1        // aim_speed = 450;      //ç›®æ ‡é€Ÿåº¦
+  174   1      
+  175   1        // Speed_pwm_all = LocP_DCalc(&SpeedPID,aim_speed ,real_speed); //Dè½¦é€Ÿåº¦ç¯ï¼ˆä½ç½®å¼ï¼‰
+  176   1        // Speed_pwm_all += IncPIDCalc(&SpeedPID,aim_speed,real_speed);//Dè½¦é€Ÿåº¦ç¯ï¼ˆå¢é‡å¼ï¼‰
+  177   1      
+  178   1        // Speed_pwm_left += IncPIDCalc(&L_SpeedPID,aim_speed , left_speed); //Cè½¦å·¦è½®é€Ÿåº¦ç¯ï¼ˆä½ç½®å¼ï¼
+             -‰
+  179   1        // Speed_pwm_right += IncPIDCalc(&R_SpeedPID, aim_speed, right_speed); //Cè½¦å³è½®é€Ÿåº¦ç¯ï¼ˆä½ç½®å¼
+             -ï¼‰
+  180   1        // go_motor(Speed_pwm_left,Speed_pwm_right);                         //åŠ¨åŠ›è¾“å‡º
+  181   1      }
+  182          /***************************************************************************************
+  183          å‡½æ•°åï¼šint16 range_protect(int16 duty, int16 min, int16 max)
+  184          åŠŸ  èƒ½ï¼šé™å¹…ä¿æŠ¤
+  185          å‚  æ•°ï¼š
+C251 COMPILER V5.60.0,  fuse                                                               20/03/25  23:56:15  PAGE 4   
 
-  188          ËµÃ÷£º  ËÙ¶È»·£¨C³µÓÃ£©
-  189          ***************************************************************************************/
-  190          void Speed_control()
-  191          {
-  192   1                //timed_task();           //³ö¿â¶¨Ê±´ò¿ª¸É»É¹ÜµÈ
-  193   1                //speed_measure();      //±àÂëÆ÷²âÁ¿
-  194   1               // aim_speed = 450;      //Ä¿±êËÙ¶È
-  195   1              
-  196   1                //Speed_pwm_all = LocP_DCalc(&SpeedPID,aim_speed ,real_speed); //D³µËÙ¶È»·£¨Î»ÖÃÊ½£©
-  197   1                //Speed_pwm_all += IncPIDCalc(&SpeedPID,aim_speed,real_speed);//D³µËÙ¶È»·£¨ÔöÁ¿Ê½£©
-  198   1                
-  199   1          //Speed_pwm_left += IncPIDCalc(&L_SpeedPID,aim_speed , left_speed); //C³µ×óÂÖËÙ¶È»·£¨Î»ÖÃÊ½£©
-  200   1                //Speed_pwm_right += IncPIDCalc(&R_SpeedPID, aim_speed, right_speed); //C³µÓÒÂÖËÙ¶È»·£¨Î»ÖÃÊ½£©
-  201   1                //go_motor(Speed_pwm_left,Speed_pwm_right);                         //¶¯Á¦Êä³ö
-  202   1      }
-  203          /***************************************************************************************
-  204          º¯ÊıÃû£ºint16 range_protect(int16 duty, int16 min, int16 max)
-  205          ¹¦  ÄÜ£ºÏŞ·ù±£»¤ 
-  206          ²Î  Êı£º
-  207          ·µ»ØÖµ£ºduty
-  208          **************************************************************************************/
-  209          int16 range_protect(int16 duty, int16 min, int16 max)//ÏŞ·ù±£»¤
-  210          {
-  211   1        if (duty >= max)
-  212   1        {
-  213   2          return max;
-  214   2        }
-  215   1        if (duty <= min)
-  216   1        {
-  217   2          return min;
-  218   2        }
-  219   1        else
-  220   1        {
-  221   2          return duty;
-  222   2        }
-  223   1      }
+  186          è¿”å›å€¼ï¼šduty
+  187          **************************************************************************************/
+  188          // int16 range_protect(int16 input, int16 min, int16 max)//é™å¹…ä¿æŠ¤
+  189          //{
+  190          
+  191          //}
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-  code size            =       311     ------
+  code size            =       289     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
   xdata size           =    ------     ------
   xdata-const size     =    ------     ------
-  edata size           =       119     ------
+  edata size           =       121     ------
   bit size             =    ------     ------
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------
@@ -259,7 +229,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =       143     ------
+  hconst size          =       145     ------
 End of Module Information.
 
 

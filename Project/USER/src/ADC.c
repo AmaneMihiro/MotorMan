@@ -1,508 +1,475 @@
 #include "ADC.h"
 #include "math.h"
-//int16 aim_speeda        = 730;  //Ä¿±êËÙ¶È 
-int16 aim_speedb ;  //Êä³öËÙ¶È£¨¶¯Ì¬ÆÚÍûËÙ¶È£©=ÆÚÍûËÙ¶È*ÆÚÍû¼õËÙ¶È
-int16 aim_speedc        = 760;  //×ªÍä¼õĞ¡ËÙ¶È 
-	float errorh = 0;
-	float errors = 0;
-	float errors1 = 0;
+// int16 aim_speeda        = 730;  //ç›®æ ‡é€Ÿåº¦
+int16 aim_speedb = 0; // è¾“å‡ºé€Ÿåº¦ï¼ˆåŠ¨æ€æœŸæœ›é€Ÿåº¦ï¼‰=æœŸæœ›é€Ÿåº¦*æœŸæœ›å‡é€Ÿåº¦
+int16 aim_speedc = 0; // è½¬å¼¯å‡å°é€Ÿåº¦
 
-
-int16 adc_value[4];                 //´¢´æµç¸Ğ²É¼¯ÖµÔ­Ê¼Öµ    4¸öµç¸Ğ 
-int16 AD_V[4];                      //´¢´æµç¸Ğ²É¼¯Öµ¹éÒ»»¯ÖµÖĞ¼ä±äÁ¿ £¨ÎŞĞè¹ØĞÄ£¬ÇëÎğÉ¾³ı£©
-//int16 adc_max[4]={90,90,90,95}; //µç¸Ğ²ÉÖµ×î´óÖµ ĞèÒª×Ô¼º²É¼¯ 
-int16 adc_max[4]={250,200,175,250}; //µç¸Ğ²ÉÖµ×î´óÖµ ĞèÒª×Ô¼º²É¼¯ 
-int16 adc_min[4]={1,1,1,1};        //µç¸Ğ²ÉÖµ×îĞ¡Öµ  1,4,14,1
-uint8 Left_Adc,Right_Adc,Left_Shu_Adc,Right_Shu_Adc;//µç¸ĞÖµ
+int16 adc_value[4]; // å‚¨å­˜ç”µæ„Ÿé‡‡é›†å€¼åŸå§‹å€¼    4ä¸ªç”µæ„Ÿ
+int16 AD_V[4];		// å‚¨å­˜ç”µæ„Ÿé‡‡é›†å€¼å½’ä¸€åŒ–å€¼ä¸­é—´å˜é‡ ï¼ˆæ— éœ€å…³å¿ƒï¼Œè¯·å‹¿åˆ é™¤ï¼‰
+// int16 adc_max[4]={90,90,90,95}; //ç”µæ„Ÿé‡‡å€¼æœ€å¤§å€¼ éœ€è¦è‡ªå·±é‡‡é›†
+int16 adc_max[4] = {250, 200, 175, 250};				// ç”µæ„Ÿé‡‡å€¼æœ€å¤§å€¼ éœ€è¦è‡ªå·±é‡‡é›†
+int16 adc_min[4] = {1, 1, 1, 1};						// ç”µæ„Ÿé‡‡å€¼æœ€å°å€¼  1,4,14,1
+uint8 Left_Adc = 0;
+uint8 Right_Adc = 0;
+uint8 Left_Shu_Adc = 0;
+uint8 Right_Shu_Adc = 0;// ç”µæ„Ÿå€¼
 float adc_valueM;
-int8 NM=4;                          //µç¸Ğ¸öÊı
+int8 NM = 4; // ç”µæ„Ÿä¸ªæ•°
 
-//»·µÀ²ÎÊı
-uint16 annulus_s      = 0;           //»·µº»ı·Ö¾àÀë
-uint16 annulus_s2     = 0;           //»·µº»ı·Ö¾àÀë2
-uint16 annulus_z      = 0;           //»·µºµÚ»ı·Ö´ò½Ç
-uint16 annulus_t      = 0;
+//ç¼–ç å™¨å€¼è½¬çœŸå®è·ç¦»ä¸º1280è½¬40cm
 
-uint16 obstacle_annulus_z1=0;
-uint16 obstacle_annulus_s1=0;
-uint16 obstacle_annulus_z2=0;
-uint16 obstacle_annulus_s2=0;
-uint16 obstacle_annulus_z3=0;
-uint16 obstacle_annulus_s3=0;
-uint8 obstacle_switch_1=0;
-uint8 obstacle_switch_2=0;
-uint8 obstacle_switch_3=0;
-uint8 obstacle_switch_4=0;
+// ç¯é“å‚æ•°
+uint16 annulus_s;
+uint16 annulus_s2; // ç¯å²›ç§¯åˆ†è·ç¦»2
+uint16 annulus_s3; // ç¯å²›ç§¯åˆ†è·ç¦»3
+uint16 annulus_t;
+uint16 annulus_z;
+
 
 struct ROAD_TYPE road_type = {0};
-int16 obstacle_Current_Dir[]={
-	                            30,31,32,33,34,35,36,37,38,39,
-	                            40,41,42,43,44,45,46,47,48,49,
-	                            -69,-68,-67,-66,-65,-64,-63,-62,-61,-60,
-	                            -59,-58,-57,-56,-55,-54,-53,-52,-51,-50,
-	                            -49,-48,-47,-46,-45,-44,-43,-42,-41,-40,
-                              -39,-38,-37,-36,-35,-34,-33,-32,-31,-30,
-                             };
-/***µ±Ç°Î»ÖÃ*************/
+int16 obstacle_Current_Dir[] = {
+	30,
+	31,
+	32,
+	33,
+	34,
+	35,
+	36,
+	37,
+	38,
+	39,
+	40,
+	41,
+	42,
+	43,
+	44,
+	45,
+	46,
+	47,
+	48,
+	49,
+	-69,
+	-68,
+	-67,
+	-66,
+	-65,
+	-64,
+	-63,
+	-62,
+	-61,
+	-60,
+	-59,
+	-58,
+	-57,
+	-56,
+	-55,
+	-54,
+	-53,
+	-52,
+	-51,
+	-50,
+	-49,
+	-48,
+	-47,
+	-46,
+	-45,
+	-44,
+	-43,
+	-42,
+	-41,
+	-40,
+	-39,
+	-38,
+	-37,
+	-36,
+	-35,
+	-34,
+	-33,
+	-32,
+	-31,
+	-30,
+};
+/***å½“å‰ä½ç½®*************/
 float Current_Dir = 0;
-int16 Set_gyro=0;
-int16 ADC_PWM=0;
-uint8 flag_obstacle=0;
-uint16 obstacle_time=0;
-uint8 temp=0;				 
-/***************************µç¸Ğ²É¼¯Í¨µÀ³õÊ¼»¯****************************
-º¯Êı£º  void ADC_int(void)  
-¹¦ÄÜ£º  µç¸Ğ²ÉÖµ½øĞĞ³õÊ¼»¯
-²ÎÊı£º  void
-ËµÃ÷£º  µç¸Ğ²É¼¯³õÊ¼»¯
-·µ»ØÖµ£»ÎŞ
+int16 Set_gyro = 0;
+int16 ADC_PWM = 0;
+
+uint8 temp = 0;
+/***************************ç”µæ„Ÿé‡‡é›†é€šé“åˆå§‹åŒ–****************************
+å‡½æ•°ï¼š  void ADC_int(void)
+åŠŸèƒ½ï¼š  ç”µæ„Ÿé‡‡å€¼è¿›è¡Œåˆå§‹åŒ–
+å‚æ•°ï¼š  void
+è¯´æ˜ï¼š  ç”µæ„Ÿé‡‡é›†åˆå§‹åŒ–
+è¿”å›å€¼ï¼›æ— 
 ************************************************************************/
 void ADC_int(void)
 {
-	adc_init(Left_ADC_Pin,ADC_SYSclk_DIV_2);//³õÊ¼»¯P0.0ÎªADC¹¦ÄÜ
-  adc_init(LeftXie_ADC_Pin,ADC_SYSclk_DIV_2);//³õÊ¼»¯P0.1ÎªADC¹¦ÄÜ
-  adc_init(RightXie_ADC_Pin,ADC_SYSclk_DIV_2);//³õÊ¼»¯P0.5ÎªADC¹¦ÄÜ
-  adc_init(Right_ADC_Pin,ADC_SYSclk_DIV_2);//³õÊ¼»¯P0.6ÎªADC¹¦ÄÜ 
-	
-	adc_init(Mid_ADC_Pin,ADC_SYSclk_DIV_2);//³õÊ¼»¯P1.5ÎªADC¹¦ÄÜ 
+	adc_init(Left_ADC_Pin, ADC_SYSclk_DIV_2);	  // åˆå§‹åŒ–P0.0ä¸ºADCåŠŸèƒ½
+	adc_init(LeftXie_ADC_Pin, ADC_SYSclk_DIV_2);  // åˆå§‹åŒ–P0.1ä¸ºADCåŠŸèƒ½
+	adc_init(RightXie_ADC_Pin, ADC_SYSclk_DIV_2); // åˆå§‹åŒ–P0.5ä¸ºADCåŠŸèƒ½
+	adc_init(Right_ADC_Pin, ADC_SYSclk_DIV_2);	  // åˆå§‹åŒ–P0.6ä¸ºADCåŠŸèƒ½
+
+	adc_init(Mid_ADC_Pin, ADC_SYSclk_DIV_2); // åˆå§‹åŒ–P1.5ä¸ºADCåŠŸèƒ½
 }
 
-/***************************ÖĞÖµÂË²¨º¯Êı*********************************
-º¯Êı£ºuint16 adc_mid(ADCN_enum adcn,ADCCH_enum ch)  
-¹¦ÄÜ£º 3´Îµç¸Ğ²ÉÖµ½øĞĞÖĞÖµÂË²¨
-²ÎÊı£º adcn        Ñ¡ÔñADCÍ¨µÀ       resolution      ·Ö±æÂÊ
-ËµÃ÷£º 8Î»ADCÊä³ö£¬0~255£¨2µÄ8´Î·½£©£¬5vµçÑ¹Æ½¾ù·Ö³É255·İ£¬·Ö±æÂÊÎª5/255=0.196
-·µ»ØÖµ£»k(uint8)ÖĞ¼äÄÇ¸öÖµ
+/***************************ä¸­å€¼æ»¤æ³¢å‡½æ•°*********************************
+å‡½æ•°ï¼šuint16 adc_mid(ADCN_enum adcn,ADCCH_enum ch)
+åŠŸèƒ½ï¼š 3æ¬¡ç”µæ„Ÿé‡‡å€¼è¿›è¡Œä¸­å€¼æ»¤æ³¢
+å‚æ•°ï¼š adcn        é€‰æ‹©ADCé€šé“       resolution      åˆ†è¾¨ç‡
+è¯´æ˜ï¼š 8ä½ADCè¾“å‡ºï¼Œ0~255ï¼ˆ2çš„8æ¬¡æ–¹ï¼‰ï¼Œ5vç”µå‹å¹³å‡åˆ†æˆ255ä»½ï¼Œåˆ†è¾¨ç‡ä¸º5/255=0.196
+è¿”å›å€¼ï¼›k(uint8)ä¸­é—´é‚£ä¸ªå€¼
 ************************************************************************/
-uint16 adc_mid(ADCN_enum adcn,ADCRES_enum ch)
+uint16 adc_mid(ADCN_enum adcn, ADCRES_enum ch)
 {
-	uint16 i,j,k,tmp;
-	i=adc_once(adcn,ch);
-	j=adc_once(adcn,ch);
-	k=adc_once(adcn,ch);
-	if(i>j)
+	uint16 i, j, k, tmp;
+	i = adc_once(adcn, ch);
+	j = adc_once(adcn, ch);
+	k = adc_once(adcn, ch);
+	if (i > j)
 	{
-		tmp=i,i=j,j=tmp;
+		tmp = i, i = j, j = tmp;
 	}
-	if(k>j)
+	if (k > j)
 	{
-		tmp=j;
+		tmp = j;
 	}
-	else if(k>i)
+	else if (k > i)
 	{
-		tmp=k;
+		tmp = k;
 	}
 	else
 	{
-		tmp=i;
+		tmp = i;
 	}
-	return(tmp);
+	return (tmp);
 }
 
-/***************************¾ùÖµÂË²¨º¯Êı****************************
-º¯Êı£º  uint16 adc_ave(ADCN_enum adcn,ADCCH_enum ch,uint8 N) 
-¹¦ÄÜ£º  ÖĞÖµÂË²¨ºóµÄ5¸öµç¸ĞÖµÇóÆ½¾ùÖµ
-²ÎÊı£º  adcn        Ñ¡ÔñADCÍ¨µÀ         
-ËµÃ÷£º  ¸Ãº¯Êıµ÷ÓÃÖĞÖµÂË²¨º¯Êı£¬¼´µç¸ĞÖµÊÇÖĞÎ»ÖÃ
-·µ»ØÖµ£»tmp
-Ê¾Àı£º  adc_ave(ADC_P10, ADC_8BIT)-->ADCÍ¨µÀÎªP-10£¬·Ö±æÂÊÎª8bit 
+/***************************å‡å€¼æ»¤æ³¢å‡½æ•°****************************
+å‡½æ•°ï¼š  uint16 adc_ave(ADCN_enum adcn,ADCCH_enum ch,uint8 N)
+åŠŸèƒ½ï¼š  ä¸­å€¼æ»¤æ³¢åçš„5ä¸ªç”µæ„Ÿå€¼æ±‚å¹³å‡å€¼
+å‚æ•°ï¼š  adcn        é€‰æ‹©ADCé€šé“
+è¯´æ˜ï¼š  è¯¥å‡½æ•°è°ƒç”¨ä¸­å€¼æ»¤æ³¢å‡½æ•°ï¼Œå³ç”µæ„Ÿå€¼æ˜¯ä¸­ä½ç½®
+è¿”å›å€¼ï¼›tmp
+ç¤ºä¾‹ï¼š  adc_ave(ADC_P10, ADC_8BIT)-->ADCé€šé“ä¸ºP-10ï¼Œåˆ†è¾¨ç‡ä¸º8bit
 *******************************************************************/
-uint16 adc_ave(ADCN_enum adcn,ADCRES_enum ch,uint8 N)
+uint16 adc_ave(ADCN_enum adcn, ADCRES_enum ch, uint8 N)
 {
-	uint32 tmp=0;
+	uint32 tmp = 0;
 	uint8 i;
-	for(i=0;i<N;i++)
+	for (i = 0; i < N; i++)
 	{
-	  tmp+=adc_mid(adcn,ch);
+		tmp += adc_mid(adcn, ch);
 	}
-	tmp=tmp/N;
-	return(tmp);
+	tmp = tmp / N;
+	return (tmp);
 }
-/***************************µç¸Ğ²ÉÖµ************************************
-º¯Êı£º  void ADC_Collect()   
-¹¦ÄÜ£º  µç¸Ğ²ÉÖµ
-²ÎÊı£º  void
-ËµÃ÷£º  8Î»ADCÊä³ö£¬0~255£¨2µÄ8´Î·½£©£¬5vµçÑ¹Æ½¾ù·Ö³É255·İ£¬·Ö±æÂÊÎª5/255=0.196
-·µ»ØÖµ£»void
+/***************************ç”µæ„Ÿé‡‡å€¼************************************
+å‡½æ•°ï¼š  void ADC_Collect()
+åŠŸèƒ½ï¼š  ç”µæ„Ÿé‡‡å€¼
+å‚æ•°ï¼š  void
+è¯´æ˜ï¼š  8ä½ADCè¾“å‡ºï¼Œ0~255ï¼ˆ2çš„8æ¬¡æ–¹ï¼‰ï¼Œ5vç”µå‹å¹³å‡åˆ†æˆ255ä»½ï¼Œåˆ†è¾¨ç‡ä¸º5/255=0.196
+è¿”å›å€¼ï¼›void
 ***********************************************************************/
 void ADC_Collect()
 {
-	adc_value[0]=adc_ave(Left_ADC_Pin,ADC_8BIT,3);     //×óºáµç¸Ğ
-	adc_value[1]=adc_ave(LeftXie_ADC_Pin,ADC_8BIT,3);  //×óÊúµç¸Ğ
-	adc_value[2]=adc_ave(RightXie_ADC_Pin,ADC_8BIT,3); //ÓÒÊúµç¸Ğ
-	adc_value[3]=adc_ave(Right_ADC_Pin,ADC_8BIT,3);    //ÓÒºáµç¸Ğ
-	adc_valueM=adc_ave(Mid_ADC_Pin,ADC_8BIT,3)*0.2246;    //µçÔ´µçÑ¹²É¼¯
-	
+	adc_value[0] = adc_ave(Left_ADC_Pin, ADC_8BIT, 3);		 // å·¦æ¨ªç”µæ„Ÿ
+	adc_value[1] = adc_ave(LeftXie_ADC_Pin, ADC_8BIT, 3);	 // å·¦ç«–ç”µæ„Ÿ
+	adc_value[2] = adc_ave(RightXie_ADC_Pin, ADC_8BIT, 3);	 // å³ç«–ç”µæ„Ÿ
+	adc_value[3] = adc_ave(Right_ADC_Pin, ADC_8BIT, 3);		 // å³æ¨ªç”µæ„Ÿ
+	adc_valueM = adc_ave(Mid_ADC_Pin, ADC_8BIT, 3) * 0.2246; // ç”µæºç”µå‹é‡‡é›†
 }
-/*********************************µç¸Ğ²ÉÖµ********************************
-º¯Êı£º  void Data_current_analyze()   
-¹¦ÄÜ£º  µç¸Ğ²ÉÖµÔ­Ê¼Öµ¹éÒ»»¯£¨0~100£©
-²ÎÊı£º  void
-ËµÃ÷£º  ¹éÒ»»¯´¦Àí
-·µ»ØÖµ£»void         
+/*********************************ç”µæ„Ÿé‡‡å€¼********************************
+å‡½æ•°ï¼š  void Data_current_analyze()
+åŠŸèƒ½ï¼š  ç”µæ„Ÿé‡‡å€¼åŸå§‹å€¼å½’ä¸€åŒ–ï¼ˆ0~100ï¼‰
+å‚æ•°ï¼š  void
+è¯´æ˜ï¼š  å½’ä¸€åŒ–å¤„ç†
+è¿”å›å€¼ï¼›void
 *************************************************************************/
 void Data_current_analyze()
 {
 	uint8 i;
-  for(i=0;i < NM; i++)              
-  {
-   AD_V[i] = ((adc_value[i]-adc_min[i])*100)/(adc_max[i]-adc_min[i]);         
-   if( AD_V[i]<=0)
-   {
-      AD_V[i]=0;
-   }
-   else if( AD_V[i]>=100)
-   {
-      AD_V[i]=100;
-   }
-  }
-  Left_Adc = AD_V[0];       //×óµç¸Ğ×îÖÕÖµ
-  Left_Shu_Adc = AD_V[1];   //×óÊúµç¸Ğ×îÖÕÖµ
-  Right_Shu_Adc = AD_V[2];  //ÓÒÊúµç¸Ğ×îÖÕÖµ
-  Right_Adc = AD_V[3];	    //ÓÒµç¸Ğ×îÖÕÖµ	
+	for (i = 0; i < NM; i++)
+	{
+		AD_V[i] = ((adc_value[i] - adc_min[i]) * 100) / (adc_max[i] - adc_min[i]);
+		if (AD_V[i] <= 0)
+		{
+			AD_V[i] = 0;
+		}
+		else if (AD_V[i] >= 100)
+		{
+			AD_V[i] = 100;
+		}
+	}
+	Left_Adc = AD_V[0];		 // å·¦ç”µæ„Ÿæœ€ç»ˆå€¼
+	Left_Shu_Adc = AD_V[1];	 // å·¦ç«–ç”µæ„Ÿæœ€ç»ˆå€¼
+	Right_Shu_Adc = AD_V[2]; // å³ç«–ç”µæ„Ÿæœ€ç»ˆå€¼
+	Right_Adc = AD_V[3];	 // å³ç”µæ„Ÿæœ€ç»ˆå€¼
 }
 
-/*********************************²î±ÈºÍº¯Êı**********************************
-º¯Êı£º  float Cha_bi_he(int16 data1, int16 data2,int16 x)
-¹¦ÄÜ£º  ²î±ÈºÍÇóÈüµÀÆ«²î
-²ÎÊı£º  int16 data1, int16 data2,int16 x
-ËµÃ÷£º  ²î±ÈºÍÇóÈüµÀÆ«²î
-·µ»ØÖµ£»result         
+/*********************************å·®æ¯”å’Œå‡½æ•°**********************************
+å‡½æ•°ï¼š  float Cha_bi_he(int16 data1, int16 data2,int16 x)
+åŠŸèƒ½ï¼š  å·®æ¯”å’Œæ±‚èµ›é“åå·®
+å‚æ•°ï¼š  int16 data1, int16 data2,int16 x
+è¯´æ˜ï¼š  å·®æ¯”å’Œæ±‚èµ›é“åå·®
+è¿”å›å€¼ï¼›result
 ****************************************************************************/
-float Cha_bi_he(int16 data1, int16 data2,int16 x)
+float Cha_bi_he(int16 data1, int16 data2, int16 x)
 {
-    float cha;
-    float he;
-    float result;
+	float cha;
+	float he;
+	float result;
 
-    cha = (data1)-(data2);
-    he = data1+data2+1;
-    result = (cha*x)/(1.0*he);
+	cha = (data1) - (data2);
+	he = data1 + data2 + 1;
+	result = (cha * x) / (1.0 * he);
 
-    return result;
+	return result;
 }
-//²î±ÈºÍ²î
-float Cha_bi_he_cha(int16 data1,int16 data2,int16 data3,int16 data4,int16 x,int16 y)
+// å·®æ¯”å’Œå·®åŠ æƒï¼Œå˜å¼
+float Cha_bi_he_cha(int16 data1, int16 data2, int16 data3, int16 data4, int16 x, int16 y)
 {
-    float cha;
-    float he;
+	float cha;
+	float he;
 	float cha1;
-    float he1;
-	
-    float result;
-	
-    cha = (data1)-(data2);
-	cha1 = (data3)-(data4);
-	
-    he = data1+data2+1;
-	he1 = data3+data4+1;
-	
+	float he1;
 
-//    result = (cha*x)/(1.0*he);
-	result = ((cha*x)+(cha1*y))/((1.0*he)+(1.0*he1));
-    return result;
+	float result;
 
+	cha = (data1) - (data2);
+	cha1 = (data3) - (data4);
+
+	he = data1 + data2 + 1;
+	he1 = data3 + data4 + 1;
+
+	//    result = (cha*x)/(1.0*he);
+	result = ((cha * x) + (cha1 * y)) / ((1.0 * he) + (1.0 * he1));
+	return result;
 }
-float Cha_x_bi_he(int16 data1,int16 data2,int16 data3,int16 data4)//ÏòÁ¿²î±ÈºÍ
+// å‘é‡å·®æ¯”å’Œ
+float Cha_x_bi_he(int16 data1, int16 data2, int16 data3, int16 data4)
 {
 	float left_value;
 	float right_value;
 	float ad_sum;
 	float ad_diff;
 	float error_x;
-left_value  = sqrt(data1  * data1  + data2  * data2);
+	left_value = sqrt(data1 * data1 + data2 * data2);
 
-right_value = sqrt(data3 * data3 + data4 * data4);
+	right_value = sqrt(data3 * data3 + data4 * data4);
 
-  ad_sum= left_value + right_value+1;         // ¼ÆËãµç¸ĞÖ®ºÍ 
+	ad_sum = left_value + right_value + 1; // è®¡ç®—ç”µæ„Ÿä¹‹å’Œ
 
-// ¼ÆËãµç¸ĞÖ®²î
+	// è®¡ç®—ç”µæ„Ÿä¹‹å·®
 
-  ad_diff= (int16) right_value - left_value ; 
-	error_x = ad_diff/ad_sum;
-	
-	  return error_x;
+	ad_diff = (int16)right_value - left_value;
+	error_x = ad_diff / ad_sum;
+
+	return error_x;
 }
+/*****************************************å‡ºç•Œä¿æŠ¤å‡½æ•°*************************************
+å‡½æ•°ï¼š  void Out_protect()
+å‚æ•°ï¼š  æ— 
+è¯´æ˜ï¼š  é˜²æ­¢è½¦å†²å‡ºèµ›é“åæ’åä¸œè¥¿,æ£€æµ‹å‡ºèµ›é“åä¸­æ–­å¤±èƒ½ï¼Œç”µæœºåœè½¬ï¼Œæ”¾å›èµ›é“ä¸­æ–­ä½¿èƒ½ç»§ç»­è·‘
 
-//float ZxjsWdjs(int16 errors, int16 speeda)//Êµ¼ÊÎó²îÖµ£¬Ä¿±êËÙ¶È
-//{
-
-//    int speedb;
-//if(errors<0)
-//{
-//errors= -errors;
-//}
-
-//    speedb = speeda-speeda*(errors);
-////		if(error<2&&error>-2)
-////	{
-////		aim_speed=speed1;
-////	}
-////		else
-////		{
-////			aim_speed=speed2;
-////		}//Ö±Ïß¼ÓËÙÍäµÀ¼õËÙ
-//    return speedb;
-//}
-/*****************************************¶æ»ú³õÊ¼»¯*************************************
-º¯Êı£º  void init_PWM(void)
-²ÎÊı£º  ÎŞ
-ËµÃ÷£º  ·ÖÄ¸10000£¬Ê¹ÓÃ£¬ÈçĞèĞŞ¸ÄÒı½ÅĞŞ¸Ä¶ÔÓ¦ºê¶¨Òå¼´¿É
-        pwm_init(PWM0_P00, 100, 5000);     //³õÊ¼»¯PWM0  Ê¹ÓÃÒı½ÅP0.0  Êä³öPWMÆµÂÊ100HZ   Õ¼¿Õ±ÈÎª°Ù·ÖÖ® 5000/PWM_DUTY_MAX*100
-				PWM_DUTY_MAXÔÚzf_pwm.hÎÄ¼şÖĞ Ä¬ÈÏÎª10000
-*×¢Òâ£¬ÏÈµ÷½Ú¶æ»ú£¬Èç¹û¶æ»úÎªSD05£¬ÔòÆµÂÊÎª200hz ,Èç¹û¶æ»úÎªS3010,ÆµÂÊÔòÎª50hz
-*ÆµÂÊÈ·¶¨ºó£¬ÏÈ°ÑÕ¼¿Õ±È·ÖÄ¸£¬¼´PWM_DUTY_MAXÈ·¶¨£¬Ò»°ãÎŞĞèĞŞ¸ÄÁË
-*È»ºó¾Í¿ªÊ¼µ÷½Ú¶æ»úÁË£¬µ÷Õ¼¿Õ±ÈµÄ·Ö×Ó£¬¼´µ÷ÓÃµÄº¯ÊıµÄ×îºóÄÇ¸ö²ÎÊı£¬¸ù¾İ¾­ÑéËãÒ»ÏÂ£¬´ó¸ÅÊÇ1/20µÄÕ¼¿Õ±È£¬È»ºóÍù×óÍùÓÒÂıÂıÊÔ
-*¼ÆËã¹«Ê½£ºÖĞÖµÕ¼¿Õ±È´ó¸ÅÊÇ7.5% £¨ºÍÆµÂÊ¾«¶È¶¼ÓĞ¹ØÏµ£© 20ms(1.5ms¸ßµçÆ½)
-·µ»ØÖµ£ºÎŞ  
-***************************************************************************************/
-void init_Steer_PWM(void)
-{
-  	pwm_init(Steer_Pin, 50, Steer_Duty_Midle);     //³õÊ¼»¯¶æ»ú  Êä³öPWMÆµÂÊ50HZ£¬²¢ÉèÖÃÖĞÖµ
-}
-
-/************************************¶æ»ú×ªÏò¿ØÖÆÊä³ö**********************************
-º¯Êı£º  void Steering_Control_Out(int16 duty)
-¹¦ÄÜ£º  ¶æ»ú×ªÏò¿ØÖÆ  
-²ÎÊı£º  ÎŞ
-ËµÃ÷£º  ¶æ»ú×ªÏò¿ØÖÆ    ×¢Òâµ÷ºÃ¶æ»úÖĞÖµºó£¬×óÓÒ¼«ÏŞÒ²µ÷³öÀ´£¬ÒªĞŞ¸ÄÉÏÃæµÄºê¶¨Òå
-·µ»ØÖµ£ºÎŞ 
-**************************************************************************************/
-void Steering_Control_Out(int16 duty)
-{
-   duty = Steer_Duty_Midle + duty ;//ÔÚ¶æ»úÖĞÖµµÄ»ù´¡ÉÏ½øĞĞÆ«ÒÆ
-   if (duty >= Steer_Duty_Max) 
-	 {
-		 duty = Steer_Duty_Max;
-	 }
-   else if(duty <= Steer_Duty_Min) 
-	 {
-		 duty = Steer_Duty_Min;
-	 }
-   pwm_duty(Steer_Pin, duty);
-}
-/*****************************************³ö½ç±£»¤º¯Êı*************************************
-º¯Êı£º  void Out_protect() 
-²ÎÊı£º  ÎŞ
-ËµÃ÷£º  ·ÀÖ¹³µ³å³öÈüµÀºó×²»µ¶«Î÷,¼ì²â³öÈüµÀºóÖĞ¶ÏÊ§ÄÜ£¬µç»úÍ£×ª£¬·Å»ØÈüµÀÖĞ¶ÏÊ¹ÄÜ¼ÌĞøÅÜ
-
-*×¢Òâ£º£¡£¡£¡Æ½Ê±µ÷ÊÔÊ±¿ÉÒÔ´ò¿ª£¬¼ÓÁË±ÜÕÏ´¦ÀíºóĞèÒª¹Ø±Õ´Ëº¯Êı£¬²»È»ÓĞ¿ÉÄÜÎŞ·¨ÊµÏÖ±ÜÕÏ¹¦ÄÜ£¡£¡£¡
-·µ»ØÖµ£ºÎŞ  
+*æ³¨æ„ï¼šï¼ï¼ï¼å¹³æ—¶è°ƒè¯•æ—¶å¯ä»¥æ‰“å¼€ï¼ŒåŠ äº†é¿éšœå¤„ç†åéœ€è¦å…³é—­æ­¤å‡½æ•°ï¼Œä¸ç„¶æœ‰å¯èƒ½æ— æ³•å®ç°é¿éšœåŠŸèƒ½ï¼ï¼ï¼
+è¿”å›å€¼ï¼šæ— 
 ******************************************************************************************/
 void Out_protect(void)
 {
-	if(flag_obstacle==0)
+	if (road_type.annulus || road_type.in_annulus_left || road_type.in_annulus_right || road_type.on_annulus_left || road_type.on_annulus_right || road_type.out_annulus)
 	{
-	   if(Left_Adc<OUTSIDE&&Right_Adc<OUTSIDE)
-	   {
-			 while(1)
-			 {
-		     go_motor(-2000,-2000);
-				 delay_ms(400);
-				 while(1)
-				 {
-					 go_motor(0,0);
-		       pwm_duty(PWMB_CH4_P77, 500);
-		       pwm_duty(PWMB_CH3_P33, 500);
-				 }
-			 }
-	   }
-  }
+		if (Left_Adc < OUTSIDE || Right_Adc < OUTSIDE)
+		{
+			testflag = 100;
+			while (1)
+			{
+				go_motor(-2000, -2000);
+				delay_ms(400);
+				while (1)
+				{
+					go_motor(0, 0);
+				}
+			}
+		}
+	}
 }
-uint8 Annulus_selection=0;
-/*****************************************»·µº´¦Àí***************************************
-º¯Êı£º  void Annulus_handle(void)
-²ÎÊı£º  ÎŞ
-ËµÃ÷£º  »·µº´¦Àíº¯Êı
 
-*×¢Òâ£ºÓÃÁ½¸öÊúµç¸ĞÒıµ¼½ø»·
-·µ»ØÖµ£ºÎŞ  
+void Annulus_assist(void)
+{
+	if (road_type.annulus == 1 && road_type.in_annulus_right == 0 && road_type.on_annulus_right == 0 && road_type.out_annulus == 0) //&&road_type.in_annulus_left==0
+	{
+		annulus_s += fabs(last_speed) * 1;
+	}
+	if (road_type.in_annulus_right == 1) // road_type.in_annulus_left==1 ||                 && road_type.on_annulus_left==0ï¿½ï¿½ï¿½â£©&& road_type.on_annulus_right==0
+	{
+		// annulus_z += fabs(GORY_Z);
+		annulus_s2 += fabs(last_speed) * 1; // ï¿½ï¿½ï¿½İ»ï¿½ï¿½Ö¾ï¿½ï¿½ï¿½Í±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½Ä£ï¿½0.1ï¿½ï¿½
+	}
+	if (road_type.on_annulus_right == 1) // road_type.in_annulus_left==1 ||                 && road_type.on_annulus_left==0ï¿½ï¿½ï¿½â£©&& road_type.on_annulus_right==0
+	{
+		//        annulus_z += fabs(GORY_Z);
+		annulus_s3 += fabs(last_speed) * 1; // ï¿½ï¿½ï¿½İ»ï¿½ï¿½Ö¾ï¿½ï¿½ï¿½Í±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½Ä£ï¿½0.1ï¿½ï¿½
+	}
+	if (road_type.out_annulus == 1)
+	{
+		annulus_t = fabs(last_speed) * 1;
+		//		      annulus_t=annulus_t+5;
+	}
+}
+
+int8 testflag;
+/*************************************ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*************************************
+å‡½æ•°ï¼š  void Annulus_handle(void)
+å‚æ•°ï¼š  æ— 
+è¯´æ˜ï¼š  ç¯å²›å¤„ç†å‡½æ•°
+
+*æ³¨æ„ï¼šç”¨ä¸¤ä¸ªç«–ç”µæ„Ÿå¼•å¯¼è¿›ç¯
+è¿”å›å€¼ï¼šæ— 
 ******************************************************************************************/
 void Annulus_handle(void)
 {
-	  if((Left_Adc+Right_Adc)>IN_ANNULUS_H_LIMIT&&road_type.annulus==0)
-	  {
-			road_type.annulus        = 1;
-            BUZZ_ON;			
-	  }
-	  //ÓÒ»·½ø»·ÅĞ¶Ï
-	  if(annulus_s > DISTANCE_ANNULUS_S &&road_type.annulus==1&&road_type.in_annulus_right==0&&(Right_Shu_Adc>20))
-	  {
-			road_type.in_annulus_right = 1;
-			BUZZ_ON;
-			P52                      = 0;
-	  }
-	  //ÓÒ»·´¦Àí
-	  if(road_type.in_annulus_right == 1 && annulus_s2> 350 )
-	  {
-			  road_type.on_annulus_right = 1;
-			  BUZZ_ON;
-			  P52                      = 1;
-	  }
-	  if(road_type.on_annulus_right==1&&Left_Adc+Right_Adc+Right_Shu_Adc+Left_Shu_Adc>OUT_ANNULUS_S_LIMIT )  
-      {
-				
-			BUZZ_ON;	
-			road_type.out_annulus = 1;
-			annulus_s             		 = 0;
-			annulus_z                  = 0;
-		    annulus_s2                 = 0;
-      }
-	  //³ö»·´¦Àí
-      if(annulus_t > DISTANCE_ANNULUS_T)
-	  {				
-				road_type.annulus          = 0;
-				road_type.in_annulus_left  = 0;
-			  road_type.in_annulus_right = 0;
-				road_type.on_annulus_left  = 0;
-			  road_type.on_annulus_right = 0;
-				road_type.out_annulus      = 0;
-			  annulus_t                  = 0;
-			
-			  BUZZ_OFF;	
-      }
-}
-/*************************************»·µº¸¨Öúº¯Êı*************************************
-º¯Êı£º  void Annulus_assist(void)
-²ÎÊı£º  ÎŞ
-ËµÃ÷£º  ¹ı»·µºÈı½ÇÇø»ı·Ö£¬½ø»·»ı·Ö£¬³ö»·»ı·ÖµÈ
-
-*×¢Òâ£º »ı·ÖÖµ»á»áËæ²ÉÑùÊ±¼äµÄ²»Í¬¶ø¸Ä±ä£¬ĞèÒª×Ô¼ºÓÃÊÖÍÆ³µÈ¥²âÁ¿ÓÃÆÁÄ»ÏÔÊ¾¿´²¢¼ÇÂ¼È¥ĞŞ¸Ä
-·µ»ØÖµ£ºÎŞ  
-******************************************************************************************/
-void Annulus_assist(void)
-{
-	 if(road_type.annulus==1&&road_type.in_annulus_left==0&&road_type.in_annulus_right==0)
-   {
-        annulus_s += fabs(last_speed);  
-   }
-	 if((road_type.in_annulus_left==1 || road_type.in_annulus_right==1) && road_type.on_annulus_left==0&& road_type.on_annulus_right==0)
-   {
-	   annulus_s2+= fabs(last_speed);
-   }
-	 if(road_type.out_annulus==1)
-   {
-//        annulus_t=fabs(last_speed)*0.1;
-		      annulus_t=annulus_t+5;
-   }
-}
-
-uint8 obstacle_number=0;
-/*************************************±ÜÕÏ¼ì²âº¯Êı*************************************
-º¯Êı£º  void obstacle_avoidance(void)
-²ÎÊı£º  ÎŞ
-ËµÃ÷£º  TFO±ÜÕÏÄ£¿é¼ì²â£¬Ê¹ÓÃÈí¼şÄ£ÄâIICÍ¨ĞÅ£¬ÀíÂÛÉÏÈÎºÎÒı½Å¶¼¿ÉÒÔÊ¹ÓÃ£¬µ«ÊÇÒª×¢Òâ²»ÄÜÒı½Å
-        ¸´ÓÃ¡£
-*×¢Òâ£º TOFÄ£¿éÀëÕÏ°­ÎïÔ½Ô¶ÊıÖµÔ½´ó£¬Ô½½üÊıÖµÔ½Ğ¡
-·µ»ØÖµ£ºÎŞ  
-******************************************************************************************/
-void obstacle_avoidance(void)
-{
-	dl1a_get_distance();                                       //¾àÀë²âÁ¿
-//	if(dl1a_distance_mm<SET_DLLA_DISTANCE&&flag_obstacle==0&&(fabs(Current_Dir)<3)&&obstacle_number==0) //²âÁ¿¾àÀëĞ¡ÓÚÉè¶¨Öµ±êÖ¾Î»³ÉÁ¢
-//	if(dl1a_distance_mm<SET_DLLA_DISTANCE)
-	if(dl1a_distance_mm<SET_DLLA_DISTANCE&&flag_obstacle==0&&(fabs(Current_Dir)<3)) //²âÁ¿¾àÀëĞ¡ÓÚÉè¶¨Öµ±êÖ¾Î»³ÉÁ¢
+	//å³ç¯å²›ç‰¹åŒ–æ£€æµ‹
+	if ((Left_Adc + Right_Adc+Left_Shu_Adc+Right_Shu_Adc) > IN_ANNULUS_H_LIMIT 
+	&& (road_type.annulus == 0)
+	&&(Left_Adc>3*Right_Adc)
+	&&(Left_Adc>Left_Shu_Adc))
 	{
-		
-		flag_obstacle=1;
-//		obstacle_number++;//±ÜÕÏÖ»ÅĞ¶ÏÒ»´Î£¬·¢³µÊ±Í¨¹ı²¦Âë¿ª¹ØÑ¡Ôñ³ö¿â·½ÏòÏÈ×ß±ÜÕÏ£¬Ö»ÔÚÖ±µÀÅĞ¶Ï±ÜÕÏ£¬¼õĞ¡ÎóÅĞ
+		testflag = 1;
+		road_type.annulus = 1;
+		BUZZ_ON;
+
+	}
+	//	  //å·¦ç¯è¿›ç¯åˆ¤æ–­
+	//		if(annulus_s > DISTANCE_ANNULUS_S
+	//			 &&(Left_Shu_Adc>20)
+	//			 &&road_type.annulus==1
+	//			 &&road_type.in_annulus_left==0
+	//			 &&road_type.in_annulus_right==0
+	//			 &&road_type.on_annulus_left==0
+	//			 &&road_type.on_annulus_right==0
+	//			 &&road_type.out_annulus==0)
+	//		{
+	//			road_type.in_annulus_left = 1;
+	//			P52                      = 0;
+	//			testflag = 2;
+	//		}
+	// å³ç¯è¿›ç¯åˆ¤æ–­
+	if ((annulus_s > DISTANCE_ANNULUS_S)
+	&& (road_type.annulus == 1) 
+	&& (road_type.in_annulus_left == 0) 
+	&& (road_type.in_annulus_right == 0) 
+	&& (road_type.on_annulus_left == 0) 
+	&& (road_type.on_annulus_right == 0) 
+	&& (road_type.out_annulus == 0))
+	{
+		testflag = 3;
+		road_type.in_annulus_right = 1;
+		BUZZ_ON;
+		// while(1)
+		// {
+		// 	go_motor(0,0);
+		// }
+	}
+	//		//å·¦ç¯ä¸Šç¯å¤„ç†
+	//		if(annulus_s2 > 40
+	////			 &&annulus_z > DISTANCE_ANNULUS_Z
+	//			 &&road_type.annulus==1
+	//			 &&road_type.in_annulus_left==1
+	//			 &&road_type.in_annulus_right==0
+	//			 &&road_type.on_annulus_left==0
+	//			 &&road_type.on_annulus_right==0
+	//			 &&road_type.out_annulus==0)
+	//		{
+	//				testflag = 4;
+	//				road_type.in_annulus_left =0;
+	//				road_type.on_annulus_left = 1;
+	//				BUZZ_ON;
+	//			  P52                      = 1;
+	//		}
+	// å³ç¯ä¸Šç¯å¤„ç†
+	if (annulus_s2 > 1300 && road_type.annulus == 1 && road_type.in_annulus_left == 0 && road_type.in_annulus_right == 1 && road_type.on_annulus_left == 0 && road_type.on_annulus_right == 0 && road_type.out_annulus == 0)
+	{
+		testflag = 5;
+		road_type.in_annulus_right = 0;
+		road_type.on_annulus_right = 1;
+		BUZZ_ON;
+	}
+	if (((road_type.on_annulus_right == 1) 
+	|| (road_type.on_annulus_left == 1)) 
+	&& Left_Adc + Right_Adc > OUT_ANNULUS_S_LIMIT 
+	&& annulus_s3 > 3200)
+	{
+		testflag = 6;
+		road_type.on_annulus_right = 0;
+		road_type.on_annulus_left = 0;
+		road_type.out_annulus = 1;
+		annulus_s = 0;
+		annulus_z = 0;
+		annulus_s2 = 0;
+		BUZZ_ON;
+	}
+	// å‡ºç¯å¤„ç†
+	if (annulus_t > DISTANCE_ANNULUS_T 
+		&& road_type.out_annulus == 1)
+	{
+		testflag = 7;
+		road_type.out_annulus = 0;
+		annulus_t = 0;
+		BUZZ_OFF;
+		//					while(1)
+		//					{
+		//						go_motor(0,0);
+		//					}
 	}
 }
-/*************************************·Ö¶ÎP*************************************
-º¯Êı£º  void obstacle_avoidance(void)
-²ÎÊı£º  ÎŞ
-ËµÃ÷£º  TFO±ÜÕÏÄ£¿é¼ì²â£¬Ê¹ÓÃÈí¼şÄ£ÄâIICÍ¨ĞÅ£¬ÀíÂÛÉÏÈÎºÎÒı½Å¶¼¿ÉÒÔÊ¹ÓÃ£¬µ«ÊÇÒª×¢Òâ²»ÄÜÒı½Å
-        ¸´ÓÃ¡£
-*×¢Òâ£º TOFÄ£¿éÀëÕÏ°­ÎïÔ½Ô¶ÊıÖµÔ½´ó£¬Ô½½üÊıÖµÔ½Ğ¡
-·µ»ØÖµ£ºÎŞ  
-******************************************************************************************/
-void subsection_p(void)
-{
-  
-}
-/*************************************±ÜÕÏ¸¨Öúº¯Êı*************************************
-º¯Êı£º  void Annulus_assist(void)
-²ÎÊı£º  ÎŞ
-ËµÃ÷£º  ¹ı»·µºÈı½ÇÇø»ı·Ö£¬½ø»·»ı·Ö£¬³ö»·»ı·ÖµÈ
-
-*×¢Òâ£º »ı·ÖÖµ»á»áËæ²ÉÑùÊ±¼äµÄ²»Í¬¶ø¸Ä±ä£¬ĞèÒª×Ô¼ºÓÃÊÖÍÆ³µÈ¥²âÁ¿ÓÃÆÁÄ»ÏÔÊ¾¿´²¢¼ÇÂ¼È¥ĞŞ¸Ä
-******************************************************************************************/
-void Obstacle_assist(void)
-{
-	 if(flag_obstacle==1)
-   {
-       obstacle_annulus_z1 += fabs(GORY_Z)*0.1;
-		   obstacle_annulus_s1 += fabs(real_speed)*0.1;
-   }
-	 if(obstacle_switch_1==1&&flag_obstacle==1)
-   {
-       obstacle_annulus_z2 += fabs(GORY_Z)*0.1;
-		   obstacle_annulus_s2 += fabs(real_speed)*0.1;
-   }
-	 if(obstacle_switch_2==1&&obstacle_switch_1==1&&flag_obstacle==1)
-   {
-       obstacle_annulus_z3 += fabs(GORY_Z)*0.1;
-		   obstacle_annulus_s3 += fabs(real_speed)*0.1;
-	   
-   }
-}
-/*************************¸ù¾İÈüµÀÀàĞÍÑ¡Ôñ²»Í¬µÄ·½ÏòÆ«²î¼ÆËã·½·¨*************************
-º¯Êı£º  int16 Direction_error(void)
-¹¦ÄÜ£º  ¸ù¾İÈüµÀÀàĞÍÑ¡Ôñ²»Í¬µÄ·½ÏòÆ«²î
-²ÎÊı£º  ÎŞ
-ËµÃ÷£º  ¸ù¾İÈüµÀÀàĞÍÑ¡Ôñ²»Í¬µÄ·½ÏòÆ«²î
-·µ»ØÖµ£ºerror--·µ»ØÈüµÀÆ«²î
+/*************************æ ¹æ®èµ›é“ç±»å‹é€‰æ‹©ä¸åŒçš„æ–¹å‘åå·®è®¡ç®—æ–¹æ³•*************************
+å‡½æ•°ï¼š  int16 Direction_error(void)
+åŠŸèƒ½ï¼š  æ ¹æ®èµ›é“ç±»å‹é€‰æ‹©ä¸åŒçš„æ–¹å‘åå·®
+å‚æ•°ï¼š  æ— 
+è¯´æ˜ï¼š  æ ¹æ®èµ›é“ç±»å‹é€‰æ‹©ä¸åŒçš„æ–¹å‘åå·®
+è¿”å›å€¼ï¼šerror--è¿”å›èµ›é“åå·®
 ****************************************************************************************/
 float Direction_error(void)
 {
-    float error = 0;
+	float error = 0;
 
-	
-	  //»·µº·½ÏòÆ«²î¼ÆËã
-    if(road_type.annulus==1)
-    {
-					error = Cha_x_bi_he(2*Left_Adc,Left_Shu_Adc,2*Right_Adc,Right_Shu_Adc)*20;				
-				//ÈëÓÒ»·µº·½ÏòÆ«²î¼ÆËã
-			    if(road_type.in_annulus_right ==1 && road_type.on_annulus_right==0 && road_type.out_annulus==0)
-				{	
-					if( Left_Adc>=Right_Adc ) error= 20;
-					error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;					 // error = 3;
-				}
-				//ÔÚ»·µºÆ«²î
-				if(road_type.on_annulus_right==1)
-				{
-					error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc*2,Right_Adc,Right_Shu_Adc*2)*20;				
-				}
-                //³ö»·µº·½ÏòÆ«²î¼ÆËã
-				if(road_type.out_annulus==1&&road_type.on_annulus_right==1)
-				{
-//				    error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*7;
-					error = 15;
-//					error = Cha_bi_he(Right_Adc,Left_Adc,5);					
-				}
-    }else{
-			error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc*2,Right_Adc,Right_Shu_Adc*2)*20;			//ÆÁÄ»ÏÔÊ¾µÄÈüµÀÆ«²îÖµ
-			aim_speedb=aim_speed;
-		 }	    
-		return error;
+	if (road_type.annulus == 1)
+	{
+		error = Cha_x_bi_he(Left_Adc, Left_Shu_Adc*5, Right_Adc/3, Right_Shu_Adc) * 10;
+		if (road_type.in_annulus_right == 1 )
+		{
+			error = 0.5; 
+		}
+		if (road_type.on_annulus_right == 1)
+		{
+			error = (Cha_bi_he(Right_Adc, Left_Adc, 20));
+		}
+		if (road_type.out_annulus == 1 && road_type.on_annulus_right == 1)
+		{
+			error = -3;
+			road_type.annulus = 0;
+		}
+	}
+	else
+	{
+		error = Cha_x_bi_he(Left_Adc, Left_Shu_Adc * 2, Right_Adc, Right_Shu_Adc * 2) * 20; 
+	}
+	return error;
 }
 
-/**********************************µç´ÅËùÓĞ×Ü´¦Àí***************************************
-º¯Êı£º  void Get_deviation(void)
-¹¦ÄÜ£º  µç´ÅËùÓĞ×Ü´¦Àí
-²ÎÊı£º  ÎŞ
-ËµÃ÷£º  ·ÅÖĞ¶Ïµ÷ÓÃ´Ëº¯Êı¼´¿É
-·µ»ØÖµ£ºÎŞ
+/**********************************ç”µç£æ‰€æœ‰æ€»å¤„ç†***************************************
+å‡½æ•°ï¼š  void Get_deviation(void)
+åŠŸèƒ½ï¼š  ç”µç£æ‰€æœ‰æ€»å¤„ç†
+å‚æ•°ï¼š  æ— 
+è¯´æ˜ï¼š  æ”¾ä¸­æ–­è°ƒç”¨æ­¤å‡½æ•°å³å¯
+è¿”å›å€¼ï¼šæ— 
 ****************************************************************************************/
 void Get_deviation(void)
 {
 
-	ADC_Collect();           //µç¸ĞÔ­Ê¼Öµ²ÉÖµ
-	Data_current_analyze();  //µç¸ĞÖµ¹éÒ»»¯º¯Êı
-	Annulus_handle();        //»·µº´¦Àí
-	Annulus_assist(); //»·µº¸¨Öúº¯Êı
-	obstacle_avoidance();    //ÕÏ°­Îï¼ì²â
-	Obstacle_assist();
-	Current_Dir=Direction_error(); //»ñµÃÈüµÀÆ«²î 
-
+	ADC_Collect();					 
+	Data_current_analyze();			 
+	Annulus_handle();				 
+	Annulus_assist();				 
+	Current_Dir = Direction_error(); 
 }

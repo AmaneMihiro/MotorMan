@@ -1,103 +1,104 @@
-C251 COMPILER V5.60.0,  speed                                                              20/03/25  21:17:17  PAGE 1   
+C251 COMPILER V5.60.0,  speed                                                              20/03/25  23:56:14  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE speed
 OBJECT MODULE PLACED IN .\Out_File\speed.obj
-COMPILER INVOKED BY: D:\keil\C251\BIN\C251.EXE ..\USER\src\speed.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\Libr
-                    -aries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\src) 
-                    -DEBUG PRINT(.\Out_File\speed.lst) OBJECT(.\Out_File\speed.obj) 
+COMPILER INVOKED BY: D:\Keil_v5\C251\BIN\C251.EXE ..\USER\src\speed.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\L
+                    -ibraries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\sr
+                    -c) DEBUG PRINT(.\Out_File\speed.lst) TABS(2) OBJECT(.\Out_File\speed.obj) 
 
 stmt  level    source
 
     1          #include "speed.h"
     2          #include "math.h"
     3          
-    4          int16 aim_speed        = 5;  //ƒø±ÍÀŸ∂»  
-    5          int16 real_speed       = 0;    //◊Û”“¬÷∆Ωæ˘ÀŸ∂» 
-    6          int16 left_speed       = 0;    //◊Û¬÷ÀŸ∂»
-    7          int16 right_speed      = 0;    //”“¬÷ÀŸ∂»
+    4          int16 aim_speed        = 5;  //ÁõÆÊ†áÈÄüÂ∫¶  
+    5          int16 real_speed       = 0;    //Â∑¶Âè≥ËΩÆÂπ≥ÂùáÈÄüÂ∫¶ 
+    6          int16 left_speed       = 0;    //Â∑¶ËΩÆÈÄüÂ∫¶
+    7          int16 right_speed      = 0;    //Âè≥ËΩÆÈÄüÂ∫¶
     8          int16 last_speed       = 0;    
     9          int16 left_last_speed  = 0;
    10          int16 right_last_speed = 0;
    11          int16 left_real_speed  = 0;
    12          int16 right_real_speed = 0;
    13          
-   14          int16 All_PWM_left     = 0;     //◊Û¬÷À˘”–PWM ‰≥ˆ
-   15          int16 All_PWM_right    = 0;     //”“¬÷À˘”–PWM ‰≥ˆ
-   16          int16 Speed_pwm_left   = 0;     //◊Û¬÷ÀŸ∂»ª∑PWM£®C≥µ”√£©
-   17          int16 Speed_pwm_right  = 0;     //”“¬÷ÀŸ∂»ª∑PWM£®C≥µ”√£©
-   18          int16 Real_Speed_left  = 0;     //◊Û¬÷ µº ÀŸ∂»
-   19          int16 Real_Speed_right = 0;     //”“¬÷ µº ÀŸ∂»
-   20          int16 Speed_pwm_all    = 0;     //◊Û”“∆Ωæ˘ÀŸ∂»ª∑PWM£®D≥µ”√£©
-   21          int16 Steer_pwm        = 0;     //◊™œÚƒ⁄ª∑PWM
-   22          uint16 Open_pack_time  = 0;     //¥Úø™∏…ª…π‹∂® ±
-   23          uint16 Stop_time       = 0;     //Õ£≥µ∂® ±
+   14          int16 All_PWM_left     = 0;     //Â∑¶ËΩÆÊâÄÊúâPWMËæìÂá∫
+   15          int16 All_PWM_right    = 0;     //Âè≥ËΩÆÊâÄÊúâPWMËæìÂá∫
+   16          int16 Speed_pwm_left   = 0;     //Â∑¶ËΩÆÈÄüÂ∫¶ÁéØPWMÔºàCËΩ¶Áî®Ôºâ
+   17          int16 Speed_pwm_right  = 0;     //Âè≥ËΩÆÈÄüÂ∫¶ÁéØPWMÔºàCËΩ¶Áî®Ôºâ
+   18          int16 Real_Speed_left  = 0;     //Â∑¶ËΩÆÂÆûÈôÖÈÄüÂ∫¶
+   19          int16 Real_Speed_right = 0;     //Âè≥ËΩÆÂÆûÈôÖÈÄüÂ∫¶
+   20          int16 Speed_pwm_all    = 0;     //Â∑¶Âè≥Âπ≥ÂùáÈÄüÂ∫¶ÁéØPWMÔºàDËΩ¶Áî®Ôºâ
+   21          int16 Steer_pwm        = 0;     //ËΩ¨ÂêëÂÜÖÁéØPWM
+   22          uint16 Open_pack_time  = 0;     //ÊâìÂºÄÂπ≤Á∞ßÁÆ°ÂÆöÊó∂
+   23          uint16 Stop_time       = 0;     //ÂÅúËΩ¶ÂÆöÊó∂
    24           
-   25          /******************************* µÁª˙≥ı ºªØ***********************************
-   26          ∫Ø ˝£∫  void init_PWM(unsigned char Motor_Set)
-   27          ≤Œ ˝£∫  Motor_Set---Œ™0 ±≥ı ºªØŒ™BTN«˝∂Ø∑Ω Ω£¨Œ™1 ±≥ı ºªØDRV«˝∂Ø∑Ω Ω
-   28          Àµ√˜£∫  ∑÷ƒ∏10000
-   29                              pwm_init(PWMA_CH1P_P60, 10000, 0); 
-   30                  ≥ı ºªØPWM   π”√“˝Ω≈P6.0   ‰≥ˆPWM∆µ¬ 10000HZ  ’ºø’±»Œ™∞Ÿ∑÷÷Æ pwm_duty / PWM_DUTY_MAX * 100                               
-   31          ∑µªÿ÷µ£∫Œﬁ  
+   25          /******************************* ÁîµÊú∫ÂàùÂßãÂåñ***********************************
+   26          ÂáΩÊï∞Ôºö  void init_PWM(unsigned char Motor_Set)
+   27          ÂèÇÊï∞Ôºö  Motor_Set---‰∏∫0Êó∂ÂàùÂßãÂåñ‰∏∫BTNÈ©±Âä®ÊñπÂºèÔºå‰∏∫1Êó∂ÂàùÂßãÂåñDRVÈ©±Âä®ÊñπÂºè
+   28          ËØ¥ÊòéÔºö  ÂàÜÊØç10000
+   29                  pwm_init(PWMA_CH1P_P60, 10000, 0); 
+   30                  ÂàùÂßãÂåñPWM  ‰ΩøÁî®ÂºïËÑöP6.0  ËæìÂá∫PWMÈ¢ëÁéá10000HZ  Âç†Á©∫ÊØî‰∏∫ÁôæÂàÜ‰πã pwm_duty / PWM_DUTY
+             -_MAX * 100        
+   31          ËøîÂõûÂÄºÔºöÊó†  
    32          *****************************************************************************/
-   33          unsigned char MOTOR_MODE=0;//÷–º‰±‰¡ø£¨«ÎŒ–ﬁ∏ƒ…æ≥˝£°£°£°
+   33          unsigned char MOTOR_MODE=0;//‰∏≠Èó¥ÂèòÈáèÔºåËØ∑Âãø‰øÆÊîπÂà†Èô§ÔºÅÔºÅÔºÅ
    34          void init_PWM(unsigned char Motor_Set)
    35          {
-   36   1              MOTOR_MODE = Motor_Set;
-   37   1              if (MOTOR_MODE==0) 
-   38   1              {
-   39   2      //-----MOS«˝∂Ø-----------
-   40   2          pwm_init(Left_Z_Pin,  20000,0);//◊Û¬÷≥ı ºªØ
-   41   2                pwm_init(Left_F_Pin,  20000,0);
-   42   2                pwm_init(Right_Z_Pin, 20000,0);//”“¬÷≥ı ºªØ
-   43   2                pwm_init(Right_F_Pin, 20000,0);
-   44   2              }
-   45   1                      else
-   46   1              {
-   47   2      //------DRV«˝∂Ø-------------
-   48   2                pwm_init(Left_PWM_Pin, 20000,0);//◊Û¬÷≥ı ºªØ
-   49   2              pwm_init(Right_PWM_Pin,20000,0);//”“¬÷≥ı ºªØ
-   50   2                      gpio_mode(P6_4,GPO_PP);       // …Ë÷√DRV∑ΩœÚ“˝Ω≈Œ™Œ™Õ∆ÕÏ ‰≥ˆ
-   51   2                gpio_mode(P6_0,GPO_PP);       // …Ë÷√DRV∑ΩœÚ“˝Ω≈Œ™Œ™Õ∆ÕÏ ‰≥ˆ
+   36   1        MOTOR_MODE = Motor_Set;
+   37   1        if (MOTOR_MODE==0) 
+   38   1        {
+   39   2      //-----MOSÈ©±Âä®-----------
+   40   2          pwm_init(Left_Z_Pin,  20000,0);//Â∑¶ËΩÆÂàùÂßãÂåñ
+   41   2          pwm_init(Left_F_Pin,  20000,0);
+   42   2          pwm_init(Right_Z_Pin, 20000,0);//Âè≥ËΩÆÂàùÂßãÂåñ
+   43   2          pwm_init(Right_F_Pin, 20000,0);
+   44   2        }
+   45   1          else
+   46   1        {
+   47   2      //------DRVÈ©±Âä®-------------
+   48   2          pwm_init(Left_PWM_Pin, 20000,0);//Â∑¶ËΩÆÂàùÂßãÂåñ
+   49   2          pwm_init(Right_PWM_Pin,20000,0);//Âè≥ËΩÆÂàùÂßãÂåñ
+   50   2          gpio_mode(P6_4,GPO_PP);       // ËÆæÁΩÆDRVÊñπÂêëÂºïËÑö‰∏∫‰∏∫Êé®ÊåΩËæìÂá∫
+   51   2          gpio_mode(P6_0,GPO_PP);       // ËÆæÁΩÆDRVÊñπÂêëÂºïËÑö‰∏∫‰∏∫Êé®ÊåΩËæìÂá∫
    52   2       } 
    53   1      }
-   54          /****************************±‡¬Î∆˜≥ı ºªØ****************************
-   55          ∫Ø ˝£∫  void encoder_init(void)
-   56          π¶ƒ‹£∫  ±‡¬Î∆˜≥ı ºªØ
-   57          ≤Œ ˝£∫  Œﬁ
-C251 COMPILER V5.60.0,  speed                                                              20/03/25  21:17:17  PAGE 2   
+   54          /****************************ÁºñÁ†ÅÂô®ÂàùÂßãÂåñ****************************
+   55          ÂáΩÊï∞Ôºö  void encoder_init(void)
+   56          ÂäüËÉΩÔºö  ÁºñÁ†ÅÂô®ÂàùÂßãÂåñ
+C251 COMPILER V5.60.0,  speed                                                              20/03/25  23:56:14  PAGE 2   
 
-   58          Àµ√˜£∫  ctimer_count_init(CTIM0_P34);
-   59                  ±‡¬Î∆˜ π”√TIM3∫ÕTIM4£¨»Á∏¸∏ƒ“˝Ω≈÷ª–Ë–ﬁ∏ƒ∫Í∂®“Âº¥ø… 
-   60                  ±‡¬Î∆˜ π”√¥¯∑ΩœÚµƒ±‡¬Î∆˜£®STC≤ª÷ß≥÷’˝ΩªΩ‚¬Î£©
-   61          ∑µªÿ÷µ£∫Œﬁ
+   57          ÂèÇÊï∞Ôºö  Êó†
+   58          ËØ¥ÊòéÔºö  ctimer_count_init(CTIM0_P34);
+   59                  ÁºñÁ†ÅÂô®‰ΩøÁî®TIM3ÂíåTIM4ÔºåÂ¶ÇÊõ¥ÊîπÂºïËÑöÂè™ÈúÄ‰øÆÊîπÂÆèÂÆö‰πâÂç≥ÂèØ 
+   60                  ÁºñÁ†ÅÂô®‰ΩøÁî®Â∏¶ÊñπÂêëÁöÑÁºñÁ†ÅÂô®ÔºàSTC‰∏çÊîØÊåÅÊ≠£‰∫§Ëß£Á†ÅÔºâ
+   61          ËøîÂõûÂÄºÔºöÊó†
    62          ********************************************************************/
    63          void encoder_init()
    64          {
-   65   1          //◊Û±‡¬Î∆˜≥ı ºªØ
-   66   1                      ctimer_count_init(Left_Ecoder_Pin1);
-   67   1                      //”“±‡¬Î∆˜≥ı ºªØ
-   68   1                      ctimer_count_init(Right_Ecoder_Pin1);
+   65   1          //Â∑¶ÁºñÁ†ÅÂô®ÂàùÂßãÂåñ
+   66   1          ctimer_count_init(Left_Ecoder_Pin1);
+   67   1          //Âè≥ÁºñÁ†ÅÂô®ÂàùÂßãÂåñ
+   68   1          ctimer_count_init(Right_Ecoder_Pin1);
    69   1      }  
-   70          /***************************ÀŸ∂»≤‚¡ø********************************
-   71          ∫Ø ˝√˚£∫speed_measure()
-   72          π¶  ƒ‹£∫ÀŸ∂»≤‚¡ø£¨∂¡»°±‡¬Î∆˜µƒ÷µ£¨≤ªÕ¨±‡¬Î∆˜∞≤◊∞∫Õ≥µµƒ«∞Ω¯∑ΩœÚ≤ª∂‘ª·
-   73                  µº÷¬≤…ºØµƒ÷µø…ƒ‹ «∑¥π˝¿¥µƒ£¨÷ª–Ë–ﬁ∏ƒ* (-1)æÕ––£¨∏ƒµΩ…œ√ÊæÕø…
-   74                  “‘¡À
-   75          ≤Œ   ˝£∫void
-   76          ∑µªÿ÷µ£∫void
+   70          /***************************ÈÄüÂ∫¶ÊµãÈáè********************************
+   71          ÂáΩÊï∞ÂêçÔºöspeed_measure()
+   72          Âäü  ËÉΩÔºöÈÄüÂ∫¶ÊµãÈáèÔºåËØªÂèñÁºñÁ†ÅÂô®ÁöÑÂÄºÔºå‰∏çÂêåÁºñÁ†ÅÂô®ÂÆâË£ÖÂíåËΩ¶ÁöÑÂâçËøõÊñπÂêë‰∏çÂØπ‰ºö
+   73                  ÂØºËá¥ÈááÈõÜÁöÑÂÄºÂèØËÉΩÊòØÂèçËøáÊù•ÁöÑÔºåÂè™ÈúÄ‰øÆÊîπ* (-1)Â∞±Ë°åÔºåÊîπÂà∞‰∏äÈù¢Â∞±ÂèØ
+   74                  ‰ª•‰∫Ü
+   75          ÂèÇ  Êï∞Ôºövoid
+   76          ËøîÂõûÂÄºÔºövoid
    77          ******************************************************************/
    78          void speed_measure()
    79          { 
-   80   1                int16 temp_L, temp_R;
-   81   1          temp_L = ctimer_count_read(Left_Ecoder_Pin1); // ◊Û”“¬÷µ±«∞ÀŸ∂»
+   80   1          int16 temp_L, temp_R;
+   81   1          temp_L = ctimer_count_read(Left_Ecoder_Pin1); // Â∑¶Âè≥ËΩÆÂΩìÂâçÈÄüÂ∫¶
    82   1          temp_R = ctimer_count_read(Right_Ecoder_Pin1);
    83   1      
-   84   1          ctimer_count_clean(Left_Ecoder_Pin1); // ±‡¬Î∆˜«Â¡„
+   84   1          ctimer_count_clean(Left_Ecoder_Pin1); // ÁºñÁ†ÅÂô®Ê∏ÖÈõ∂
    85   1          ctimer_count_clean(Right_Ecoder_Pin1);
-   86   1                
-   87   1                if(Left_Ecoder_Pin2 == 1)
+   86   1          
+   87   1          if(Left_Ecoder_Pin2 == 1)
    88   1              left_speed = temp_L;
    89   1          else
    90   1              left_speed = (1) * temp_L;
@@ -105,111 +106,112 @@ stmt  level    source
    92   1              right_speed = temp_R;
    93   1          else
    94   1              right_speed = (1) * temp_R;
-   95   1                      
-   96   1                      last_speed = (right_speed+left_speed)/2;// ÀŸ∂»∆Ωæ˘÷µ
-   97   1                real_speed*=0.8;            //“ªΩ◊µÕÕ®¬À≤®∆˜
-   98   1                real_speed+=last_speed*0.2; //“ªΩ◊µÕÕ®¬À≤®∆˜  left_last_speed
-   99   1                      
-  100   1                      left_last_speed =left_speed;
-  101   1                left_real_speed*=0.8;       //“ªΩ◊µÕÕ®¬À≤®∆˜
-  102   1                left_real_speed+=left_last_speed*0.2; //“ªΩ◊µÕÕ®¬À≤®∆˜
-  103   1                      
-  104   1                      right_last_speed =right_speed;
-  105   1                right_real_speed*=0.8;        //“ªΩ◊µÕÕ®¬À≤®∆˜
-  106   1                right_real_speed+=right_last_speed*0.2; //“ªΩ◊µÕÕ®¬À≤®∆˜
+   95   1          
+   96   1          last_speed = (right_speed+left_speed)/2;// ÈÄüÂ∫¶Âπ≥ÂùáÂÄº
+   97   1          real_speed*=0.8;            //‰∏ÄÈò∂‰ΩéÈÄöÊª§Ê≥¢Âô®
+   98   1          real_speed+=last_speed*0.2; //‰∏ÄÈò∂‰ΩéÈÄöÊª§Ê≥¢Âô®  left_last_speed
+   99   1          
+  100   1          left_last_speed =left_speed;
+  101   1          left_real_speed*=0.8;       //‰∏ÄÈò∂‰ΩéÈÄöÊª§Ê≥¢Âô®
+  102   1          left_real_speed+=left_last_speed*0.2; //‰∏ÄÈò∂‰ΩéÈÄöÊª§Ê≥¢Âô®
+  103   1          
+  104   1          right_last_speed =right_speed;
+  105   1          right_real_speed*=0.8;        //‰∏ÄÈò∂‰ΩéÈÄöÊª§Ê≥¢Âô®
+  106   1          right_real_speed+=right_last_speed*0.2; //‰∏ÄÈò∂‰ΩéÈÄöÊª§Ê≥¢Âô®
   107   1      }
-  108          /*******************************≥ˆø‚∂® ±¥Úø™∏…ª…π‹µ»***********************************
-  109          ∫Ø ˝£∫  void timed_task(void)
-  110          ≤Œ ˝£∫  Œﬁ
-  111          Àµ√˜£∫  ≥ˆø‚ÕÍ≥…∂® ±¥Úø™∏…ª…π‹µ»◊˜Œ™±Í÷æŒª¥¶¿Ì£¨∑¿÷π∏’≥ˆø‚æÕºÏ≤‚µΩÕ£≥µ
-  112          ∑µªÿ÷µ£∫Œﬁ 
+  108          /*******************************Âá∫Â∫ìÂÆöÊó∂ÊâìÂºÄÂπ≤Á∞ßÁÆ°Á≠â***********************************
+  109          ÂáΩÊï∞Ôºö  void timed_task(void)
+  110          ÂèÇÊï∞Ôºö  Êó†
+  111          ËØ¥ÊòéÔºö  Âá∫Â∫ìÂÆåÊàêÂÆöÊó∂ÊâìÂºÄÂπ≤Á∞ßÁÆ°Á≠â‰Ωú‰∏∫Ê†áÂøó‰ΩçÂ§ÑÁêÜÔºåÈò≤Ê≠¢ÂàöÂá∫Â∫ìÂ∞±Ê£ÄÊµãÂà∞ÂÅúËΩ¶
+  112          ËøîÂõûÂÄºÔºöÊó† 
   113          *************************************************************************************/
   114          void timed_task(void)
   115          {
-  116   1              if(flag_start)
-  117   1              {
-  118   2                      Open_pack_time=Open_pack_time+10;
-  119   2              }
-  120   1              if(flag_end)
-  121   1              {
-  122   2                      T_inku_wait=T_inku_wait+5;
-  123   2              }
-C251 COMPILER V5.60.0,  speed                                                              20/03/25  21:17:17  PAGE 3   
+  116   1        if(flag_start)
+  117   1        {
+  118   2          Open_pack_time=Open_pack_time+10;
+  119   2        }
+  120   1        if(flag_end)
+  121   1        {
+  122   2          T_inku_wait=T_inku_wait+5;
+C251 COMPILER V5.60.0,  speed                                                              20/03/25  23:56:14  PAGE 3   
 
-  124   1              if(T_inku_J)
-  125   1              {
-  126   2                      T_inku_S=T_inku_S+5;
-  127   2              }
+  123   2        }
+  124   1        if(T_inku_J)
+  125   1        {
+  126   2          T_inku_S=T_inku_S+5;
+  127   2        }
   128   1      }
   129          
-  130          /*****************************µÁª˙ ‰≥ˆ*******************************************
-  131          ∫Ø ˝£∫void go_motor (int16 left_PWM,int16 right_PWM)
-  132          ≤Œ ˝£∫  int16 left_PWM,int16 right_PWM
-  133          Àµ√˜£∫pwm_duty(PWMA_CH1P_P60, duty);
-  134                ŒÒ±ÿΩ´≥µ◊”µƒµÁª˙¬ﬂº≠µ˜œÒ’‚∏ˆ“ª—˘£¨µ⁄“ª∏ˆ≤Œ ˝øÿ÷∆◊ÛµÁª˙£¨µ⁄∂˛∏ˆ≤Œ ˝øÿ÷∆”“µÁª˙
-  135                ¥´»Îµƒ≤Œ ˝»Áπ˚Œ™’˝ ˝£¨µÁª˙’˝◊™£¨∏∫÷µ∑¥◊™£°£°£°£°£°
-  136          ∑µªÿ÷µ£∫Œﬁ 
+  130          /*****************************ÁîµÊú∫ËæìÂá∫*******************************************
+  131          ÂáΩÊï∞Ôºövoid go_motor (int16 left_PWM,int16 right_PWM)
+  132          ÂèÇÊï∞Ôºö  int16 left_PWM,int16 right_PWM
+  133          ËØ¥ÊòéÔºöpwm_duty(PWMA_CH1P_P60, duty);
+  134                Âä°ÂøÖÂ∞ÜËΩ¶Â≠êÁöÑÁîµÊú∫ÈÄªËæëË∞ÉÂÉèËøô‰∏™‰∏ÄÊ†∑ÔºåÁ¨¨‰∏Ä‰∏™ÂèÇÊï∞ÊéßÂà∂Â∑¶ÁîµÊú∫ÔºåÁ¨¨‰∫å‰∏™ÂèÇÊï∞
+             -ÊéßÂà∂Âè≥ÁîµÊú∫
+  135                ‰º†ÂÖ•ÁöÑÂèÇÊï∞Â¶ÇÊûú‰∏∫Ê≠£Êï∞ÔºåÁîµÊú∫Ê≠£ËΩ¨ÔºåË¥üÂÄºÂèçËΩ¨ÔºÅÔºÅÔºÅÔºÅÔºÅ
+  136          ËøîÂõûÂÄºÔºöÊó† 
   137          ********************************************************************************/
-  138          #define Duty_Max  6000   //œﬁ∑˘◊Ó¥Û÷µ
+  138          #define Duty_Max  6000   //ÈôêÂπÖÊúÄÂ§ßÂÄº
   139          
   140          void go_motor (int16 left_PWM,int16 right_PWM)
   141          {
   142   1        if  (MOTOR_MODE==0)
-  143   1        {     
-  144   2      //---------------------------------MOS«˝∂Ø-----------------------------------------     
-  145   2          if (left_PWM>0)                   //◊Û¬÷
+  143   1        { 
+  144   2      //---------------------------------MOSÈ©±Âä®----------------------------------------- 
+  145   2          if (left_PWM>0)                   //Â∑¶ËΩÆ
   146   2          {
-  147   3                       left_PWM = left_PWM<=Duty_Max ? left_PWM : Duty_Max;
+  147   3           left_PWM = left_PWM<=Duty_Max ? left_PWM : Duty_Max;
   148   3           pwm_duty(Left_Z_Pin,left_PWM);
-  149   3           pwm_duty(Left_F_Pin,0);                        //’˝◊™
+  149   3           pwm_duty(Left_F_Pin,0);          //Ê≠£ËΩ¨
   150   3          }   
   151   2          else 
   152   2          {
   153   3           left_PWM = left_PWM>=-Duty_Max ? (-left_PWM) : Duty_Max;  
-  154   3           pwm_duty(Left_Z_Pin,1);    
-  155   3           pwm_duty(Left_F_Pin,left_PWM);       //∑¥◊™
+  154   3           pwm_duty(Left_Z_Pin,1);  
+  155   3           pwm_duty(Left_F_Pin,left_PWM);   //ÂèçËΩ¨
   156   3          } 
-  157   2          if (right_PWM>0)                  //”“¬÷
+  157   2          if (right_PWM>0)                  //Âè≥ËΩÆ
   158   2          { 
   159   3           right_PWM = right_PWM<=Duty_Max ? right_PWM : Duty_Max; 
-  160   3                 pwm_duty(Right_Z_Pin,right_PWM);     
-  161   3                 pwm_duty(Right_F_Pin,0);                         //’˝◊™
+  160   3           pwm_duty(Right_Z_Pin,right_PWM); 
+  161   3           pwm_duty(Right_F_Pin,0);         //Ê≠£ËΩ¨
   162   3          } 
   163   2          else 
   164   2          {
   165   3           right_PWM = right_PWM>=-Duty_Max ? (-right_PWM) : Duty_Max;  
-  166   3                 pwm_duty(Right_Z_Pin,1);     
-  167   3                 pwm_duty(Right_F_Pin,right_PWM); //∑¥◊™
+  166   3           pwm_duty(Right_Z_Pin,1); 
+  167   3           pwm_duty(Right_F_Pin,right_PWM); //ÂèçËΩ¨
   168   3          }
   169   2        }
   170   1        else
   171   1        {
-  172   2      //-------------------------------------------DRV«˝∂Ø-------------------------------------
-  173   2         if (left_PWM>0)                     //◊Û¬÷
+  172   2      //-------------------------------------------DRVÈ©±Âä®-------------------------------------
+  173   2         if (left_PWM>0)                     //Â∑¶ËΩÆ
   174   2         {
-  175   3                       left_PWM = left_PWM<=Duty_Max ? left_PWM : Duty_Max;
-  176   3                       Left_DIR_Pin=0;                         
-  177   3           pwm_duty(Left_PWM_Pin,left_PWM);  //’˝◊™
-  178   3         }    
+  175   3           left_PWM = left_PWM<=Duty_Max ? left_PWM : Duty_Max;
+  176   3           Left_DIR_Pin=0;       
+  177   3           pwm_duty(Left_PWM_Pin,left_PWM);  //Ê≠£ËΩ¨
+  178   3         }  
   179   2         else 
   180   2         {
   181   3           left_PWM = left_PWM>=-Duty_Max ? (-left_PWM) : Duty_Max;  
-  182   3           Left_DIR_Pin=1;    
-  183   3           pwm_duty(Left_PWM_Pin,left_PWM);  //∑¥◊™
+  182   3           Left_DIR_Pin=1;  
+  183   3           pwm_duty(Left_PWM_Pin,left_PWM);  //ÂèçËΩ¨
   184   3         }
-  185   2         if (right_PWM>0)                    //”“¬÷
+  185   2         if (right_PWM>0)                    //Âè≥ËΩÆ
   186   2         {
   187   3           right_PWM = right_PWM<=Duty_Max ? right_PWM : Duty_Max;
-  188   3           Right_DIR_Pin=0;                    
-  189   3                 pwm_duty(Right_PWM_Pin,right_PWM);//’˝◊™             
-C251 COMPILER V5.60.0,  speed                                                              20/03/25  21:17:17  PAGE 4   
+C251 COMPILER V5.60.0,  speed                                                              20/03/25  23:56:14  PAGE 4   
 
-  190   3               } 
+  188   3           Right_DIR_Pin=0;      
+  189   3           pwm_duty(Right_PWM_Pin,right_PWM);//Ê≠£ËΩ¨   
+  190   3         } 
   191   2         else 
   192   2         {
   193   3           right_PWM = right_PWM>=-Duty_Max ? (-right_PWM) : Duty_Max;  
-  194   3                 Right_DIR_Pin=1;
-  195   3                 pwm_duty(Right_PWM_Pin,right_PWM); //∑¥◊™
+  194   3           Right_DIR_Pin=1;
+  195   3           pwm_duty(Right_PWM_Pin,right_PWM); //ÂèçËΩ¨
   196   3         }
   197   2        }
   198   1      }

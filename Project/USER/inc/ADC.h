@@ -3,95 +3,66 @@
 
 #include "headfile.h"
 
-//»·µº¼ì²âµç¸ĞãĞÖµ
-#define IN_ANNULUS_H_LIMIT       80
-//³ö»·¼ì²âµç¸ĞãĞÖµ  
-#define OUT_ANNULUS_S_LIMIT      250
-//»·µº»ı·Ö¾àÀë
-#define DISTANCE_ANNULUS_S        300    
-//»·µº´ò½Ç»ı·Ö
-#define DISTANCE_ANNULUS_Z        0
-//»·µº¶¨Ê±»ı·Ö
-#define DISTANCE_ANNULUS_T        2500    
-//³ö½çÅĞ¶Ï
-#define OUTSIDE                   1
-//±ÜÕÏÄ£¿éÉè¶¨¾àÀë(¸ù¾İÊµ¼ÊÇé¿öĞŞ¸Ä)
-#define SET_DLLA_DISTANCE         700
+// ç¯å²›æ£€æµ‹ç”µæ„Ÿé˜ˆå€¼
+#define IN_ANNULUS_H_LIMIT 80
+// å‡ºç¯æ£€æµ‹ç”µæ„Ÿé˜ˆå€¼
+#define OUT_ANNULUS_S_LIMIT 30
+// ç¯å²›ç§¯åˆ†è·ç¦»
+#define DISTANCE_ANNULUS_S 600
+// ç¯å²›æ‰“è§’ç§¯åˆ†
+#define DISTANCE_ANNULUS_Z 0
+// ç¯å²›å®šæ—¶ç§¯åˆ†
+#define DISTANCE_ANNULUS_T 500
+// å‡ºç•Œåˆ¤æ–­
+#define OUTSIDE 1
 
-//¶æ»úÏà¹ØÖµ
-#define Steer_Duty_Max            990
-#define Steer_Duty_Midle          850 //¶æ»úÖĞÖµ
-#define Steer_Duty_Min            710
-
-//ÈüµÀÀàĞÍÅĞ¶Ï
+// èµ›é“ç±»å‹åˆ¤æ–­
 struct ROAD_TYPE
 {
-     int8 straight;               //Ö±µÀ
-	   int8 bend;                   //ÍäµÀ
-     int8 annulus;                //»·µº
-     int8 in_annulus_left;        //Èë×ó»·µº
-	   int8 in_annulus_right;       //ÈëÓÒ»·µÀ
-     int8 on_annulus_left;        //ÔÚ×ó»·µº
-	   int8 on_annulus_right;       //ÔÚÓÒ»·µº
-     int8 out_annulus;            //³ö»·µº
-	   int8 in_park;                //Èë¿â
+     int8 straight;         // ç›´é“
+     int8 bend;             // å¼¯é“
+     int8 annulus;          // ç¯å²›
+     int8 in_annulus_left;  // å…¥å·¦ç¯å²›
+     int8 in_annulus_right; // å…¥å³ç¯é“
+     int8 on_annulus_left;  // åœ¨å·¦ç¯å²›
+     int8 on_annulus_right; // åœ¨å³ç¯å²›
+     int8 out_annulus;      // å‡ºç¯å²›
+     int8 in_park;          // å…¥åº“
 };
 extern struct ROAD_TYPE road_type;
 
-//±äÁ¿ÉùÃ÷
-extern int16 adc_value[4];  
-extern int16 AD_V[4]; 
-extern int16 adc_max[4];  
-extern int16 adc_min[4];  
-extern uint8 Left_Adc,Right_Adc,Left_Shu_Adc,Right_Shu_Adc;
+// å˜é‡å£°æ˜
+extern int16 adc_value[4];
+extern int16 AD_V[4];
+extern int16 adc_max[4];
+extern int16 adc_min[4];
+extern uint8 Left_Adc, Right_Adc, Left_Shu_Adc, Right_Shu_Adc;
 extern float adc_valueM;
-extern int8 NM;          
-extern uint16 annulus_s; 
-extern uint16 annulus_s2;           //»·µº»ı·Ö¾àÀë2
+extern int8 NM;
+extern uint16 annulus_s;
+extern uint16 annulus_s2; // ç¯å²›ç§¯åˆ†è·ç¦»2
+extern uint16 annulus_s3;
 extern uint16 annulus_t;
-extern uint16 annulus_z;     
-extern float Current_Dir;         
-extern uint8 flag_obstacle;
-extern uint16 obstacle_time;
-extern int16 ADC_PWM; 
+extern uint16 annulus_z;
+extern float Current_Dir;
+extern int8 testflag;
+extern int16 ADC_PWM;
 extern int16 Set_gyr;
 extern uint8 temp;
 
-extern uint16 obstacle_annulus_z1;
-extern uint16 obstacle_annulus_s1;
-extern uint16 obstacle_annulus_z2;
-extern uint16 obstacle_annulus_s2;
-extern uint16 obstacle_annulus_z3;
-extern uint16 obstacle_annulus_s3;
-extern uint16 obstacle_annulus_s1;
-extern uint8 obstacle_switch_1;
-extern uint8 obstacle_switch_2;
-extern uint8 obstacle_switch_3;
-extern uint8 obstacle_switch_4;
 
-extern uint8 Annulus_selection;
-
-
-
-
-//º¯ÊıÉùÃ÷
-void ADC_int(void);                   
-void ADC_Collect(void);               
-void Data_current_analyze(void);      
-float Cha_bi_he(int16 data1, int16 data2,int16 x); 
-float Cha_bi_he_cha(int16 data1,int16 data2,int16 data3,int16 data4,int16 x,int16 y);
-float Cha_x_bi_he(int16 data1,int16 data2,int16 data3,int16 data4);
-float ZxjsWdjs(int16 errors, int16 speeda);
-void Road_type_judge(void);    
-void Annulus_handle(void);      
-float Direction_error(void);    
-void init_Steer_PWM(void);      
-void Steering_Control_Out(int16 duty);  
-void Out_protect(void);                  
+// å‡½æ•°å£°æ˜
+void ADC_int(void);
+void ADC_Collect(void);
+void Data_current_analyze(void);
+float Cha_bi_he(int16 data1, int16 data2, int16 x);
+float Cha_bi_he_cha(int16 data1, int16 data2, int16 data3, int16 data4, int16 x, int16 y);
+float Cha_x_bi_he(int16 data1, int16 data2, int16 data3, int16 data4);
+void Road_type_judge(void);
+void Annulus_handle(void);
+float Direction_error(void);
+void Out_protect(void);
 void Get_deviation(void);
 void Annulus_assist(void);
-void obstacle_avoidance(void);
-void Obstacle_assist(void);
-void subsection_p(void);
 
 #endif

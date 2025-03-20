@@ -1,16 +1,16 @@
 ///*********************************************************************************************************************
 // * COPYRIGHT NOTICE
-// * Copyright (c) 2020,Öğ·É¿Æ¼¼
+// * Copyright (c) 2020,é€é£ç§‘æŠ€
 // * All rights reserved.
-// * ¼¼ÊõÌÖÂÛQQÈº£ºÒ»Èº£º179029047(ÒÑÂú)  ¶şÈº£º244861897(ÒÑÂú)  ÈıÈº£º824575535
+// * æŠ€æœ¯è®¨è®ºQQç¾¤ï¼šä¸€ç¾¤ï¼š179029047(å·²æ»¡)  äºŒç¾¤ï¼š244861897(å·²æ»¡)  ä¸‰ç¾¤ï¼š824575535
 // *
-// * ÒÔÏÂËùÓĞÄÚÈİ°æÈ¨¾ùÊôÖğ·É¿Æ¼¼ËùÓĞ£¬Î´¾­ÔÊĞí²»µÃÓÃÓÚÉÌÒµÓÃÍ¾£¬
-// * »¶Ó­¸÷Î»Ê¹ÓÃ²¢´«²¥±¾³ÌĞò£¬ĞŞ¸ÄÄÚÈİÊ±±ØĞë±£ÁôÖğ·É¿Æ¼¼µÄ°æÈ¨ÉùÃ÷¡£
+// * ä»¥ä¸‹æ‰€æœ‰å†…å®¹ç‰ˆæƒå‡å±é€é£ç§‘æŠ€æ‰€æœ‰ï¼Œæœªç»å…è®¸ä¸å¾—ç”¨äºå•†ä¸šç”¨é€”ï¼Œ
+// * æ¬¢è¿å„ä½ä½¿ç”¨å¹¶ä¼ æ’­æœ¬ç¨‹åºï¼Œä¿®æ”¹å†…å®¹æ—¶å¿…é¡»ä¿ç•™é€é£ç§‘æŠ€çš„ç‰ˆæƒå£°æ˜ã€‚
 // *
 // * @file       		isr
-// * @company	   		³É¶¼Öğ·É¿Æ¼¼ÓĞÏŞ¹«Ë¾
-// * @author     		Öğ·É¿Æ¼¼(QQ790875685)
-// * @version    		²é¿´docÄÚversionÎÄ¼ş °æ±¾ËµÃ÷
+// * @company	   		æˆéƒ½é€é£ç§‘æŠ€æœ‰é™å…¬å¸
+// * @author     		é€é£ç§‘æŠ€(QQ790875685)
+// * @version    		æŸ¥çœ‹docå†…versionæ–‡ä»¶ ç‰ˆæœ¬è¯´æ˜
 // * @Software 			MDK FOR C251 V5.60
 // * @Target core		STC32G12K128
 // * @Taobao   			https://seekfree.taobao.com/
@@ -18,7 +18,7 @@
 // ********************************************************************************************************************/
 #include "headfile.h"
 
-//UART1ÖĞ¶Ï
+//UART1ä¸­æ–­
 void UART1_Isr() interrupt 4
 {
     uint8 res;
@@ -32,7 +32,7 @@ void UART1_Isr() interrupt 4
     {
         UART1_CLEAR_RX_FLAG;
         res = SBUF;
-        //³ÌĞò×Ô¶¯ÏÂÔØ
+        //ç¨‹åºè‡ªåŠ¨ä¸‹è½½
         if(res == 0x7F)
         {
             if(dwon_count++ > 20)
@@ -45,7 +45,7 @@ void UART1_Isr() interrupt 4
     }
 }
 
-//UART2ÖĞ¶Ï
+//UART2ä¸­æ–­
 void UART2_Isr() interrupt 8
 {
     if(UART2_GET_TX_FLAG)
@@ -56,13 +56,13 @@ void UART2_Isr() interrupt 8
     if(UART2_GET_RX_FLAG)
 	{
         UART2_CLEAR_RX_FLAG;
-		//½ÓÊÕÊı¾İ¼Ä´æÆ÷Îª£ºS2BUF
+		//æ¥æ”¶æ•°æ®å¯„å­˜å™¨ä¸ºï¼šS2BUF
 
 	}
 }
 
 
-//UART3ÖĞ¶Ï
+//UART3ä¸­æ–­
 void UART3_Isr() interrupt 17
 {
     if(UART3_GET_TX_FLAG)
@@ -73,36 +73,36 @@ void UART3_Isr() interrupt 17
     if(UART3_GET_RX_FLAG)
 	{
         UART3_CLEAR_RX_FLAG;
-		//½ÓÊÕÊı¾İ¼Ä´æÆ÷Îª£ºS3BUF
+		//æ¥æ”¶æ•°æ®å¯„å­˜å™¨ä¸ºï¼šS3BUF
 
 	}
 }
 
 
-//UART4ÖĞ¶Ï
+//UART4ä¸­æ–­
 void UART4_Isr() interrupt 18
 {
     if(UART4_GET_TX_FLAG)
 	{
-        UART4_CLEAR_TX_FLAG;
+    UART4_CLEAR_TX_FLAG;
 		busy[4] = 0;
 	}
     if(UART4_GET_RX_FLAG)
 	{
         UART4_CLEAR_RX_FLAG;
 
-		//½ÓÊÕÊı¾İ¼Ä´æÆ÷Îª£ºS4BUF;
+		//æ¥æ”¶æ•°æ®å¯„å­˜å™¨ä¸ºï¼šS4BUF;
 		if(wireless_type == WIRELESS_SI24R1)
         {
-            wireless_uart_callback();           //ÎŞÏß×ª´®¿Ú»Øµ÷º¯Êı
+            wireless_uart_callback();           //æ— çº¿è½¬ä¸²å£å›è°ƒå‡½æ•°
         }
         else if(wireless_type == WIRELESS_CH9141)
         {
-            bluetooth_ch9141_uart_callback();   //À¶ÑÀ×ª´®¿Ú»Øµ÷º¯Êı
+            bluetooth_ch9141_uart_callback();   //è“ç‰™è½¬ä¸²å£å›è°ƒå‡½æ•°
         }
         else if(wireless_type == WIRELESS_CH573)
         {
-            wireless_ch573_callback();          //CH573ÎŞÏßÄ£¿é»Øµ÷º¯Êı
+            wireless_ch573_callback();          //CH573æ— çº¿æ¨¡å—å›è°ƒå‡½æ•°
         }
 	}
 }
@@ -110,7 +110,7 @@ void UART4_Isr() interrupt 18
 #define LED P52
 void INT0_Isr() interrupt 0
 {
-	LED = 0;	//µãÁÁLED
+	LED = 0;	//ç‚¹äº®LED
 }
 void INT1_Isr() interrupt 2
 {
@@ -118,48 +118,42 @@ void INT1_Isr() interrupt 2
 }
 void INT2_Isr() interrupt 10
 {
-	INT2_CLEAR_FLAG;  //Çå³ıÖĞ¶Ï±êÖ¾
+	INT2_CLEAR_FLAG;  //æ¸…é™¤ä¸­æ–­æ ‡å¿—
 }
 void INT3_Isr() interrupt 11
 {
-	INT3_CLEAR_FLAG;  //Çå³ıÖĞ¶Ï±êÖ¾
+	INT3_CLEAR_FLAG;  //æ¸…é™¤ä¸­æ–­æ ‡å¿—
 }
 
 void INT4_Isr() interrupt 16
 {
-	INT4_CLEAR_FLAG;  //Çå³ıÖĞ¶Ï±êÖ¾
+	INT4_CLEAR_FLAG;  //æ¸…é™¤ä¸­æ–­æ ‡å¿—
 }
 
 void TM0_Isr() interrupt 1
 {
 
 }
-//-------------------------------ÓÃµÄ¶¨Ê±Æ÷1ÖĞ¶Ï------------------------------------
+//-------------------------------ç”¨çš„å®šæ—¶å™¨1ä¸­æ–­------------------------------------
 void TM1_Isr() interrupt 3
 {
-	TaskRemarks();
 	Motor_output_control();
-	if( flag_start == 0)
-	{
-	  T_outku=T_outku+5;
-	
-	}
 }
 void TM2_Isr() interrupt 12
 {
-	TIM2_CLEAR_FLAG;  //Çå³ıÖĞ¶Ï±êÖ¾
+	TIM2_CLEAR_FLAG;  //æ¸…é™¤ä¸­æ–­æ ‡å¿—
 	
 }
 void TM3_Isr() interrupt 19
 {
-	TIM3_CLEAR_FLAG; //Çå³ıÖĞ¶Ï±êÖ¾
+	TIM3_CLEAR_FLAG; //æ¸…é™¤ä¸­æ–­æ ‡å¿—
 	
 }
 
 void TM4_Isr() interrupt 20
 {
-	TIM4_CLEAR_FLAG; //Çå³ıÖĞ¶Ï±êÖ¾
-//	ccd_collect();	 //CCD²É¼¯Êı¾İ
+	TIM4_CLEAR_FLAG; //æ¸…é™¤ä¸­æ–­æ ‡å¿—
+//	ccd_collect();	 //CCDé‡‡é›†æ•°æ®
 
 }
 

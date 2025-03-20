@@ -1,558 +1,526 @@
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  21:17:17  PAGE 1   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ADC
 OBJECT MODULE PLACED IN .\Out_File\ADC.obj
-COMPILER INVOKED BY: D:\keil\C251\BIN\C251.EXE ..\USER\src\ADC.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\Librar
-                    -ies\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\src) DE
-                    -BUG PRINT(.\Out_File\ADC.lst) OBJECT(.\Out_File\ADC.obj) 
+COMPILER INVOKED BY: D:\Keil_v5\C251\BIN\C251.EXE ..\USER\src\ADC.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\Lib
+                    -raries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\src)
+                    - DEBUG PRINT(.\Out_File\ADC.lst) TABS(2) OBJECT(.\Out_File\ADC.obj) 
 
 stmt  level    source
 
     1          #include "ADC.h"
     2          #include "math.h"
-    3          //int16 aim_speeda        = 730;  //Ä¿±êËÙ¶È 
-    4          int16 aim_speedb ;  //Êä³öËÙ¶È£¨¶¯Ì¬ÆÚÍûËÙ¶È£©=ÆÚÍûËÙ¶È*ÆÚÍû¼õËÙ¶È
-    5          int16 aim_speedc        = 760;  //×ªÍä¼õĞ¡ËÙ¶È 
-    6                  float errorh = 0;
-    7                  float errors = 0;
-    8                  float errors1 = 0;
-    9          
-   10          
-   11          int16 adc_value[4];                 //´¢´æµç¸Ğ²É¼¯ÖµÔ­Ê¼Öµ    4¸öµç¸Ğ 
-   12          int16 AD_V[4];                      //´¢´æµç¸Ğ²É¼¯Öµ¹éÒ»»¯ÖµÖĞ¼ä±äÁ¿ £¨ÎŞĞè¹ØĞÄ£¬ÇëÎğÉ¾³ı£©
-   13          //int16 adc_max[4]={90,90,90,95}; //µç¸Ğ²ÉÖµ×î´óÖµ ĞèÒª×Ô¼º²É¼¯ 
-   14          int16 adc_max[4]={250,200,175,250}; //µç¸Ğ²ÉÖµ×î´óÖµ ĞèÒª×Ô¼º²É¼¯ 
-   15          int16 adc_min[4]={1,1,1,1};        //µç¸Ğ²ÉÖµ×îĞ¡Öµ  1,4,14,1
-   16          uint8 Left_Adc,Right_Adc,Left_Shu_Adc,Right_Shu_Adc;//µç¸ĞÖµ
-   17          float adc_valueM;
-   18          int8 NM=4;                          //µç¸Ğ¸öÊı
-   19          
-   20          //»·µÀ²ÎÊı
-   21          uint16 annulus_s      = 0;           //»·µº»ı·Ö¾àÀë
-   22          uint16 annulus_s2     = 0;           //»·µº»ı·Ö¾àÀë2
-   23          uint16 annulus_z      = 0;           //»·µºµÚ»ı·Ö´ò½Ç
-   24          uint16 annulus_t      = 0;
-   25          
-   26          uint16 obstacle_annulus_z1=0;
-   27          uint16 obstacle_annulus_s1=0;
-   28          uint16 obstacle_annulus_z2=0;
-   29          uint16 obstacle_annulus_s2=0;
-   30          uint16 obstacle_annulus_z3=0;
-   31          uint16 obstacle_annulus_s3=0;
-   32          uint8 obstacle_switch_1=0;
-   33          uint8 obstacle_switch_2=0;
-   34          uint8 obstacle_switch_3=0;
-   35          uint8 obstacle_switch_4=0;
-   36          
-   37          struct ROAD_TYPE road_type = {0};
-   38          int16 obstacle_Current_Dir[]={
-   39                                              30,31,32,33,34,35,36,37,38,39,
-   40                                              40,41,42,43,44,45,46,47,48,49,
-   41                                              -69,-68,-67,-66,-65,-64,-63,-62,-61,-60,
-   42                                              -59,-58,-57,-56,-55,-54,-53,-52,-51,-50,
-   43                                              -49,-48,-47,-46,-45,-44,-43,-42,-41,-40,
-   44                                        -39,-38,-37,-36,-35,-34,-33,-32,-31,-30,
-   45                                       };
-   46          /***µ±Ç°Î»ÖÃ*************/
-   47          float Current_Dir = 0;
-   48          int16 Set_gyro=0;
-   49          int16 ADC_PWM=0;
-   50          uint8 flag_obstacle=0;
-   51          uint16 obstacle_time=0;
-   52          uint8 temp=0;                            
-   53          /***************************µç¸Ğ²É¼¯Í¨µÀ³õÊ¼»¯****************************
-   54          º¯Êı£º  void ADC_int(void)  
-   55          ¹¦ÄÜ£º  µç¸Ğ²ÉÖµ½øĞĞ³õÊ¼»¯
-   56          ²ÎÊı£º  void
-   57          ËµÃ÷£º  µç¸Ğ²É¼¯³õÊ¼»¯
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  21:17:17  PAGE 2   
+    3          // int16 aim_speeda        = 730;  //ç›®æ ‡é€Ÿåº¦
+    4          int16 aim_speedb = 0; // è¾“å‡ºé€Ÿåº¦ï¼ˆåŠ¨æ€æœŸæœ›é€Ÿåº¦ï¼‰=æœŸæœ›é€Ÿåº¦*æœŸæœ›å‡é€Ÿåº¦
+    5          int16 aim_speedc = 0; // è½¬å¼¯å‡å°é€Ÿåº¦
+    6          
+    7          int16 adc_value[4]; // å‚¨å­˜ç”µæ„Ÿé‡‡é›†å€¼åŸå§‹å€¼    4ä¸ªç”µæ„Ÿ
+    8          int16 AD_V[4];    // å‚¨å­˜ç”µæ„Ÿé‡‡é›†å€¼å½’ä¸€åŒ–å€¼ä¸­é—´å˜é‡ ï¼ˆæ— éœ€å…³å¿ƒï¼Œè¯·å‹¿åˆ é™¤ï¼‰
+    9          // int16 adc_max[4]={90,90,90,95}; //ç”µæ„Ÿé‡‡å€¼æœ€å¤§å€¼ éœ€è¦è‡ªå·±é‡‡é›†
+   10          int16 adc_max[4] = {250, 200, 175, 250};        // ç”µæ„Ÿé‡‡å€¼æœ€å¤§å€¼ éœ€è¦è‡ªå·±é‡‡é›†
+   11          int16 adc_min[4] = {1, 1, 1, 1};            // ç”µæ„Ÿé‡‡å€¼æœ€å°å€¼  1,4,14,1
+   12          uint8 Left_Adc = 0;
+   13          uint8 Right_Adc = 0;
+   14          uint8 Left_Shu_Adc = 0;
+   15          uint8 Right_Shu_Adc = 0;// ç”µæ„Ÿå€¼
+   16          float adc_valueM;
+   17          int8 NM = 4; // ç”µæ„Ÿä¸ªæ•°
+   18          
+   19          //ç¼–ç å™¨å€¼è½¬çœŸå®è·ç¦»ä¸º1280è½¬40cm
+   20          
+   21          // ç¯é“å‚æ•°
+   22          uint16 annulus_s;
+   23          uint16 annulus_s2; // ç¯å²›ç§¯åˆ†è·ç¦»2
+   24          uint16 annulus_s3; // ç¯å²›ç§¯åˆ†è·ç¦»3
+   25          uint16 annulus_t;
+   26          uint16 annulus_z;
+   27          
+   28          
+   29          struct ROAD_TYPE road_type = {0};
+   30          int16 obstacle_Current_Dir[] = {
+   31            30,
+   32            31,
+   33            32,
+   34            33,
+   35            34,
+   36            35,
+   37            36,
+   38            37,
+   39            38,
+   40            39,
+   41            40,
+   42            41,
+   43            42,
+   44            43,
+   45            44,
+   46            45,
+   47            46,
+   48            47,
+   49            48,
+   50            49,
+   51            -69,
+   52            -68,
+   53            -67,
+   54            -66,
+   55            -65,
+   56            -64,
+   57            -63,
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 2   
 
-   58          ·µ»ØÖµ£»ÎŞ
-   59          ************************************************************************/
-   60          void ADC_int(void)
-   61          {
-   62   1              adc_init(Left_ADC_Pin,ADC_SYSclk_DIV_2);//³õÊ¼»¯P0.0ÎªADC¹¦ÄÜ
-   63   1        adc_init(LeftXie_ADC_Pin,ADC_SYSclk_DIV_2);//³õÊ¼»¯P0.1ÎªADC¹¦ÄÜ
-   64   1        adc_init(RightXie_ADC_Pin,ADC_SYSclk_DIV_2);//³õÊ¼»¯P0.5ÎªADC¹¦ÄÜ
-   65   1        adc_init(Right_ADC_Pin,ADC_SYSclk_DIV_2);//³õÊ¼»¯P0.6ÎªADC¹¦ÄÜ 
-   66   1              
-   67   1              adc_init(Mid_ADC_Pin,ADC_SYSclk_DIV_2);//³õÊ¼»¯P1.5ÎªADC¹¦ÄÜ 
-   68   1      }
-   69          
-   70          /***************************ÖĞÖµÂË²¨º¯Êı*********************************
-   71          º¯Êı£ºuint16 adc_mid(ADCN_enum adcn,ADCCH_enum ch)  
-   72          ¹¦ÄÜ£º 3´Îµç¸Ğ²ÉÖµ½øĞĞÖĞÖµÂË²¨
-   73          ²ÎÊı£º adcn        Ñ¡ÔñADCÍ¨µÀ       resolution      ·Ö±æÂÊ
-   74          ËµÃ÷£º 8Î»ADCÊä³ö£¬0~255£¨2µÄ8´Î·½£©£¬5vµçÑ¹Æ½¾ù·Ö³É255·İ£¬·Ö±æÂÊÎª5/255=0.196
-   75          ·µ»ØÖµ£»k(uint8)ÖĞ¼äÄÇ¸öÖµ
-   76          ************************************************************************/
-   77          uint16 adc_mid(ADCN_enum adcn,ADCRES_enum ch)
-   78          {
-   79   1              uint16 i,j,k,tmp;
-   80   1              i=adc_once(adcn,ch);
-   81   1              j=adc_once(adcn,ch);
-   82   1              k=adc_once(adcn,ch);
-   83   1              if(i>j)
-   84   1              {
-   85   2                      tmp=i,i=j,j=tmp;
-   86   2              }
-   87   1              if(k>j)
-   88   1              {
-   89   2                      tmp=j;
-   90   2              }
-   91   1              else if(k>i)
-   92   1              {
-   93   2                      tmp=k;
-   94   2              }
-   95   1              else
-   96   1              {
-   97   2                      tmp=i;
-   98   2              }
-   99   1              return(tmp);
-  100   1      }
-  101          
-  102          /***************************¾ùÖµÂË²¨º¯Êı****************************
-  103          º¯Êı£º  uint16 adc_ave(ADCN_enum adcn,ADCCH_enum ch,uint8 N) 
-  104          ¹¦ÄÜ£º  ÖĞÖµÂË²¨ºóµÄ5¸öµç¸ĞÖµÇóÆ½¾ùÖµ
-  105          ²ÎÊı£º  adcn        Ñ¡ÔñADCÍ¨µÀ         
-  106          ËµÃ÷£º  ¸Ãº¯Êıµ÷ÓÃÖĞÖµÂË²¨º¯Êı£¬¼´µç¸ĞÖµÊÇÖĞÎ»ÖÃ
-  107          ·µ»ØÖµ£»tmp
-  108          Ê¾Àı£º  adc_ave(ADC_P10, ADC_8BIT)-->ADCÍ¨µÀÎªP-10£¬·Ö±æÂÊÎª8bit 
-  109          *******************************************************************/
-  110          uint16 adc_ave(ADCN_enum adcn,ADCRES_enum ch,uint8 N)
-  111          {
-  112   1              uint32 tmp=0;
-  113   1              uint8 i;
-  114   1              for(i=0;i<N;i++)
-  115   1              {
-  116   2                tmp+=adc_mid(adcn,ch);
-  117   2              }
-  118   1              tmp=tmp/N;
-  119   1              return(tmp);
-  120   1      }
-  121          /***************************µç¸Ğ²ÉÖµ************************************
-  122          º¯Êı£º  void ADC_Collect()   
-  123          ¹¦ÄÜ£º  µç¸Ğ²ÉÖµ
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  21:17:17  PAGE 3   
+   58            -62,
+   59            -61,
+   60            -60,
+   61            -59,
+   62            -58,
+   63            -57,
+   64            -56,
+   65            -55,
+   66            -54,
+   67            -53,
+   68            -52,
+   69            -51,
+   70            -50,
+   71            -49,
+   72            -48,
+   73            -47,
+   74            -46,
+   75            -45,
+   76            -44,
+   77            -43,
+   78            -42,
+   79            -41,
+   80            -40,
+   81            -39,
+   82            -38,
+   83            -37,
+   84            -36,
+   85            -35,
+   86            -34,
+   87            -33,
+   88            -32,
+   89            -31,
+   90            -30,
+   91          };
+   92          /***å½“å‰ä½ç½®*************/
+   93          float Current_Dir = 0;
+   94          int16 Set_gyro = 0;
+   95          int16 ADC_PWM = 0;
+   96          
+   97          uint8 temp = 0;
+   98          /***************************ç”µæ„Ÿé‡‡é›†é€šé“åˆå§‹åŒ–****************************
+   99          å‡½æ•°ï¼š  void ADC_int(void)
+  100          åŠŸèƒ½ï¼š  ç”µæ„Ÿé‡‡å€¼è¿›è¡Œåˆå§‹åŒ–
+  101          å‚æ•°ï¼š  void
+  102          è¯´æ˜ï¼š  ç”µæ„Ÿé‡‡é›†åˆå§‹åŒ–
+  103          è¿”å›å€¼ï¼›æ— 
+  104          ************************************************************************/
+  105          void ADC_int(void)
+  106          {
+  107   1        adc_init(Left_ADC_Pin, ADC_SYSclk_DIV_2);   // åˆå§‹åŒ–P0.0ä¸ºADCåŠŸèƒ½
+  108   1        adc_init(LeftXie_ADC_Pin, ADC_SYSclk_DIV_2);  // åˆå§‹åŒ–P0.1ä¸ºADCåŠŸèƒ½
+  109   1        adc_init(RightXie_ADC_Pin, ADC_SYSclk_DIV_2); // åˆå§‹åŒ–P0.5ä¸ºADCåŠŸèƒ½
+  110   1        adc_init(Right_ADC_Pin, ADC_SYSclk_DIV_2);    // åˆå§‹åŒ–P0.6ä¸ºADCåŠŸèƒ½
+  111   1      
+  112   1        adc_init(Mid_ADC_Pin, ADC_SYSclk_DIV_2); // åˆå§‹åŒ–P1.5ä¸ºADCåŠŸèƒ½
+  113   1      }
+  114          
+  115          /***************************ä¸­å€¼æ»¤æ³¢å‡½æ•°*********************************
+  116          å‡½æ•°ï¼šuint16 adc_mid(ADCN_enum adcn,ADCCH_enum ch)
+  117          åŠŸèƒ½ï¼š 3æ¬¡ç”µæ„Ÿé‡‡å€¼è¿›è¡Œä¸­å€¼æ»¤æ³¢
+  118          å‚æ•°ï¼š adcn        é€‰æ‹©ADCé€šé“       resolution      åˆ†è¾¨ç‡
+  119          è¯´æ˜ï¼š 8ä½ADCè¾“å‡ºï¼Œ0~255ï¼ˆ2çš„8æ¬¡æ–¹ï¼‰ï¼Œ5vç”µå‹å¹³å‡åˆ†æˆ255ä»½ï¼Œåˆ†è¾¨ç‡ä¸º5/255=0.196
+  120          è¿”å›å€¼ï¼›k(uint8)ä¸­é—´é‚£ä¸ªå€¼
+  121          ************************************************************************/
+  122          uint16 adc_mid(ADCN_enum adcn, ADCRES_enum ch)
+  123          {
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 3   
 
-  124          ²ÎÊı£º  void
-  125          ËµÃ÷£º  8Î»ADCÊä³ö£¬0~255£¨2µÄ8´Î·½£©£¬5vµçÑ¹Æ½¾ù·Ö³É255·İ£¬·Ö±æÂÊÎª5/255=0.196
-  126          ·µ»ØÖµ£»void
-  127          ***********************************************************************/
-  128          void ADC_Collect()
-  129          {
-  130   1              adc_value[0]=adc_ave(Left_ADC_Pin,ADC_8BIT,3);     //×óºáµç¸Ğ
-  131   1              adc_value[1]=adc_ave(LeftXie_ADC_Pin,ADC_8BIT,3);  //×óÊúµç¸Ğ
-  132   1              adc_value[2]=adc_ave(RightXie_ADC_Pin,ADC_8BIT,3); //ÓÒÊúµç¸Ğ
-  133   1              adc_value[3]=adc_ave(Right_ADC_Pin,ADC_8BIT,3);    //ÓÒºáµç¸Ğ
-  134   1              adc_valueM=adc_ave(Mid_ADC_Pin,ADC_8BIT,3)*0.2246;    //µçÔ´µçÑ¹²É¼¯
-  135   1              
-  136   1      }
-  137          /*********************************µç¸Ğ²ÉÖµ********************************
-  138          º¯Êı£º  void Data_current_analyze()   
-  139          ¹¦ÄÜ£º  µç¸Ğ²ÉÖµÔ­Ê¼Öµ¹éÒ»»¯£¨0~100£©
-  140          ²ÎÊı£º  void
-  141          ËµÃ÷£º  ¹éÒ»»¯´¦Àí
-  142          ·µ»ØÖµ£»void         
-  143          *************************************************************************/
-  144          void Data_current_analyze()
-  145          {
-  146   1              uint8 i;
-  147   1        for(i=0;i < NM; i++)              
-  148   1        {
-  149   2         AD_V[i] = ((adc_value[i]-adc_min[i])*100)/(adc_max[i]-adc_min[i]);         
-  150   2         if( AD_V[i]<=0)
-  151   2         {
-  152   3            AD_V[i]=0;
-  153   3         }
-  154   2         else if( AD_V[i]>=100)
-  155   2         {
-  156   3            AD_V[i]=100;
-  157   3         }
-  158   2        }
-  159   1        Left_Adc = AD_V[0];       //×óµç¸Ğ×îÖÕÖµ
-  160   1        Left_Shu_Adc = AD_V[1];   //×óÊúµç¸Ğ×îÖÕÖµ
-  161   1        Right_Shu_Adc = AD_V[2];  //ÓÒÊúµç¸Ğ×îÖÕÖµ
-  162   1        Right_Adc = AD_V[3];      //ÓÒµç¸Ğ×îÖÕÖµ      
-  163   1      }
-  164          
-  165          /*********************************²î±ÈºÍº¯Êı**********************************
-  166          º¯Êı£º  float Cha_bi_he(int16 data1, int16 data2,int16 x)
-  167          ¹¦ÄÜ£º  ²î±ÈºÍÇóÈüµÀÆ«²î
-  168          ²ÎÊı£º  int16 data1, int16 data2,int16 x
-  169          ËµÃ÷£º  ²î±ÈºÍÇóÈüµÀÆ«²î
-  170          ·µ»ØÖµ£»result         
-  171          ****************************************************************************/
-  172          float Cha_bi_he(int16 data1, int16 data2,int16 x)
-  173          {
-  174   1          float cha;
-  175   1          float he;
-  176   1          float result;
-  177   1      
-  178   1          cha = (data1)-(data2);
-  179   1          he = data1+data2+1;
-  180   1          result = (cha*x)/(1.0*he);
-  181   1      
-  182   1          return result;
-  183   1      }
-  184          //²î±ÈºÍ²î
-  185          float Cha_bi_he_cha(int16 data1,int16 data2,int16 data3,int16 data4,int16 x,int16 y)
-  186          {
-  187   1          float cha;
-  188   1          float he;
-  189   1              float cha1;
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  21:17:17  PAGE 4   
+  124   1        uint16 i, j, k, tmp;
+  125   1        i = adc_once(adcn, ch);
+  126   1        j = adc_once(adcn, ch);
+  127   1        k = adc_once(adcn, ch);
+  128   1        if (i > j)
+  129   1        {
+  130   2          tmp = i, i = j, j = tmp;
+  131   2        }
+  132   1        if (k > j)
+  133   1        {
+  134   2          tmp = j;
+  135   2        }
+  136   1        else if (k > i)
+  137   1        {
+  138   2          tmp = k;
+  139   2        }
+  140   1        else
+  141   1        {
+  142   2          tmp = i;
+  143   2        }
+  144   1        return (tmp);
+  145   1      }
+  146          
+  147          /***************************å‡å€¼æ»¤æ³¢å‡½æ•°****************************
+  148          å‡½æ•°ï¼š  uint16 adc_ave(ADCN_enum adcn,ADCCH_enum ch,uint8 N)
+  149          åŠŸèƒ½ï¼š  ä¸­å€¼æ»¤æ³¢åçš„5ä¸ªç”µæ„Ÿå€¼æ±‚å¹³å‡å€¼
+  150          å‚æ•°ï¼š  adcn        é€‰æ‹©ADCé€šé“
+  151          è¯´æ˜ï¼š  è¯¥å‡½æ•°è°ƒç”¨ä¸­å€¼æ»¤æ³¢å‡½æ•°ï¼Œå³ç”µæ„Ÿå€¼æ˜¯ä¸­ä½ç½®
+  152          è¿”å›å€¼ï¼›tmp
+  153          ç¤ºä¾‹ï¼š  adc_ave(ADC_P10, ADC_8BIT)-->ADCé€šé“ä¸ºP-10ï¼Œåˆ†è¾¨ç‡ä¸º8bit
+  154          *******************************************************************/
+  155          uint16 adc_ave(ADCN_enum adcn, ADCRES_enum ch, uint8 N)
+  156          {
+  157   1        uint32 tmp = 0;
+  158   1        uint8 i;
+  159   1        for (i = 0; i < N; i++)
+  160   1        {
+  161   2          tmp += adc_mid(adcn, ch);
+  162   2        }
+  163   1        tmp = tmp / N;
+  164   1        return (tmp);
+  165   1      }
+  166          /***************************ç”µæ„Ÿé‡‡å€¼************************************
+  167          å‡½æ•°ï¼š  void ADC_Collect()
+  168          åŠŸèƒ½ï¼š  ç”µæ„Ÿé‡‡å€¼
+  169          å‚æ•°ï¼š  void
+  170          è¯´æ˜ï¼š  8ä½ADCè¾“å‡ºï¼Œ0~255ï¼ˆ2çš„8æ¬¡æ–¹ï¼‰ï¼Œ5vç”µå‹å¹³å‡åˆ†æˆ255ä»½ï¼Œåˆ†è¾¨ç‡ä¸º5/255=0.196
+  171          è¿”å›å€¼ï¼›void
+  172          ***********************************************************************/
+  173          void ADC_Collect()
+  174          {
+  175   1        adc_value[0] = adc_ave(Left_ADC_Pin, ADC_8BIT, 3);     // å·¦æ¨ªç”µæ„Ÿ
+  176   1        adc_value[1] = adc_ave(LeftXie_ADC_Pin, ADC_8BIT, 3);  // å·¦ç«–ç”µæ„Ÿ
+  177   1        adc_value[2] = adc_ave(RightXie_ADC_Pin, ADC_8BIT, 3);   // å³ç«–ç”µæ„Ÿ
+  178   1        adc_value[3] = adc_ave(Right_ADC_Pin, ADC_8BIT, 3);    // å³æ¨ªç”µæ„Ÿ
+  179   1        adc_valueM = adc_ave(Mid_ADC_Pin, ADC_8BIT, 3) * 0.2246; // ç”µæºç”µå‹é‡‡é›†
+  180   1      }
+  181          /*********************************ç”µæ„Ÿé‡‡å€¼********************************
+  182          å‡½æ•°ï¼š  void Data_current_analyze()
+  183          åŠŸèƒ½ï¼š  ç”µæ„Ÿé‡‡å€¼åŸå§‹å€¼å½’ä¸€åŒ–ï¼ˆ0~100ï¼‰
+  184          å‚æ•°ï¼š  void
+  185          è¯´æ˜ï¼š  å½’ä¸€åŒ–å¤„ç†
+  186          è¿”å›å€¼ï¼›void
+  187          *************************************************************************/
+  188          void Data_current_analyze()
+  189          {
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 4   
 
-  190   1          float he1;
-  191   1              
-  192   1          float result;
-  193   1              
-  194   1          cha = (data1)-(data2);
-  195   1              cha1 = (data3)-(data4);
-  196   1              
-  197   1          he = data1+data2+1;
-  198   1              he1 = data3+data4+1;
-  199   1              
-  200   1      
-  201   1      //    result = (cha*x)/(1.0*he);
-  202   1              result = ((cha*x)+(cha1*y))/((1.0*he)+(1.0*he1));
-  203   1          return result;
-  204   1      
-  205   1      }
-  206          float Cha_x_bi_he(int16 data1,int16 data2,int16 data3,int16 data4)//ÏòÁ¿²î±ÈºÍ
-  207          {
-  208   1              float left_value;
-  209   1              float right_value;
-  210   1              float ad_sum;
-  211   1              float ad_diff;
-  212   1              float error_x;
-  213   1      left_value  = sqrt(data1  * data1  + data2  * data2);
-  214   1      
-  215   1      right_value = sqrt(data3 * data3 + data4 * data4);
-  216   1      
-  217   1        ad_sum= left_value + right_value+1;         // ¼ÆËãµç¸ĞÖ®ºÍ 
-  218   1      
-  219   1      // ¼ÆËãµç¸ĞÖ®²î
-  220   1      
-  221   1        ad_diff= (int16) right_value - left_value ; 
-  222   1              error_x = ad_diff/ad_sum;
-  223   1              
-  224   1                return error_x;
-  225   1      }
-  226          
-  227          //float ZxjsWdjs(int16 errors, int16 speeda)//Êµ¼ÊÎó²îÖµ£¬Ä¿±êËÙ¶È
-  228          //{
-  229          
-  230          //    int speedb;
-  231          //if(errors<0)
-  232          //{
-  233          //errors= -errors;
-  234          //}
-  235          
-  236          //    speedb = speeda-speeda*(errors);
-  237          ////            if(error<2&&error>-2)
-  238          ////    {
-  239          ////            aim_speed=speed1;
-  240          ////    }
-  241          ////            else
-  242          ////            {
-  243          ////                    aim_speed=speed2;
-  244          ////            }//Ö±Ïß¼ÓËÙÍäµÀ¼õËÙ
-  245          //    return speedb;
-  246          //}
-  247          /*****************************************¶æ»ú³õÊ¼»¯*************************************
-  248          º¯Êı£º  void init_PWM(void)
-  249          ²ÎÊı£º  ÎŞ
-  250          ËµÃ÷£º  ·ÖÄ¸10000£¬Ê¹ÓÃ£¬ÈçĞèĞŞ¸ÄÒı½ÅĞŞ¸Ä¶ÔÓ¦ºê¶¨Òå¼´¿É
-  251                  pwm_init(PWM0_P00, 100, 5000);     //³õÊ¼»¯PWM0  Ê¹ÓÃÒı½ÅP0.0  Êä³öPWMÆµÂÊ100HZ   Õ¼¿Õ±ÈÎª°Ù·ÖÖ® 
-             -5000/PWM_DUTY_MAX*100
-  252                                          PWM_DUTY_MAXÔÚzf_pwm.hÎÄ¼şÖĞ Ä¬ÈÏÎª10000
-  253          *×¢Òâ£¬ÏÈµ÷½Ú¶æ»ú£¬Èç¹û¶æ»úÎªSD05£¬ÔòÆµÂÊÎª200hz ,Èç¹û¶æ»úÎªS3010,ÆµÂÊÔòÎª50hz
-  254          *ÆµÂÊÈ·¶¨ºó£¬ÏÈ°ÑÕ¼¿Õ±È·ÖÄ¸£¬¼´PWM_DUTY_MAXÈ·¶¨£¬Ò»°ãÎŞĞèĞŞ¸ÄÁË
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  21:17:17  PAGE 5   
+  190   1        uint8 i;
+  191   1        for (i = 0; i < NM; i++)
+  192   1        {
+  193   2          AD_V[i] = ((adc_value[i] - adc_min[i]) * 100) / (adc_max[i] - adc_min[i]);
+  194   2          if (AD_V[i] <= 0)
+  195   2          {
+  196   3            AD_V[i] = 0;
+  197   3          }
+  198   2          else if (AD_V[i] >= 100)
+  199   2          {
+  200   3            AD_V[i] = 100;
+  201   3          }
+  202   2        }
+  203   1        Left_Adc = AD_V[0];    // å·¦ç”µæ„Ÿæœ€ç»ˆå€¼
+  204   1        Left_Shu_Adc = AD_V[1];  // å·¦ç«–ç”µæ„Ÿæœ€ç»ˆå€¼
+  205   1        Right_Shu_Adc = AD_V[2]; // å³ç«–ç”µæ„Ÿæœ€ç»ˆå€¼
+  206   1        Right_Adc = AD_V[3];   // å³ç”µæ„Ÿæœ€ç»ˆå€¼
+  207   1      }
+  208          
+  209          /*********************************å·®æ¯”å’Œå‡½æ•°**********************************
+  210          å‡½æ•°ï¼š  float Cha_bi_he(int16 data1, int16 data2,int16 x)
+  211          åŠŸèƒ½ï¼š  å·®æ¯”å’Œæ±‚èµ›é“åå·®
+  212          å‚æ•°ï¼š  int16 data1, int16 data2,int16 x
+  213          è¯´æ˜ï¼š  å·®æ¯”å’Œæ±‚èµ›é“åå·®
+  214          è¿”å›å€¼ï¼›result
+  215          ****************************************************************************/
+  216          float Cha_bi_he(int16 data1, int16 data2, int16 x)
+  217          {
+  218   1        float cha;
+  219   1        float he;
+  220   1        float result;
+  221   1      
+  222   1        cha = (data1) - (data2);
+  223   1        he = data1 + data2 + 1;
+  224   1        result = (cha * x) / (1.0 * he);
+  225   1      
+  226   1        return result;
+  227   1      }
+  228          // å·®æ¯”å’Œå·®åŠ æƒï¼Œå˜å¼
+  229          float Cha_bi_he_cha(int16 data1, int16 data2, int16 data3, int16 data4, int16 x, int16 y)
+  230          {
+  231   1        float cha;
+  232   1        float he;
+  233   1        float cha1;
+  234   1        float he1;
+  235   1      
+  236   1        float result;
+  237   1      
+  238   1        cha = (data1) - (data2);
+  239   1        cha1 = (data3) - (data4);
+  240   1      
+  241   1        he = data1 + data2 + 1;
+  242   1        he1 = data3 + data4 + 1;
+  243   1      
+  244   1        //    result = (cha*x)/(1.0*he);
+  245   1        result = ((cha * x) + (cha1 * y)) / ((1.0 * he) + (1.0 * he1));
+  246   1        return result;
+  247   1      }
+  248          // å‘é‡å·®æ¯”å’Œ
+  249          float Cha_x_bi_he(int16 data1, int16 data2, int16 data3, int16 data4)
+  250          {
+  251   1        float left_value;
+  252   1        float right_value;
+  253   1        float ad_sum;
+  254   1        float ad_diff;
+  255   1        float error_x;
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 5   
 
-  255          *È»ºó¾Í¿ªÊ¼µ÷½Ú¶æ»úÁË£¬µ÷Õ¼¿Õ±ÈµÄ·Ö×Ó£¬¼´µ÷ÓÃµÄº¯ÊıµÄ×îºóÄÇ¸ö²ÎÊı£¬¸ù¾İ¾­ÑéËãÒ»ÏÂ£¬´ó¸ÅÊÇ1/20µÄÕ¼¿Õ±È£¬È»
-             -ºóÍù×óÍùÓÒÂıÂıÊÔ
-  256          *¼ÆËã¹«Ê½£ºÖĞÖµÕ¼¿Õ±È´ó¸ÅÊÇ7.5% £¨ºÍÆµÂÊ¾«¶È¶¼ÓĞ¹ØÏµ£© 20ms(1.5ms¸ßµçÆ½)
-  257          ·µ»ØÖµ£ºÎŞ  
-  258          ***************************************************************************************/
-  259          void init_Steer_PWM(void)
-  260          {
-  261   1              pwm_init(Steer_Pin, 50, Steer_Duty_Midle);     //³õÊ¼»¯¶æ»ú  Êä³öPWMÆµÂÊ50HZ£¬²¢ÉèÖÃÖĞÖµ
-  262   1      }
-  263          
-  264          /************************************¶æ»ú×ªÏò¿ØÖÆÊä³ö**********************************
-  265          º¯Êı£º  void Steering_Control_Out(int16 duty)
-  266          ¹¦ÄÜ£º  ¶æ»ú×ªÏò¿ØÖÆ  
-  267          ²ÎÊı£º  ÎŞ
-  268          ËµÃ÷£º  ¶æ»ú×ªÏò¿ØÖÆ    ×¢Òâµ÷ºÃ¶æ»úÖĞÖµºó£¬×óÓÒ¼«ÏŞÒ²µ÷³öÀ´£¬ÒªĞŞ¸ÄÉÏÃæµÄºê¶¨Òå
-  269          ·µ»ØÖµ£ºÎŞ 
-  270          **************************************************************************************/
-  271          void Steering_Control_Out(int16 duty)
-  272          {
-  273   1         duty = Steer_Duty_Midle + duty ;//ÔÚ¶æ»úÖĞÖµµÄ»ù´¡ÉÏ½øĞĞÆ«ÒÆ
-  274   1         if (duty >= Steer_Duty_Max) 
-  275   1               {
-  276   2                       duty = Steer_Duty_Max;
-  277   2               }
-  278   1         else if(duty <= Steer_Duty_Min) 
-  279   1               {
-  280   2                       duty = Steer_Duty_Min;
-  281   2               }
-  282   1         pwm_duty(Steer_Pin, duty);
-  283   1      }
-  284          /*****************************************³ö½ç±£»¤º¯Êı*************************************
-  285          º¯Êı£º  void Out_protect() 
-  286          ²ÎÊı£º  ÎŞ
-  287          ËµÃ÷£º  ·ÀÖ¹³µ³å³öÈüµÀºó×²»µ¶«Î÷,¼ì²â³öÈüµÀºóÖĞ¶ÏÊ§ÄÜ£¬µç»úÍ£×ª£¬·Å»ØÈüµÀÖĞ¶ÏÊ¹ÄÜ¼ÌĞøÅÜ
-  288          
-  289          *×¢Òâ£º£¡£¡£¡Æ½Ê±µ÷ÊÔÊ±¿ÉÒÔ´ò¿ª£¬¼ÓÁË±ÜÕÏ´¦ÀíºóĞèÒª¹Ø±Õ´Ëº¯Êı£¬²»È»ÓĞ¿ÉÄÜÎŞ·¨ÊµÏÖ±ÜÕÏ¹¦ÄÜ£¡£¡£¡
-  290          ·µ»ØÖµ£ºÎŞ  
-  291          ******************************************************************************************/
-  292          void Out_protect(void)
-  293          {
-  294   1              if(flag_obstacle==0)
-  295   1              {
-  296   2                 if(Left_Adc<OUTSIDE&&Right_Adc<OUTSIDE)
-  297   2                 {
-  298   3                               while(1)
-  299   3                               {
-  300   4                           go_motor(-2000,-2000);
-  301   4                                       delay_ms(400);
-  302   4                                       while(1)
-  303   4                                       {
-  304   5                                               go_motor(0,0);
-  305   5                             pwm_duty(PWMB_CH4_P77, 500);
-  306   5                             pwm_duty(PWMB_CH3_P33, 500);
-  307   5                                       }
-  308   4                               }
-  309   3                 }
-  310   2        }
-  311   1      }
-  312          uint8 Annulus_selection=0;
-  313          /*****************************************»·µº´¦Àí***************************************
-  314          º¯Êı£º  void Annulus_handle(void)
-  315          ²ÎÊı£º  ÎŞ
-  316          ËµÃ÷£º  »·µº´¦Àíº¯Êı
-  317          
-  318          *×¢Òâ£ºÓÃÁ½¸öÊúµç¸ĞÒıµ¼½ø»·
-  319          ·µ»ØÖµ£ºÎŞ  
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  21:17:17  PAGE 6   
+  256   1        left_value = sqrt(data1 * data1 + data2 * data2);
+  257   1      
+  258   1        right_value = sqrt(data3 * data3 + data4 * data4);
+  259   1      
+  260   1        ad_sum = left_value + right_value + 1; // è®¡ç®—ç”µæ„Ÿä¹‹å’Œ
+  261   1      
+  262   1        // è®¡ç®—ç”µæ„Ÿä¹‹å·®
+  263   1      
+  264   1        ad_diff = (int16)right_value - left_value;
+  265   1        error_x = ad_diff / ad_sum;
+  266   1      
+  267   1        return error_x;
+  268   1      }
+  269          /*****************************************å‡ºç•Œä¿æŠ¤å‡½æ•°*************************************
+  270          å‡½æ•°ï¼š  void Out_protect()
+  271          å‚æ•°ï¼š  æ— 
+  272          è¯´æ˜ï¼š  é˜²æ­¢è½¦å†²å‡ºèµ›é“åæ’åä¸œè¥¿,æ£€æµ‹å‡ºèµ›é“åä¸­æ–­å¤±èƒ½ï¼Œç”µæœºåœè½¬ï¼Œæ”¾å›èµ›
+             -é“ä¸­æ–­ä½¿èƒ½ç»§ç»­è·‘
+  273          
+  274          *æ³¨æ„ï¼šï¼ï¼ï¼å¹³æ—¶è°ƒè¯•æ—¶å¯ä»¥æ‰“å¼€ï¼ŒåŠ äº†é¿éšœå¤„ç†åéœ€è¦å…³é—­æ­¤å‡½æ•°ï¼Œä¸ç„¶æœ‰å
+             -¯èƒ½æ— æ³•å®ç°é¿éšœåŠŸèƒ½ï¼ï¼ï¼
+  275          è¿”å›å€¼ï¼šæ— 
+  276          ******************************************************************************************/
+  277          void Out_protect(void)
+  278          {
+  279   1        if (road_type.annulus || road_type.in_annulus_left || road_type.in_annulus_right || road_type.on_annulus
+             -_left || road_type.on_annulus_right || road_type.out_annulus)
+  280   1        {
+  281   2          if (Left_Adc < OUTSIDE || Right_Adc < OUTSIDE)
+  282   2          {
+  283   3            testflag = 100;
+  284   3            while (1)
+  285   3            {
+  286   4              go_motor(-2000, -2000);
+  287   4              delay_ms(400);
+  288   4              while (1)
+  289   4              {
+  290   5                go_motor(0, 0);
+  291   5              }
+  292   4            }
+  293   3          }
+  294   2        }
+  295   1      }
+  296          
+  297          void Annulus_assist(void)
+  298          {
+  299   1        if (road_type.annulus == 1 && road_type.in_annulus_right == 0 && road_type.on_annulus_right == 0 && road
+             -_type.out_annulus == 0) //&&road_type.in_annulus_left==0
+  300   1        {
+  301   2          annulus_s += fabs(last_speed) * 1;
+  302   2        }
+  303   1        if (road_type.in_annulus_right == 1) // road_type.in_annulus_left==1 ||                 && road_type.on_
+             -annulus_left==0ï¿½ï¿½ï¿½â£©&& road_type.on_annulus_right==0
+  304   1        {
+  305   2          // annulus_z += fabs(GORY_Z);
+  306   2          annulus_s2 += fabs(last_speed) * 1; // ï¿½ï¿½ï¿½İ»ï¿½ï¿½Ö¾ï¿½ï¿½ï¿½Í±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½Ä£
+             -ï¿½0.1ï¿½ï¿½
+  307   2        }
+  308   1        if (road_type.on_annulus_right == 1) // road_type.in_annulus_left==1 ||                 && road_type.on_
+             -annulus_left==0ï¿½ï¿½ï¿½â£©&& road_type.on_annulus_right==0
+  309   1        {
+  310   2          //        annulus_z += fabs(GORY_Z);
+  311   2          annulus_s3 += fabs(last_speed) * 1; // ï¿½ï¿½ï¿½İ»ï¿½ï¿½Ö¾ï¿½ï¿½ï¿½Í±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½Ä£
+             -ï¿½0.1ï¿½ï¿½
+  312   2        }
+  313   1        if (road_type.out_annulus == 1)
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 6   
 
-  320          ******************************************************************************************/
-  321          void Annulus_handle(void)
-  322          {
-  323   1                if((Left_Adc+Right_Adc)>IN_ANNULUS_H_LIMIT&&road_type.annulus==0)
-  324   1                {
-  325   2                              road_type.annulus        = 1;
-  326   2                  BUZZ_ON;                    
-  327   2                }
-  328   1                //ÓÒ»·½ø»·ÅĞ¶Ï
-  329   1                if(annulus_s > DISTANCE_ANNULUS_S &&road_type.annulus==1&&road_type.in_annulus_right==0&&(Right_Shu_Ad
-             -c>20))
-  330   1                {
-  331   2                              road_type.in_annulus_right = 1;
-  332   2                              BUZZ_ON;
-  333   2                              P52                      = 0;
-  334   2                }
-  335   1                //ÓÒ»·´¦Àí
-  336   1                if(road_type.in_annulus_right == 1 && annulus_s2> 350 )
-  337   1                {
-  338   2                                road_type.on_annulus_right = 1;
-  339   2                                BUZZ_ON;
-  340   2                                P52                      = 1;
-  341   2                }
-  342   1                if(road_type.on_annulus_right==1&&Left_Adc+Right_Adc+Right_Shu_Adc+Left_Shu_Adc>OUT_ANNULUS_S_LIMIT ) 
-             - 
-  343   1            {
-  344   2                                      
-  345   2                              BUZZ_ON;        
-  346   2                              road_type.out_annulus = 1;
-  347   2                              annulus_s                        = 0;
-  348   2                              annulus_z                  = 0;
-  349   2                          annulus_s2                 = 0;
-  350   2            }
-  351   1                //³ö»·´¦Àí
-  352   1            if(annulus_t > DISTANCE_ANNULUS_T)
-  353   1                {                             
-  354   2                                      road_type.annulus          = 0;
-  355   2                                      road_type.in_annulus_left  = 0;
-  356   2                                road_type.in_annulus_right = 0;
-  357   2                                      road_type.on_annulus_left  = 0;
-  358   2                                road_type.on_annulus_right = 0;
-  359   2                                      road_type.out_annulus      = 0;
-  360   2                                annulus_t                  = 0;
-  361   2                              
-  362   2                                BUZZ_OFF;     
-  363   2            }
-  364   1      }
-  365          /*************************************»·µº¸¨Öúº¯Êı*************************************
-  366          º¯Êı£º  void Annulus_assist(void)
-  367          ²ÎÊı£º  ÎŞ
-  368          ËµÃ÷£º  ¹ı»·µºÈı½ÇÇø»ı·Ö£¬½ø»·»ı·Ö£¬³ö»·»ı·ÖµÈ
-  369          
-  370          *×¢Òâ£º »ı·ÖÖµ»á»áËæ²ÉÑùÊ±¼äµÄ²»Í¬¶ø¸Ä±ä£¬ĞèÒª×Ô¼ºÓÃÊÖÍÆ³µÈ¥²âÁ¿ÓÃÆÁÄ»ÏÔÊ¾¿´²¢¼ÇÂ¼È¥ĞŞ¸Ä
-  371          ·µ»ØÖµ£ºÎŞ  
-  372          ******************************************************************************************/
-  373          void Annulus_assist(void)
-  374          {
-  375   1               if(road_type.annulus==1&&road_type.in_annulus_left==0&&road_type.in_annulus_right==0)
-  376   1         {
-  377   2              annulus_s += fabs(last_speed);  
-  378   2         }
-  379   1               if((road_type.in_annulus_left==1 || road_type.in_annulus_right==1) && road_type.on_annulus_left==0&& ro
-             -ad_type.on_annulus_right==0)
-  380   1         {
-  381   2                 annulus_s2+= fabs(last_speed);
-  382   2         }
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  21:17:17  PAGE 7   
+  314   1        {
+  315   2          annulus_t = fabs(last_speed) * 1;
+  316   2          //          annulus_t=annulus_t+5;
+  317   2        }
+  318   1      }
+  319          
+  320          int8 testflag;
+  321          /*************************************ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*******************************
+             -******
+  322          å‡½æ•°ï¼š  void Annulus_handle(void)
+  323          å‚æ•°ï¼š  æ— 
+  324          è¯´æ˜ï¼š  ç¯å²›å¤„ç†å‡½æ•°
+  325          
+  326          *æ³¨æ„ï¼šç”¨ä¸¤ä¸ªç«–ç”µæ„Ÿå¼•å¯¼è¿›ç¯
+  327          è¿”å›å€¼ï¼šæ— 
+  328          ******************************************************************************************/
+  329          void Annulus_handle(void)
+  330          {
+  331   1        //å³ç¯å²›ç‰¹åŒ–æ£€æµ‹
+  332   1        if ((Left_Adc + Right_Adc+Left_Shu_Adc+Right_Shu_Adc) > IN_ANNULUS_H_LIMIT 
+  333   1        && (road_type.annulus == 0)
+  334   1        &&(Left_Adc>3*Right_Adc)
+  335   1        &&(Left_Adc>Left_Shu_Adc))
+  336   1        {
+  337   2          testflag = 1;
+  338   2          road_type.annulus = 1;
+  339   2          BUZZ_ON;
+  340   2      
+  341   2        }
+  342   1        //    //å·¦ç¯è¿›ç¯åˆ¤æ–­
+  343   1        //    if(annulus_s > DISTANCE_ANNULUS_S
+  344   1        //       &&(Left_Shu_Adc>20)
+  345   1        //       &&road_type.annulus==1
+  346   1        //       &&road_type.in_annulus_left==0
+  347   1        //       &&road_type.in_annulus_right==0
+  348   1        //       &&road_type.on_annulus_left==0
+  349   1        //       &&road_type.on_annulus_right==0
+  350   1        //       &&road_type.out_annulus==0)
+  351   1        //    {
+  352   1        //      road_type.in_annulus_left = 1;
+  353   1        //      P52                      = 0;
+  354   1        //      testflag = 2;
+  355   1        //    }
+  356   1        // å³ç¯è¿›ç¯åˆ¤æ–­
+  357   1        if ((annulus_s > DISTANCE_ANNULUS_S)
+  358   1        && (road_type.annulus == 1) 
+  359   1        && (road_type.in_annulus_left == 0) 
+  360   1        && (road_type.in_annulus_right == 0) 
+  361   1        && (road_type.on_annulus_left == 0) 
+  362   1        && (road_type.on_annulus_right == 0) 
+  363   1        && (road_type.out_annulus == 0))
+  364   1        {
+  365   2          testflag = 3;
+  366   2          road_type.in_annulus_right = 1;
+  367   2          BUZZ_ON;
+  368   2          // while(1)
+  369   2          // {
+  370   2          //  go_motor(0,0);
+  371   2          // }
+  372   2        }
+  373   1        //    //å·¦ç¯ä¸Šç¯å¤„ç†
+  374   1        //    if(annulus_s2 > 40
+  375   1        ////       &&annulus_z > DISTANCE_ANNULUS_Z
+  376   1        //       &&road_type.annulus==1
+  377   1        //       &&road_type.in_annulus_left==1
+  378   1        //       &&road_type.in_annulus_right==0
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 7   
 
-  383   1               if(road_type.out_annulus==1)
-  384   1         {
-  385   2      //        annulus_t=fabs(last_speed)*0.1;
-  386   2                            annulus_t=annulus_t+5;
-  387   2         }
-  388   1      }
-  389          
-  390          uint8 obstacle_number=0;
-  391          /*************************************±ÜÕÏ¼ì²âº¯Êı*************************************
-  392          º¯Êı£º  void obstacle_avoidance(void)
-  393          ²ÎÊı£º  ÎŞ
-  394          ËµÃ÷£º  TFO±ÜÕÏÄ£¿é¼ì²â£¬Ê¹ÓÃÈí¼şÄ£ÄâIICÍ¨ĞÅ£¬ÀíÂÛÉÏÈÎºÎÒı½Å¶¼¿ÉÒÔÊ¹ÓÃ£¬µ«ÊÇÒª×¢Òâ²»ÄÜÒı½Å
-  395                  ¸´ÓÃ¡£
-  396          *×¢Òâ£º TOFÄ£¿éÀëÕÏ°­ÎïÔ½Ô¶ÊıÖµÔ½´ó£¬Ô½½üÊıÖµÔ½Ğ¡
-  397          ·µ»ØÖµ£ºÎŞ  
-  398          ******************************************************************************************/
-  399          void obstacle_avoidance(void)
-  400          {
-  401   1              dl1a_get_distance();                                       //¾àÀë²âÁ¿
-  402   1      //      if(dl1a_distance_mm<SET_DLLA_DISTANCE&&flag_obstacle==0&&(fabs(Current_Dir)<3)&&obstacle_number==0) //
-             -²âÁ¿¾àÀëĞ¡ÓÚÉè¶¨Öµ±êÖ¾Î»³ÉÁ¢
-  403   1      //      if(dl1a_distance_mm<SET_DLLA_DISTANCE)
-  404   1              if(dl1a_distance_mm<SET_DLLA_DISTANCE&&flag_obstacle==0&&(fabs(Current_Dir)<3)) //²âÁ¿¾àÀëĞ¡ÓÚÉè¶¨Öµ±êÖ¾
-             -Î»³ÉÁ¢
-  405   1              {
-  406   2                      
-  407   2                      flag_obstacle=1;
-  408   2      //              obstacle_number++;//±ÜÕÏÖ»ÅĞ¶ÏÒ»´Î£¬·¢³µÊ±Í¨¹ı²¦Âë¿ª¹ØÑ¡Ôñ³ö¿â·½ÏòÏÈ×ß±ÜÕÏ£¬Ö»ÔÚÖ±µÀÅĞ¶Ï±ÜÕÏ£¬¼õĞ¡ÎóÅ
-             -Ğ
-  409   2              }
-  410   1      }
-  411          /*************************************·Ö¶ÎP*************************************
-  412          º¯Êı£º  void obstacle_avoidance(void)
-  413          ²ÎÊı£º  ÎŞ
-  414          ËµÃ÷£º  TFO±ÜÕÏÄ£¿é¼ì²â£¬Ê¹ÓÃÈí¼şÄ£ÄâIICÍ¨ĞÅ£¬ÀíÂÛÉÏÈÎºÎÒı½Å¶¼¿ÉÒÔÊ¹ÓÃ£¬µ«ÊÇÒª×¢Òâ²»ÄÜÒı½Å
-  415                  ¸´ÓÃ¡£
-  416          *×¢Òâ£º TOFÄ£¿éÀëÕÏ°­ÎïÔ½Ô¶ÊıÖµÔ½´ó£¬Ô½½üÊıÖµÔ½Ğ¡
-  417          ·µ»ØÖµ£ºÎŞ  
-  418          ******************************************************************************************/
-  419          void subsection_p(void)
-  420          {
-  421   1        
-  422   1      }
-  423          /*************************************±ÜÕÏ¸¨Öúº¯Êı*************************************
-  424          º¯Êı£º  void Annulus_assist(void)
-  425          ²ÎÊı£º  ÎŞ
-  426          ËµÃ÷£º  ¹ı»·µºÈı½ÇÇø»ı·Ö£¬½ø»·»ı·Ö£¬³ö»·»ı·ÖµÈ
-  427          
-  428          *×¢Òâ£º »ı·ÖÖµ»á»áËæ²ÉÑùÊ±¼äµÄ²»Í¬¶ø¸Ä±ä£¬ĞèÒª×Ô¼ºÓÃÊÖÍÆ³µÈ¥²âÁ¿ÓÃÆÁÄ»ÏÔÊ¾¿´²¢¼ÇÂ¼È¥ĞŞ¸Ä
-  429          ******************************************************************************************/
-  430          void Obstacle_assist(void)
-  431          {
-  432   1               if(flag_obstacle==1)
-  433   1         {
-  434   2             obstacle_annulus_z1 += fabs(GORY_Z)*0.1;
-  435   2                         obstacle_annulus_s1 += fabs(real_speed)*0.1;
-  436   2         }
-  437   1               if(obstacle_switch_1==1&&flag_obstacle==1)
-  438   1         {
-  439   2             obstacle_annulus_z2 += fabs(GORY_Z)*0.1;
-  440   2                         obstacle_annulus_s2 += fabs(real_speed)*0.1;
-  441   2         }
-  442   1               if(obstacle_switch_2==1&&obstacle_switch_1==1&&flag_obstacle==1)
-  443   1         {
-  444   2             obstacle_annulus_z3 += fabs(GORY_Z)*0.1;
-  445   2                         obstacle_annulus_s3 += fabs(real_speed)*0.1;
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  21:17:17  PAGE 8   
+  379   1        //       &&road_type.on_annulus_left==0
+  380   1        //       &&road_type.on_annulus_right==0
+  381   1        //       &&road_type.out_annulus==0)
+  382   1        //    {
+  383   1        //        testflag = 4;
+  384   1        //        road_type.in_annulus_left =0;
+  385   1        //        road_type.on_annulus_left = 1;
+  386   1        //        BUZZ_ON;
+  387   1        //        P52                      = 1;
+  388   1        //    }
+  389   1        // å³ç¯ä¸Šç¯å¤„ç†
+  390   1        if (annulus_s2 > 1300 && road_type.annulus == 1 && road_type.in_annulus_left == 0 && road_type.in_annulu
+             -s_right == 1 && road_type.on_annulus_left == 0 && road_type.on_annulus_right == 0 && road_type.out_annulus == 0)
+  391   1        {
+  392   2          testflag = 5;
+  393   2          road_type.in_annulus_right = 0;
+  394   2          road_type.on_annulus_right = 1;
+  395   2          BUZZ_ON;
+  396   2        }
+  397   1        if (((road_type.on_annulus_right == 1) 
+  398   1        || (road_type.on_annulus_left == 1)) 
+  399   1        && Left_Adc + Right_Adc > OUT_ANNULUS_S_LIMIT 
+  400   1        && annulus_s3 > 3200)
+  401   1        {
+  402   2          testflag = 6;
+  403   2          road_type.on_annulus_right = 0;
+  404   2          road_type.on_annulus_left = 0;
+  405   2          road_type.out_annulus = 1;
+  406   2          annulus_s = 0;
+  407   2          annulus_z = 0;
+  408   2          annulus_s2 = 0;
+  409   2          BUZZ_ON;
+  410   2        }
+  411   1        // å‡ºç¯å¤„ç†
+  412   1        if (annulus_t > DISTANCE_ANNULUS_T 
+  413   1          && road_type.out_annulus == 1)
+  414   1        {
+  415   2          testflag = 7;
+  416   2          road_type.out_annulus = 0;
+  417   2          annulus_t = 0;
+  418   2          BUZZ_OFF;
+  419   2          //          while(1)
+  420   2          //          {
+  421   2          //            go_motor(0,0);
+  422   2          //          }
+  423   2        }
+  424   1      }
+  425          /*************************æ ¹æ®èµ›é“ç±»å‹é€‰æ‹©ä¸åŒçš„æ–¹å‘åå·®è®¡ç®—æ–¹æ³•**********************
+             -***
+  426          å‡½æ•°ï¼š  int16 Direction_error(void)
+  427          åŠŸèƒ½ï¼š  æ ¹æ®èµ›é“ç±»å‹é€‰æ‹©ä¸åŒçš„æ–¹å‘åå·®
+  428          å‚æ•°ï¼š  æ— 
+  429          è¯´æ˜ï¼š  æ ¹æ®èµ›é“ç±»å‹é€‰æ‹©ä¸åŒçš„æ–¹å‘åå·®
+  430          è¿”å›å€¼ï¼šerror--è¿”å›èµ›é“åå·®
+  431          ****************************************************************************************/
+  432          float Direction_error(void)
+  433          {
+  434   1        float error = 0;
+  435   1      
+  436   1        if (road_type.annulus == 1)
+  437   1        {
+  438   2          error = Cha_x_bi_he(Left_Adc, Left_Shu_Adc*5, Right_Adc/3, Right_Shu_Adc) * 10;
+  439   2          if (road_type.in_annulus_right == 1 )
+  440   2          {
+  441   3            error = 0.5; 
+  442   3          }
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 8   
 
-  446   2                 
-  447   2         }
-  448   1      }
-  449          /*************************¸ù¾İÈüµÀÀàĞÍÑ¡Ôñ²»Í¬µÄ·½ÏòÆ«²î¼ÆËã·½·¨*************************
-  450          º¯Êı£º  int16 Direction_error(void)
-  451          ¹¦ÄÜ£º  ¸ù¾İÈüµÀÀàĞÍÑ¡Ôñ²»Í¬µÄ·½ÏòÆ«²î
-  452          ²ÎÊı£º  ÎŞ
-  453          ËµÃ÷£º  ¸ù¾İÈüµÀÀàĞÍÑ¡Ôñ²»Í¬µÄ·½ÏòÆ«²î
-  454          ·µ»ØÖµ£ºerror--·µ»ØÈüµÀÆ«²î
-  455          ****************************************************************************************/
-  456          float Direction_error(void)
-  457          {
-  458   1          float error = 0;
-  459   1      
-  460   1              
-  461   1                //»·µº·½ÏòÆ«²î¼ÆËã
-  462   1          if(road_type.annulus==1)
-  463   1          {
-  464   2                                              error = Cha_x_bi_he(2*Left_Adc,Left_Shu_Adc,2*Right_Adc,Right_Shu_Adc)*20;                              
-  465   2                                      //ÈëÓÒ»·µº·½ÏòÆ«²î¼ÆËã
-  466   2                                  if(road_type.in_annulus_right ==1 && road_type.on_annulus_right==0 && road_type.out_annulus==0)
-  467   2                                      {       
-  468   3                                              if( Left_Adc>=Right_Adc ) error= 20;
-  469   3                                              error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;                                   // error = 3;
-  470   3                                      }
-  471   2                                      //ÔÚ»·µºÆ«²î
-  472   2                                      if(road_type.on_annulus_right==1)
-  473   2                                      {
-  474   3                                              error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc*2,Right_Adc,Right_Shu_Adc*2)*20;                              
-  475   3                                      }
-  476   2                      //³ö»·µº·½ÏòÆ«²î¼ÆËã
-  477   2                                      if(road_type.out_annulus==1&&road_type.on_annulus_right==1)
-  478   2                                      {
-  479   3      //                                  error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*7;
-  480   3                                              error = 15;
-  481   3      //                                      error = Cha_bi_he(Right_Adc,Left_Adc,5);                                        
-  482   3                                      }
-  483   2          }else{
-  484   2                              error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc*2,Right_Adc,Right_Shu_Adc*2)*20;                      //ÆÁÄ»ÏÔÊ¾µÄÈüµÀÆ«²îÖµ
-  485   2                              aim_speedb=aim_speed;
-  486   2                       }          
-  487   1                      return error;
-  488   1      }
-  489          
-  490          /**********************************µç´ÅËùÓĞ×Ü´¦Àí***************************************
-  491          º¯Êı£º  void Get_deviation(void)
-  492          ¹¦ÄÜ£º  µç´ÅËùÓĞ×Ü´¦Àí
-  493          ²ÎÊı£º  ÎŞ
-  494          ËµÃ÷£º  ·ÅÖĞ¶Ïµ÷ÓÃ´Ëº¯Êı¼´¿É
-  495          ·µ»ØÖµ£ºÎŞ
-  496          ****************************************************************************************/
-  497          void Get_deviation(void)
-  498          {
-  499   1      
-  500   1              ADC_Collect();           //µç¸ĞÔ­Ê¼Öµ²ÉÖµ
-  501   1              Data_current_analyze();  //µç¸ĞÖµ¹éÒ»»¯º¯Êı
-  502   1              Annulus_handle();        //»·µº´¦Àí
-  503   1              Annulus_assist(); //»·µº¸¨Öúº¯Êı
-  504   1              obstacle_avoidance();    //ÕÏ°­Îï¼ì²â
-  505   1              Obstacle_assist();
-  506   1              Current_Dir=Direction_error(); //»ñµÃÈüµÀÆ«²î 
-  507   1      
-  508   1      }
+  443   2          if (road_type.on_annulus_right == 1)
+  444   2          {
+  445   3            error = (Cha_bi_he(Right_Adc, Left_Adc, 20));
+  446   3          }
+  447   2          if (road_type.out_annulus == 1 && road_type.on_annulus_right == 1)
+  448   2          {
+  449   3            error = -3;
+  450   3            road_type.annulus = 0;
+  451   3          }
+  452   2        }
+  453   1        else
+  454   1        {
+  455   2          error = Cha_x_bi_he(Left_Adc, Left_Shu_Adc * 2, Right_Adc, Right_Shu_Adc * 2) * 20; 
+  456   2        }
+  457   1        return error;
+  458   1      }
+  459          
+  460          /**********************************ç”µç£æ‰€æœ‰æ€»å¤„ç†***************************************
+  461          å‡½æ•°ï¼š  void Get_deviation(void)
+  462          åŠŸèƒ½ï¼š  ç”µç£æ‰€æœ‰æ€»å¤„ç†
+  463          å‚æ•°ï¼š  æ— 
+  464          è¯´æ˜ï¼š  æ”¾ä¸­æ–­è°ƒç”¨æ­¤å‡½æ•°å³å¯
+  465          è¿”å›å€¼ï¼šæ— 
+  466          ****************************************************************************************/
+  467          void Get_deviation(void)
+  468          {
+  469   1      
+  470   1        ADC_Collect();           
+  471   1        Data_current_analyze();      
+  472   1        Annulus_handle();        
+  473   1        Annulus_assist();        
+  474   1        Current_Dir = Direction_error(); 
+  475   1      }
 
 
 Module Information          Static   Overlayable
 ------------------------------------------------
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  21:17:17  PAGE 9   
-
-  code size            =      1751     ------
+  code size            =      1417     ------
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
   pdata size           =    ------     ------
   xdata size           =    ------     ------
   xdata-const size     =    ------     ------
-  edata size           =       224         20
+  edata size           =       194         20
   bit size             =    ------     ------
   ebit size            =    ------     ------
   bitaddressable size  =    ------     ------
@@ -560,7 +528,7 @@ Module Information          Static   Overlayable
   far data size        =    ------     ------
   huge data size       =    ------     ------
   const size           =    ------     ------
-  hconst size          =       322     ------
+  hconst size          =       223     ------
 End of Module Information.
 
 

@@ -7,12 +7,12 @@
 #define T_OUT_PARK1      1900
 #define T_OUT_PARK2      2400
 
-//±äÁ¿ÉùÃ÷
-extern int8   flag_start;          //³ö¿âÍê±Ï
-extern int8   flag_open_reed;      //ÆÁ±Î¸É»É¹Ü
-extern int8   reed_state;          //¸É»É¹Ü×´Ì¬
-extern int8   flag_end;            //¿ªÊ¼Í£³µ±êÖ¾Î»
-extern uint16 T_outku;    //³ö¿âÖ±×ßºÍ´ò½Ç¶¨Ê±
+//å˜é‡å£°æ˜
+extern int8   flag_start;          //å‡ºåº“å®Œæ¯•
+extern int8   flag_open_reed;      //å±è”½å¹²ç°§ç®¡
+extern int8   reed_state;          //å¹²ç°§ç®¡çŠ¶æ€
+extern int8   flag_end;            //å¼€å§‹åœè½¦æ ‡å¿—ä½
+extern uint16 T_outku;    //å‡ºåº“ç›´èµ°å’Œæ‰“è§’å®šæ—¶
 extern uint16 J_outku;
 extern uint16 T_inku_wait;
 extern uint16 T_inku_J;
@@ -22,7 +22,7 @@ extern uint16 T_inku;
 extern uint16 S_daoku;
 extern uint8 Library_selection;
 
-//º¯ÊıÉêÃ÷
+//å‡½æ•°ç”³æ˜
 extern void Handle_Barn_Out(uint8 type);
 extern void Reed(void);
 extern void In_park(uint8 type);

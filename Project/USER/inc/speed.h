@@ -5,7 +5,7 @@
 
 #define Limit_Min_Max(data,min,max) (((data)>(max)) ? (max) : (((data) < (min)) ? (min) : (data)))
 
-//变量申明
+//鍙橀噺鐢虫槑
 
 extern int16 aim_speeda ;
 extern int16 aim_speedb ; 
@@ -24,13 +24,13 @@ extern int16 All_PWM_left;
 extern int16 All_PWM_right;    
 extern int16 Speed_pwm_left;      
 extern int16 Speed_pwm_right;
-extern int16 Real_Speed_left;    //左轮实际速度
-extern int16 Real_Speed_right;   //右轮实际速度
+extern int16 Real_Speed_left;    //宸﹁疆瀹為檯閫熷害
+extern int16 Real_Speed_right;   //鍙宠疆瀹為檯閫熷害
 extern int16 Speed_pwm_all;      
 extern int16 Steer_pwm;
 extern uint16 Open_pack_time;
 
-//函数声明
+//鍑芥暟澹版槑
 void init_PWM(unsigned char Motor_Set);
 void encoder_init(void);
 void speed_measure(void);

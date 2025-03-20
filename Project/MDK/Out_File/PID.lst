@@ -1,21 +1,21 @@
-C251 COMPILER V5.60.0,  PID                                                                20/03/25  21:17:16  PAGE 1   
+C251 COMPILER V5.60.0,  PID                                                                20/03/25  23:56:14  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE PID
 OBJECT MODULE PLACED IN .\Out_File\PID.obj
-COMPILER INVOKED BY: D:\keil\C251\BIN\C251.EXE ..\USER\src\PID.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\Librar
-                    -ies\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\src) DE
-                    -BUG PRINT(.\Out_File\PID.lst) OBJECT(.\Out_File\PID.obj) 
+COMPILER INVOKED BY: D:\Keil_v5\C251\BIN\C251.EXE ..\USER\src\PID.c XSMALL INTR2 WARNINGLEVEL(3) BROWSE INCDIR(..\..\Lib
+                    -raries\libraries;..\..\Libraries\seekfree_libraries;..\..\Libraries\seekfree_peripheral;..\CODE;..\USER\inc;..\USER\src)
+                    - DEBUG PRINT(.\Out_File\PID.lst) TABS(2) OBJECT(.\Out_File\PID.obj) 
 
 stmt  level    source
 
     1          #include "PID.h"
     2          #include "math.h"
     3          /************************************************
-    4          ∫Ø ˝√˚£∫IncPIDInit(PID *sptr)
-    5          π¶  ƒ‹£∫PID≤Œ ˝≥ı ºªØ
-    6          ≤Œ   ˝£∫
-    7          ∑µªÿ÷µ£∫void
+    4          ÂáΩÊï∞ÂêçÔºöIncPIDInit(PID *sptr)
+    5          Âäü  ËÉΩÔºöPIDÂèÇÊï∞ÂàùÂßãÂåñ
+    6          ÂèÇ  Êï∞Ôºö
+    7          ËøîÂõûÂÄºÔºövoid
     8          ************************************************/
     9          void IncPIDInit(PID *sptr)
    10          {
@@ -29,68 +29,69 @@ stmt  level    source
    18   1      }
    19          
    20          /************************************************
-   21          ∫Ø ˝√˚£∫LocP_DCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
-   22          π¶  ƒ‹£∫Œª÷√ ΩPIDøÿ÷∆
-   23          ≤Œ   ˝£∫PID *sptr,int16 Setpoint,int16 Turepoint
-   24          ∑µªÿ÷µ£∫float 
+   21          ÂáΩÊï∞ÂêçÔºöLocP_DCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
+   22          Âäü  ËÉΩÔºö‰ΩçÁΩÆÂºèPIDÊéßÂà∂
+   23          ÂèÇ  Êï∞ÔºöPID *sptr,int16 Setpoint,int16 Turepoint
+   24          ËøîÂõûÂÄºÔºöfloat 
    25          ************************************************/
    26          int16 LocP_DCalc(PID*sptr,int16 Setpoint,int16 Turepoint)
    27          {
    28   1          int16 iError,dError;
    29   1          int16 output;
    30   1      
-   31   1          iError=Setpoint-Turepoint;  //∆´≤Ó
-   32   1          sptr->SumError+=iError;            //ª˝∑÷(≤…—˘ ±º‰∫‹∂Ã ±£¨”√“ªΩ◊≤Ó∑÷¥˙ÃÊ“ªΩ◊Œ¢∑÷£¨”√¿€º”¥˙ÃÊª˝∑÷)
-   33   1          dError=(int16)(iError-(sptr->LastError));     //Œ¢∑÷
+   31   1          iError=Setpoint-Turepoint;  //ÂÅèÂ∑Æ
+   32   1          sptr->SumError+=iError;            //ÁßØÂàÜ(ÈááÊ†∑Êó∂Èó¥ÂæàÁü≠Êó∂ÔºåÁî®‰∏ÄÈò∂Â∑ÆÂàÜ‰ª£Êõø‰∏ÄÈò∂ÂæÆÂàÜ
+             -ÔºåÁî®Á¥ØÂä†‰ª£ÊõøÁßØÂàÜ)
+   33   1          dError=(int16)(iError-(sptr->LastError));     //ÂæÆÂàÜ
    34   1          sptr->LastError=iError;
-   35   1          if(sptr->SumError>2000) sptr->SumError=2000;   //ª˝∑÷œﬁ∑˘
+   35   1          if(sptr->SumError>2000) sptr->SumError=2000;   //ÁßØÂàÜÈôêÂπÖ
    36   1          if(sptr->SumError<-2000) sptr->SumError=-2000;
-   37   1          output=(int16)(sptr->Kp*iError  //±»¿˝œÓ
-   38   1                +(sptr->Ki*sptr->SumError)//ª˝∑÷œÓ
-   39   1                +sptr->Kd*dError);        //Œ¢∑÷œÓ
+   37   1          output=(int16)(sptr->Kp*iError  //ÊØî‰æãÈ°π
+   38   1                +(sptr->Ki*sptr->SumError)//ÁßØÂàÜÈ°π
+   39   1                +sptr->Kd*dError);        //ÂæÆÂàÜÈ°π
    40   1          return(output);
    41   1      }
    42          /************************************************
-   43          ∫Ø ˝√˚£∫IncPIDCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
-   44          π¶  ƒ‹£∫‘ˆ¡ø ΩPIDøÿ÷∆
-   45          ≤Œ   ˝£∫PID *sptr,int16 Setpoint,int16 Turepoint
-   46          ∑µªÿ÷µ£∫int32 iIncpid
+   43          ÂáΩÊï∞ÂêçÔºöIncPIDCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
+   44          Âäü  ËÉΩÔºöÂ¢ûÈáèÂºèPIDÊéßÂà∂
+   45          ÂèÇ  Êï∞ÔºöPID *sptr,int16 Setpoint,int16 Turepoint
+   46          ËøîÂõûÂÄºÔºöint32 iIncpid
    47          ************************************************/
    48          int16 IncPIDCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
    49          {
    50   1          int16 iError,iIncpid;
-   51   1          //µ±«∞ŒÛ≤Ó
-   52   1          iError=Setpoint-Turepoint;      //∆´≤Ó
+   51   1          //ÂΩìÂâçËØØÂ∑Æ
+   52   1          iError=Setpoint-Turepoint;      //ÂÅèÂ∑Æ
    53   1           
    54   1          iIncpid=sptr->Kp*(iError-sptr->LastError)
    55   1                   +sptr->Ki*iError;
-   56   1      //    //¥¢¥ÊŒÛ≤Ó£¨”√”⁄œ¬¥Œº∆À„
-   57   1      //    if(iIncpid>=100)   //√ø¥Œ ‰≥ˆ‘ˆ¡øœﬁ∑˘
-C251 COMPILER V5.60.0,  PID                                                                20/03/25  21:17:16  PAGE 2   
+   56   1      //    //ÂÇ®Â≠òËØØÂ∑ÆÔºåÁî®‰∫é‰∏ãÊ¨°ËÆ°ÁÆó
+C251 COMPILER V5.60.0,  PID                                                                20/03/25  23:56:14  PAGE 2   
 
-   58   1      //              {                       
-   59   1      //                      iIncpid=100;
-   60   1      //              }
-   61   1      //        if(iIncpid<=-100)  
-   62   1      //              {                       
-   63   1      //                      iIncpid=-100;
-   64   1      //              }
-   65   1                              sptr->LastError=iError;
+   57   1      //    if(iIncpid>=100)   //ÊØèÊ¨°ËæìÂá∫Â¢ûÈáèÈôêÂπÖ
+   58   1      //    {     
+   59   1      //      iIncpid=100;
+   60   1      //    }
+   61   1      //    if(iIncpid<=-100)  
+   62   1      //    {     
+   63   1      //      iIncpid=-100;
+   64   1      //    }
+   65   1            sptr->LastError=iError;
    66   1            return(iIncpid);
    67   1      }
    68          /************************************************
-   69          ∫Ø ˝√˚£∫PlacePID_Control(PID *sptr, int16 Setpoint,int16 Turepiont)
-   70          π¶  ƒ‹£∫∂ØÃ¨Œª÷√ ΩPIDøÿ÷∆ (“ª∞„”√”⁄◊™œÚøÿ÷∆)
-   71          ≤Œ   ˝£∫PID *sptr,int16 Setpoint,int16 Turepoint
-   72          ∑µªÿ÷µ£∫int32 Actual
+   69          ÂáΩÊï∞ÂêçÔºöPlacePID_Control(PID *sptr, int16 Setpoint,int16 Turepiont)
+   70          Âäü  ËÉΩÔºöÂä®ÊÄÅ‰ΩçÁΩÆÂºèPIDÊéßÂà∂ (‰∏ÄËà¨Áî®‰∫éËΩ¨ÂêëÊéßÂà∂)
+   71          ÂèÇ  Êï∞ÔºöPID *sptr,int16 Setpoint,int16 Turepoint
+   72          ËøîÂõûÂÄºÔºöint32 Actual
    73          ************************************************/
    74          int16 PlacePID_Control(PID *sptr, int16 Setpoint,int16 Turepiont)
    75          {
    76   1          int16 iError,Actual;
-   77   1          float KP;  //∂ØÃ¨P£¨◊¢“‚”ÎKp«¯∑÷
+   77   1          float KP;  //Âä®ÊÄÅPÔºåÊ≥®ÊÑè‰∏éKpÂå∫ÂàÜ
    78   1      
    79   1          iError = Setpoint - Turepiont;
-   80   1          KP = (iError)*sptr->Ki +sptr->Kp;    //∂ØÃ¨Pµƒº∆À„
+   80   1          KP = (iError)*sptr->Ki +sptr->Kp;    //Âä®ÊÄÅPÁöÑËÆ°ÁÆó
    81   1          //sptr->SumError+=iError;
    82   1      
    83   1          Actual =KP * iError
@@ -100,30 +101,30 @@ stmt  level    source
    87   1          return Actual;
    88   1      }
    89          /************************************************
-   90          ∫Ø ˝√˚£∫LocP_DCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
-   91          π¶  ƒ‹£∫D≥µŒª÷√ ΩPIDøÿ÷∆£¨º”¡ÀÕ”¬›“«
-   92          ≤Œ   ˝£∫PID *sptr,int16 Setpoint,int16 Turepoint
-   93          ∑µªÿ÷µ£∫float 
+   90          ÂáΩÊï∞ÂêçÔºöLocP_DCalc(PID *sptr,int16 Setpoint,int16 Turepoint)
+   91          Âäü  ËÉΩÔºöDËΩ¶‰ΩçÁΩÆÂºèPIDÊéßÂà∂ÔºåÂä†‰∫ÜÈôÄËû∫‰ª™
+   92          ÂèÇ  Êï∞ÔºöPID *sptr,int16 Setpoint,int16 Turepoint
+   93          ËøîÂõûÂÄºÔºöfloat 
    94          ************************************************/
    95          int16 PID_Turn_DT(PID*sptr,int16 Error,int16 Gory_z)
    96          {
    97   1          int16 iError,dError,gory_z;
-   98   1                float KP;            //∂ØÃ¨P£¨◊¢“‚”ÎKp«¯∑÷
+   98   1          float KP;            //Âä®ÊÄÅPÔºåÊ≥®ÊÑè‰∏éKpÂå∫ÂàÜ
    99   1          int16 output;
   100   1      
-  101   1          iError=Error;  //∆´≤Ó
-  102   1                gory_z=Gory_z;
-  103   1              
-  104   1                KP = (iError*iError)*sptr->Ki + sptr->Kp;    //∂ØÃ¨Pµƒº∆À„
-  105   1              
-  106   1          dError=(iError-(sptr->LastError));     //Œ¢∑÷
-  107   1              
-  108   1          output=KP*iError               //±»¿˝œÓ(∂ØÃ¨p)
-  109   1                +sptr->Kd*dError         //Œ¢∑÷œÓ
-  110   1                      +sptr->K_gory*gory_z;    //Õ”¬›“«–ﬁ’˝
-  111   1              
-  112   1                sptr->LastError=iError;
-  113   1              
+  101   1          iError=Error;  //ÂÅèÂ∑Æ
+  102   1          gory_z=Gory_z;
+  103   1        
+  104   1          KP = (iError*iError)*sptr->Ki + sptr->Kp;    //Âä®ÊÄÅPÁöÑËÆ°ÁÆó
+  105   1        
+  106   1          dError=(iError-(sptr->LastError));     //ÂæÆÂàÜ
+  107   1        
+  108   1          output=KP*iError               //ÊØî‰æãÈ°π(Âä®ÊÄÅp)
+  109   1                +sptr->Kd*dError         //ÂæÆÂàÜÈ°π
+  110   1                +sptr->K_gory*gory_z;    //ÈôÄËû∫‰ª™‰øÆÊ≠£
+  111   1        
+  112   1          sptr->LastError=iError;
+  113   1        
   114   1          return(output);
   115   1      }
 
@@ -134,9 +135,9 @@ Module Information          Static   Overlayable
   ecode size           =    ------     ------
   data size            =    ------     ------
   idata size           =    ------     ------
-  pdata size           =    ------     ------
-C251 COMPILER V5.60.0,  PID                                                                20/03/25  21:17:16  PAGE 3   
+C251 COMPILER V5.60.0,  PID                                                                20/03/25  23:56:14  PAGE 3   
 
+  pdata size           =    ------     ------
   xdata size           =    ------     ------
   xdata-const size     =    ------     ------
   edata size           =    ------     ------

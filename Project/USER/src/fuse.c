@@ -2,222 +2,190 @@
 #include "math.h"
 
 PID SpeedPID = {0};
-PID L_SpeedPID ={0};
-PID R_SpeedPID ={0};
-PID TurnPID ={0};
-
-int16 GORY_Z=0;
-/****************************PID²ÎÊı³õÊ¼»¯**************************************
-º¯Êı£º  void PID_int(void)
-²ÎÊı£º  void
-ËµÃ÷£º  PIDÃ¿¸ö»·²ÎÊı³õÊ¼»¯
-·µ»ØÖµ£ºvoid
+PID L_SpeedPID = {0};
+PID R_SpeedPID = {0};
+PID TurnPID = {0};
+float GORY_Z = 0;
+/****************************PIDå‚æ•°åˆå§‹åŒ–**************************************
+å‡½æ•°ï¼š  void PID_int(void)
+å‚æ•°ï¼š  void
+è¯´æ˜ï¼š  PIDæ¯ä¸ªç¯å‚æ•°åˆå§‹åŒ–
+è¿”å›å€¼ï¼švoid
 ********************************************************************************/
 void PID_int(void)
 {
-//	SpeedPID.Kp=50;     //0.6//ËÙ¶È»·PID²ÎÊı£¨D³µÓÃ£¬ËÙ¶È»·2ms£©18
-//	SpeedPID.Ki=10 ;     //0.5                                  2.5
-//	SpeedPID.Kd=0;
-	
-	L_SpeedPID.Kp=330; //4  //×óÂÖËÙ¶È»·PID²ÎÊı£¨ËÙ¶È»·20ms£©£¨6£©4.5
-	L_SpeedPID.Ki=0.7;//1
-	L_SpeedPID.Kd=0;
-	
-	R_SpeedPID.Kp=330;   //ÓÒËÙ¶È»·PID²ÎÊı£¨ËÙ¶È»·20ms£©£¨6£©5.5
-	R_SpeedPID.Ki=0.7;
-	R_SpeedPID.Kd=0;
-	
-//	TurnPID.Kp=0;       //×ªÏò»·PID²ÎÊı 
-//	TurnPID.Ki=0; //0.08
-//	TurnPID.Kd=0;
-//	
-//	TurnPID.Kp=4;       //×ªÏò»·PID²ÎÊı 
-//	TurnPID.Ki=0; //0.08
-//	TurnPID.Kd=3;
-//	
-	TurnPID.Kp=1.3;       //×ªÏò»·PID²ÎÊı 
-	TurnPID.Ki=0; //0.08
-	TurnPID.Kd=4;
-	
-	TurnPID.K_gory=0;
+	//	SpeedPID.Kp=50;     //0.6//é€Ÿåº¦ç¯PIDå‚æ•°ï¼ˆDè½¦ç”¨ï¼Œé€Ÿåº¦ç¯2msï¼‰18
+	//	SpeedPID.Ki=10 ;     //0.5                                  2.5
+	//	SpeedPID.Kd=0;
+
+	L_SpeedPID.Kp = 330; // 4  //å·¦è½®é€Ÿåº¦ç¯PIDå‚æ•°ï¼ˆé€Ÿåº¦ç¯20msï¼‰ï¼ˆ6ï¼‰4.5
+	L_SpeedPID.Ki = 0.7; // 1
+	L_SpeedPID.Kd = 0;
+
+	R_SpeedPID.Kp = 330; // å³é€Ÿåº¦ç¯PIDå‚æ•°ï¼ˆé€Ÿåº¦ç¯20msï¼‰ï¼ˆ6ï¼‰5.5
+	R_SpeedPID.Ki = 0.7;
+	R_SpeedPID.Kd = 0;
+
+	//	TurnPID.Kp=0;       //è½¬å‘ç¯PIDå‚æ•°
+	//	TurnPID.Ki=0; //0.08
+	//	TurnPID.Kd=0;
+	//
+	//	TurnPID.Kp=4;       //è½¬å‘ç¯PIDå‚æ•°
+	//	TurnPID.Ki=0; //0.08
+	//	TurnPID.Kd=3;
+	//
+	TurnPID.Kp = 1.3; // è½¬å‘ç¯PIDå‚æ•°
+	TurnPID.Ki = 0;	  // 0.08
+	TurnPID.Kd = 0.6;
+
+	TurnPID.K_gory = 0;
 }
-//void PID_int(void)
+// void PID_int(void)
 //{
-//	SpeedPID.Kp=18;     //0.6//ËÙ¶È»·PID²ÎÊı£¨D³µÓÃ£¬ËÙ¶È»·2ms£©18
+//	SpeedPID.Kp=18;     //0.6//é€Ÿåº¦ç¯PIDå‚æ•°ï¼ˆDè½¦ç”¨ï¼Œé€Ÿåº¦ç¯2msï¼‰18
 //	SpeedPID.Ki=3 ;     //0.5                                  2.5
 //	SpeedPID.Kd=0;
-//	
-//	L_SpeedPID.Kp=4; //4  //×óÂÖËÙ¶È»·PID²ÎÊı£¨ËÙ¶È»·20ms£©£¨6£©4.5
+//
+//	L_SpeedPID.Kp=4; //4  //å·¦è½®é€Ÿåº¦ç¯PIDå‚æ•°ï¼ˆé€Ÿåº¦ç¯20msï¼‰ï¼ˆ6ï¼‰4.5
 //	L_SpeedPID.Ki=0.15;//1
 //	L_SpeedPID.Kd=0;
-//	
-//	R_SpeedPID.Kp=4;   //ÓÒËÙ¶È»·PID²ÎÊı£¨ËÙ¶È»·20ms£©£¨6£©5.5
+//
+//	R_SpeedPID.Kp=4;   //å³é€Ÿåº¦ç¯PIDå‚æ•°ï¼ˆé€Ÿåº¦ç¯20msï¼‰ï¼ˆ6ï¼‰5.5
 //	R_SpeedPID.Ki=0.15;
 //	R_SpeedPID.Kd=0;
-//	
-//	TurnPID.Kp=87;       //×ªÏò»·PID²ÎÊı 
+//
+//	TurnPID.Kp=87;       //è½¬å‘ç¯PIDå‚æ•°
 //	TurnPID.Ki=0; //0.08
 //	TurnPID.Kd=0.4;
 //	TurnPID.K_gory=3.5;
-//}
-// ±ğÃû
+// }
+//  åˆ«å
 static TASK_COMPONENTS TaskComps[] =
-{
-    {0,  1,  1, Motor_output_control},         //½ÇËÙ¶ÈÄÚ»·ºÍD³µËÙ¶È»·2ms
-//    {0, 2, 2, Trailing_control},           //×ªÏòÍâ»·10ms
-//    {0, 4, 4, Speed_control},              //C³µËÙ¶È»·20ms
+	{
+		{0, 1, 1, Motor_output_control}, // è§’é€Ÿåº¦å†…ç¯å’ŒDè½¦é€Ÿåº¦ç¯2ms
+										 //    {0, 2, 2, Trailing_control},           //è½¬å‘å¤–ç¯10ms
+										 //    {0, 4, 4, Speed_control},              //Cè½¦é€Ÿåº¦ç¯20ms
 };
 /**************************************************************************************
-* FunctionName   : TaskRemarks()
-* Description    : ÈÎÎñ±êÖ¾´¦Àí
-* EntryParameter : None
-* ReturnValue    : None
-* attention      : ***ÔÚ¶¨Ê±Æ÷ÖĞ¶ÏÖĞµ÷ÓÃ´Ëº¯Êı¼´¿É***
-**************************************************************************************/
+ * FunctionName   : TaskRemarks()
+ * Description    : ä»»åŠ¡æ ‡å¿—å¤„ç†
+ * EntryParameter : None
+ * ReturnValue    : None
+ * attention      : ***åœ¨å®šæ—¶å™¨ä¸­æ–­ä¸­è°ƒç”¨æ­¤å‡½æ•°å³å¯***
+ **************************************************************************************/
 void TaskRemarks(void)
 {
-    uint8 i;
-    for (i=0; i<TASKS_MAX; i++)          // Öğ¸öÈÎÎñÊ±¼ä´¦Àí
-    {
-        if (TaskComps[i].Timer)          // Ê±¼ä²»Îª0
-        {
-           TaskComps[i].Timer--;         // ¼õÈ¥Ò»¸ö½ÚÅÄ
-           if (TaskComps[i].Timer == 0)       // Ê±¼ä¼õÍêÁË
-           {
-             TaskComps[i].Timer = TaskComps[i].ItvTime; // »Ö¸´¼ÆÊ±Æ÷Öµ£¬´ÓĞÂÏÂÒ»´Î
-             TaskComps[i].Run = 1;           // ÈÎÎñ¿ÉÒÔÔËĞĞ
-           }
-        }
-   }
+	uint8 i;
+	for (i = 0; i < TASKS_MAX; i++) // é€ä¸ªä»»åŠ¡æ—¶é—´å¤„ç†
+	{
+		if (TaskComps[i].Timer) // æ—¶é—´ä¸ä¸º0
+		{
+			TaskComps[i].Timer--;		 // å‡å»ä¸€ä¸ªèŠ‚æ‹
+			if (TaskComps[i].Timer == 0) // æ—¶é—´å‡å®Œäº†
+			{
+				TaskComps[i].Timer = TaskComps[i].ItvTime; // æ¢å¤è®¡æ—¶å™¨å€¼ï¼Œä»æ–°ä¸‹ä¸€æ¬¡
+				TaskComps[i].Run = 1;					   // ä»»åŠ¡å¯ä»¥è¿è¡Œ
+			}
+		}
+	}
 }
 
 /**************************************************************************************
-* FunctionName   : TaskProcess()
-* Description    : ÈÎÎñ´¦Àí|ÅĞ¶ÏÊ²Ã´Ê±ºò¸ÃÖ´ĞĞÄÇÒ»¸öÈÎÎñ
-* EntryParameter : None
-* ReturnValue    : None
-* * attention      : ***·ÅÔÚmianµÄwhile(1)¼´¿É***
-**************************************************************************************/
+ * FunctionName   : TaskProcess()
+ * Description    : ä»»åŠ¡å¤„ç†|åˆ¤æ–­ä»€ä¹ˆæ—¶å€™è¯¥æ‰§è¡Œé‚£ä¸€ä¸ªä»»åŠ¡
+ * EntryParameter : None
+ * ReturnValue    : None
+ * * attention      : ***æ”¾åœ¨miançš„while(1)å³å¯***
+ **************************************************************************************/
 void TaskProcess(void)
 {
-    uint8 i; 
-	  for (i=0; i<TASKS_MAX; i++)           // Öğ¸öÈÎÎñÊ±¼ä´¦Àí
-    {
-        if (TaskComps[i].Run)           // Ê±¼ä²»Îª0
-        {
-            TaskComps[i].TaskHook();       // ÔËĞĞÈÎÎñ
-            TaskComps[i].Run = 0;          // ±êÖ¾Çå0
-        }
-    }
+	uint8 i;
+	for (i = 0; i < TASKS_MAX; i++) // é€ä¸ªä»»åŠ¡æ—¶é—´å¤„ç†
+	{
+		if (TaskComps[i].Run) // æ—¶é—´ä¸ä¸º0
+		{
+			TaskComps[i].TaskHook(); // è¿è¡Œä»»åŠ¡
+			TaskComps[i].Run = 0;	 // æ ‡å¿—æ¸…0
+		}
+	}
 }
-/****************************½ÇËÙ¶ÈÄÚ»·ºÍD³µËÙ¶È»·**************************************
-º¯Êı£º  void Motor_output_control()
-²ÎÊı£º  void
-ËµÃ÷£º  ½ÇËÙ¶ÈÄÚ»·ºÍD³µËÙ¶È»·(D³µ/ÈıÂÖ³µ²Å»áÓÃ)
-·µ»ØÖµ£ºvoid
+/****************************è§’é€Ÿåº¦å†…ç¯å’ŒDè½¦é€Ÿåº¦ç¯**************************************
+å‡½æ•°ï¼š  void Motor_output_control()
+å‚æ•°ï¼š  void
+è¯´æ˜ï¼š  è§’é€Ÿåº¦å†…ç¯å’ŒDè½¦é€Ÿåº¦ç¯(Dè½¦/ä¸‰è½®è½¦æ‰ä¼šç”¨)
+è¿”å›å€¼ï¼švoid
 ***************************************************************************************/
 void Motor_output_control()
 {
-//	P52=0;
-	
-	  //imu660ra_get_gyro();   //»ñÈ¡660ÍÓÂİÒÇ½ÇËÙ¶ÈÖµ
-	  icm20602_get_gyro();  
-	  GORY_Z=icm20602_gyro_transition (icm20602_gyro_z);
-	  //GORY_Z= imu660ra_gyro_transition(imu660ra_gyro_z);         // µ¥Î»Îª¡ã/s
-	  speed_measure();       //±àÂëÆ÷²âÁ¿
-	  Get_deviation();       //µç´Å²É¼¯²¢»ñÈ¡ÈüµÀÆ«²î
+	//	  icm20602_get_gyro();
+	//	  GORY_Z=icm20602_gyro_transition (icm20602_gyro_z);// å•ä½ä¸ºÂ°/s
+	speed_measure(); // ç¼–ç å™¨æµ‹é‡,å¾…ä¿®æ­£ç¼–ç å™¨è®¡æ•°å€¼è½¬é€Ÿåº¦çš„å•ä½
+	Get_deviation();       //ç”µç£é‡‡é›†å¹¶è·å–èµ›é“åå·®
+	//	  timed_task();          //å®šæ—¶æ“ä½œ
+	ADC_PWM = PID_Turn_DT(&TurnPID, Current_Dir, GORY_Z); // åŠ¨æ€ä½ç½®å¼PID  left_real_speed
 
-	
-//	  timed_task();          //¶¨Ê±²Ù×÷
-	
-	  ADC_PWM = PID_Turn_DT(&TurnPID,Current_Dir,GORY_Z);//¶¯Ì¬Î»ÖÃÊ½PID  left_real_speed
-//	  ADC_PWM=range_protect(ADC_PWM, -500, 500);
-//	  Speed_pwm_all  += IncPIDCalc(&SpeedPID,aim_speed,real_speed); 
-//    Real_Speed_left+=fabs(real_speed)*0.1;
-//	  if(Real_Speed_left>800)
-//		{
-//			aim_speed=0;
-//			Out_protect();         //³ö½ç±£»¤
-//		}
-	 
+	// å¾…ä¿®æ”¹å·®é€Ÿå‚æ•°
+	Speed_pwm_left += IncPIDCalc(&L_SpeedPID, aim_speed + ADC_PWM, left_real_speed);
+	Speed_pwm_right += IncPIDCalc(&R_SpeedPID, aim_speed - ADC_PWM, right_real_speed);
 
-	  Speed_pwm_left  += IncPIDCalc(&L_SpeedPID,aim_speedb+ADC_PWM,left_real_speed);  
-	  Speed_pwm_right += IncPIDCalc(&R_SpeedPID,aim_speedb-ADC_PWM,right_real_speed); 
-	  
-//	  Speed_pwm_left=range_protect(Speed_pwm_left, -aim_speed, 2*aim_speed);//¼õËÙÏŞ·ù£¨·ÀÖ¹ÂÖ×Ó·´×ªÌ«´óµ¼ÖÂ¼ÙÆÚÍûËÙ¶È£©
-//	  Speed_pwm_right=range_protect(Speed_pwm_right, -aim_speed,2*aim_speed);//¼õËÙÏŞ·ù£¨·ÀÖ¹ÂÖ×Ó·´×ªÌ«´óµ¼ÖÂ¼ÙÆÚÍûËÙ¶È£©
-//	  if(Speed_pwm_left<-aim_speed)
-//	  {
-//	  Speed_pwm_left=-aim_speed;
-//	  }
-//	  if(Speed_pwm_right<-aim_speed)
-//	  {
-//	  Speed_pwm_right=-aim_speed;
-//	  }
-//	  All_PWM_left  = Speed_pwm_all+ADC_PWM; 
-//	  All_PWM_right = Speed_pwm_all-ADC_PWM;
-	  
-	  go_motor(Speed_pwm_left,Speed_pwm_right);                         //¶¯Á¦Êä³ö
-
-//	  pwm_duty(PWMB_CH4_P77, 800);
-//		pwm_duty(PWMB_CH3_P33, 800);
-	   //go_motor(2000,2000);  
-//		Out_protect();         //³ö½ç±£»¤
-//P52=1;
+	//	  Speed_pwm_left =range_protect(Speed_pwm_left,  left_real_speed,  -aim_speed, 2*aim_speed);//å‡é€Ÿé™å¹…ï¼ˆé˜²æ­¢è½®å­åè½¬å¤ªå¤§å¯¼è‡´å‡æœŸæœ›é€Ÿåº¦ï¼‰
+	//	  Speed_pwm_right=range_protect(Speed_pwm_right, right_real_speed, -aim_speed, 2*aim_speed);//å‡é€Ÿé™å¹…ï¼ˆé˜²æ­¢è½®å­åè½¬å¤ªå¤§å¯¼è‡´å‡æœŸæœ›é€Ÿåº¦ï¼‰
+	//	  if(Speed_pwm_left<-aim_speed)
+	//	  {
+	//	  Speed_pwm_left=-aim_speed;
+	//	  }
+	//	  if(Speed_pwm_right<-aim_speed)
+	//	  {
+	//	  Speed_pwm_right=-aim_speed;
+	//	  }
+	//	  All_PWM_left  = Speed_pwm_all+ADC_PWM;
+	//	  All_PWM_right = Speed_pwm_all-ADC_PWM;
+	go_motor(Speed_pwm_left, Speed_pwm_right); // åŠ¨åŠ›è¾“å‡º
+	Out_protect();							   // å‡ºç•Œä¿æŠ¤
+	// P52=1;
 }
-/****************************×ªÏò»·£¨D³µ×ªÏòÍâ»·£©**************************************
-º¯Êı£º  void Trailing_control()
-²ÎÊı£º  void
-ËµÃ÷£º  ×ªÏò»·£¨D³µ×ªÏòÍâ»·£©£¨C³µ×ªÏò»·£©
-·µ»ØÖµ£ºvoid
+/****************************è½¬å‘ç¯ï¼ˆDè½¦è½¬å‘å¤–ç¯ï¼‰**************************************
+å‡½æ•°ï¼š  void Trailing_control()
+å‚æ•°ï¼š  void
+è¯´æ˜ï¼š  è½¬å‘ç¯ï¼ˆDè½¦è½¬å‘å¤–ç¯ï¼‰ï¼ˆCè½¦è½¬å‘ç¯ï¼‰
+è¿”å›å€¼ï¼švoid
 ***************************************************************************************/
 void Trailing_control()
 {
-//	Get_deviation();  //µç´Å²É¼¯²¢»ñÈ¡ÈüµÀÆ«²î
-//	speed_measure();       //±àÂëÆ÷²âÁ¿
-//	
-//	ADC_PWM = LocP_DCalc(&TurnPID,Current_Dir,0);//Î»ÖÃÊ½PD¿ØÖÆ×ªÏò
-////	Out_protect();         //³ö½ç±£»¤
-//	ADC_PWM = PlacePID_Control(&TurnPID,Current_Dir,0);//¶¯Ì¬Î»ÖÃÊ½PID¿ØÖÆ 
-//	ADC_PWM = PlacePID_Control(&TurnPID,Current_Dir,0);//¶¯Ì¬Î»ÖÃÊ½PID¿ØÖÆ (ÓÃÓÚ×ªÏò¿ØÖÆ)
-	  //Steering_Control_Out(ADC_PWM);//(C³µÓÃ¿ØÖÆ¶æ»ú×ªÏò)
+	//	Get_deviation();  //ç”µç£é‡‡é›†å¹¶è·å–èµ›é“åå·®
+	//	speed_measure();       //ç¼–ç å™¨æµ‹é‡
+	//
+	//	ADC_PWM = LocP_DCalc(&TurnPID,Current_Dir,0);//ä½ç½®å¼PDæ§åˆ¶è½¬å‘
+	////	Out_protect();         //å‡ºç•Œä¿æŠ¤
+	//	ADC_PWM = PlacePID_Control(&TurnPID,Current_Dir,0);//åŠ¨æ€ä½ç½®å¼PIDæ§åˆ¶
+	//	ADC_PWM = PlacePID_Control(&TurnPID,Current_Dir,0);//åŠ¨æ€ä½ç½®å¼PIDæ§åˆ¶ (ç”¨äºè½¬å‘æ§åˆ¶)
+	// Steering_Control_Out(ADC_PWM);//(Cè½¦ç”¨æ§åˆ¶èˆµæœºè½¬å‘)
 }
-/****************************ËÙ¶È»·£¨C³µÓÃ£©**************************************
-º¯Êı£º  void Speed_control()
-²ÎÊı£º  void
-ËµÃ÷£º  ËÙ¶È»·£¨C³µÓÃ£©
+/****************************é€Ÿåº¦ç¯ï¼ˆCè½¦ç”¨ï¼‰**************************************
+å‡½æ•°ï¼š  void Speed_control()
+å‚æ•°ï¼š  void
+è¯´æ˜ï¼š  é€Ÿåº¦ç¯ï¼ˆCè½¦ç”¨ï¼‰
 ***************************************************************************************/
 void Speed_control()
 {
-	  //timed_task();           //³ö¿â¶¨Ê±´ò¿ª¸É»É¹ÜµÈ
-	  //speed_measure();      //±àÂëÆ÷²âÁ¿
-	 // aim_speed = 450;      //Ä¿±êËÙ¶È
-	
-	  //Speed_pwm_all = LocP_DCalc(&SpeedPID,aim_speed ,real_speed); //D³µËÙ¶È»·£¨Î»ÖÃÊ½£©
-	  //Speed_pwm_all += IncPIDCalc(&SpeedPID,aim_speed,real_speed);//D³µËÙ¶È»·£¨ÔöÁ¿Ê½£©
-	  
-    //Speed_pwm_left += IncPIDCalc(&L_SpeedPID,aim_speed , left_speed); //C³µ×óÂÖËÙ¶È»·£¨Î»ÖÃÊ½£©
-	  //Speed_pwm_right += IncPIDCalc(&R_SpeedPID, aim_speed, right_speed); //C³µÓÒÂÖËÙ¶È»·£¨Î»ÖÃÊ½£©
-	  //go_motor(Speed_pwm_left,Speed_pwm_right);                         //¶¯Á¦Êä³ö
+	// timed_task();           //å‡ºåº“å®šæ—¶æ‰“å¼€å¹²ç°§ç®¡ç­‰
+	// speed_measure();      //ç¼–ç å™¨æµ‹é‡
+	// aim_speed = 450;      //ç›®æ ‡é€Ÿåº¦
+
+	// Speed_pwm_all = LocP_DCalc(&SpeedPID,aim_speed ,real_speed); //Dè½¦é€Ÿåº¦ç¯ï¼ˆä½ç½®å¼ï¼‰
+	// Speed_pwm_all += IncPIDCalc(&SpeedPID,aim_speed,real_speed);//Dè½¦é€Ÿåº¦ç¯ï¼ˆå¢é‡å¼ï¼‰
+
+	// Speed_pwm_left += IncPIDCalc(&L_SpeedPID,aim_speed , left_speed); //Cè½¦å·¦è½®é€Ÿåº¦ç¯ï¼ˆä½ç½®å¼ï¼‰
+	// Speed_pwm_right += IncPIDCalc(&R_SpeedPID, aim_speed, right_speed); //Cè½¦å³è½®é€Ÿåº¦ç¯ï¼ˆä½ç½®å¼ï¼‰
+	// go_motor(Speed_pwm_left,Speed_pwm_right);                         //åŠ¨åŠ›è¾“å‡º
 }
 /***************************************************************************************
-º¯ÊıÃû£ºint16 range_protect(int16 duty, int16 min, int16 max)
-¹¦  ÄÜ£ºÏŞ·ù±£»¤ 
-²Î  Êı£º
-·µ»ØÖµ£ºduty
+å‡½æ•°åï¼šint16 range_protect(int16 duty, int16 min, int16 max)
+åŠŸ  èƒ½ï¼šé™å¹…ä¿æŠ¤
+å‚  æ•°ï¼š
+è¿”å›å€¼ï¼šduty
 **************************************************************************************/
-int16 range_protect(int16 duty, int16 min, int16 max)//ÏŞ·ù±£»¤
-{
-  if (duty >= max)
-  {
-    return max;
-  }
-  if (duty <= min)
-  {
-    return min;
-  }
-  else
-  {
-    return duty;
-  }
-}
+// int16 range_protect(int16 input, int16 min, int16 max)//é™å¹…ä¿æŠ¤
+//{
+
+//}

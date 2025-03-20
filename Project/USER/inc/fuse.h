@@ -3,7 +3,7 @@
 
 #include "headfile.h"
 
-//½á¹¹Ìå¶¨Òå
+//ç»“æ„ä½“å®šä¹‰
 typedef struct
 {
       uint8 Run;                 
@@ -12,20 +12,18 @@ typedef struct
       void (*TaskHook)(void);   
 }TASK_COMPONENTS;
 
-// ÈÎÎñÇåµ¥
+// ä»»åŠ¡æ¸…å•
 typedef enum _TASK_LIST
 {
-    TAST_Motor_output_control,            
-    TAST_Trailing_control,             
-    TASK_Speed_control,             
+    TAST_Motor_output_control,                      
     //...........
     TASKS_MAX         
 }TASK_LIST;
 
-extern int16 GORY_Z;
+extern float GORY_Z;
 
-//º¯ÊıÉùÃ÷
-int16 range_protect(int16 duty, int16 min, int16 max);
+//å‡½æ•°å£°æ˜
+//int16 range_protect(int16 input, int16 min, int16 max);
 void TaskRemarks(void);
 void TaskProcess(void);
 void Motor_output_control(void);

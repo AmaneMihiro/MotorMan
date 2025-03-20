@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  debug                                                              20/03/25  22:07:04  PAGE 1   
+C251 COMPILER V5.60.0,  debug                                                              20/03/25  23:56:15  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE debug
@@ -66,7 +66,7 @@ stmt  level    source
    54   1          uart_putchar(uratn,data_to_send[i]);
    55   1      }
    56          
-C251 COMPILER V5.60.0,  debug                                                              20/03/25  22:07:04  PAGE 2   
+C251 COMPILER V5.60.0,  debug                                                              20/03/25  23:56:15  PAGE 2   
 
    57          //===================================================上位机相关的==================================
              -========================
@@ -134,7 +134,7 @@ stmt  level    source
   118          
   119          void extern_iap_write_float(double dat,uint8 num,uint8 pointnum,uint16 addr)
   120          {
-C251 COMPILER V5.60.0,  debug                                                              20/03/25  22:07:04  PAGE 3   
+C251 COMPILER V5.60.0,  debug                                                              20/03/25  23:56:15  PAGE 3   
 
   121   1        uint8   length;
   122   1        int8    buff[34];
@@ -202,7 +202,7 @@ stmt  level    source
   180   1      }
   181          //====================================================屏幕相关的=(已删除)========================
              -=====================================
-C251 COMPILER V5.60.0,  debug                                                              20/03/25  22:07:04  PAGE 4   
+C251 COMPILER V5.60.0,  debug                                                              20/03/25  23:56:15  PAGE 4   
 
   182          //=======================================================================================================
              -=====================
@@ -270,7 +270,7 @@ stmt  level    source
   241   1      }
   242          
   243          /*****************拨码开关策略选择*****************
-C251 COMPILER V5.60.0,  debug                                                              20/03/25  22:07:04  PAGE 5   
+C251 COMPILER V5.60.0,  debug                                                              20/03/25  23:56:15  PAGE 5   
 
   244          函数：void Strategy_Slect()
   245          功能：通过拨码开关调整策略
@@ -338,7 +338,7 @@ stmt  level    source
   305          说明： 参考逐飞例程 ，5位按键，如果有增加或者减少可对照修改
   306                // 1号为左移键，2号为上键，3号为右移键，4号为中键盘，5号为下键
   307               //本次程序没有使用调参，stc单片机下载程序也快，改了烧就可以，如果要�
-C251 COMPILER V5.60.0,  debug                                                              20/03/25  22:07:04  PAGE 6   
+C251 COMPILER V5.60.0,  debug                                                              20/03/25  23:56:15  PAGE 6   
 
              -�的话自己根据下面的自己加就可以
   308          返回值：无     */
@@ -406,7 +406,7 @@ stmt  level    source
   366   4              case 0:TurnPID.Kp-=20;       break;
   367   4              case 1:TurnPID.Ki-=5;        break;
   368   4              case 2:TurnPID.Kd-=5;        break;
-C251 COMPILER V5.60.0,  debug                                                              20/03/25  22:07:04  PAGE 7   
+C251 COMPILER V5.60.0,  debug                                                              20/03/25  23:56:15  PAGE 7   
 
   369   4              case 3:;  TurnPID.K_gory-=5;break;
   370   4              case 4:;  break;
@@ -474,7 +474,7 @@ stmt  level    source
              -***
   422   2      //    if(parameter>13&&parameter<20)
   423   2      //    {
-C251 COMPILER V5.60.0,  debug                                                              20/03/25  22:07:04  PAGE 8   
+C251 COMPILER V5.60.0,  debug                                                              20/03/25  23:56:15  PAGE 8   
 
   424   2      //                  
   425   2      //    }
@@ -542,7 +542,7 @@ stmt  level    source
   482   1      //  ips114_showint16(100,7,testflag);
   483   1      }
   484          
-C251 COMPILER V5.60.0,  debug                                                              20/03/25  22:07:04  PAGE 9   
+C251 COMPILER V5.60.0,  debug                                                              20/03/25  23:56:15  PAGE 9   
 
   485          //===============================================调试速度环幕显示================================
              -=============
@@ -610,7 +610,7 @@ stmt  level    source
   539          //    char txt[16] = "X:";
   540          //    unsigned int  duty = Steer_Duty_Midle;
   541          
-C251 COMPILER V5.60.0,  debug                                                              20/03/25  22:07:04  PAGE 10  
+C251 COMPILER V5.60.0,  debug                                                              20/03/25  23:56:15  PAGE 10  
 
   542          //    ips114_clear(YELLOW);  //初始清屏
   543          //    ips114_showstr(0, 0, "Test_Servo_Hardware:");
@@ -678,7 +678,7 @@ stmt  level    source
   604   3                       
   605   3              }
   606   2             if (!READ_GPIO(KEY2))      //按下KEY3键  右轮单独正转
-C251 COMPILER V5.60.0,  debug                                                              20/03/25  22:07:04  PAGE 11  
+C251 COMPILER V5.60.0,  debug                                                              20/03/25  23:56:15  PAGE 11  
 
   607   2              {
   608   3                   go_motor (0,motor_duty);
@@ -746,7 +746,7 @@ stmt  level    source
   670           *  参数说明：无
   671           *  函数返回：无
   672           *  修改时间：
-C251 COMPILER V5.60.0,  debug                                                              20/03/25  22:07:04  PAGE 12  
+C251 COMPILER V5.60.0,  debug                                                              20/03/25  23:56:15  PAGE 12  
 
   673           *  备    注：
   674           【注意事项】

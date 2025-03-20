@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  22:07:04  PAGE 1   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ADC
@@ -66,7 +66,7 @@ stmt  level    source
    55            -65,
    56            -64,
    57            -63,
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  22:07:04  PAGE 2   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 2   
 
    58            -62,
    59            -61,
@@ -134,7 +134,7 @@ stmt  level    source
   121          ************************************************************************/
   122          uint16 adc_mid(ADCN_enum adcn, ADCRES_enum ch)
   123          {
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  22:07:04  PAGE 3   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 3   
 
   124   1        uint16 i, j, k, tmp;
   125   1        i = adc_once(adcn, ch);
@@ -202,7 +202,7 @@ stmt  level    source
   187          *************************************************************************/
   188          void Data_current_analyze()
   189          {
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  22:07:04  PAGE 4   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 4   
 
   190   1        uint8 i;
   191   1        for (i = 0; i < NM; i++)
@@ -270,7 +270,7 @@ stmt  level    source
   253   1        float ad_sum;
   254   1        float ad_diff;
   255   1        float error_x;
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  22:07:04  PAGE 5   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 5   
 
   256   1        left_value = sqrt(data1 * data1 + data2 * data2);
   257   1      
@@ -338,7 +338,7 @@ stmt  level    source
              -�0.1��
   312   2        }
   313   1        if (road_type.out_annulus == 1)
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  22:07:04  PAGE 6   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 6   
 
   314   1        {
   315   2          annulus_t = fabs(last_speed) * 1;
@@ -406,7 +406,7 @@ stmt  level    source
   376   1        //       &&road_type.annulus==1
   377   1        //       &&road_type.in_annulus_left==1
   378   1        //       &&road_type.in_annulus_right==0
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  22:07:04  PAGE 7   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 7   
 
   379   1        //       &&road_type.on_annulus_left==0
   380   1        //       &&road_type.on_annulus_right==0
@@ -474,7 +474,7 @@ stmt  level    source
   440   2          {
   441   3            error = 0.5; 
   442   3          }
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  22:07:04  PAGE 8   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  23:56:15  PAGE 8   
 
   443   2          if (road_type.on_annulus_right == 1)
   444   2          {

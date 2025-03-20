@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  speed                                                              20/03/25  16:34:11  PAGE 1   
+C251 COMPILER V5.60.0,  speed                                                              20/03/25  17:37:51  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE speed
@@ -66,7 +66,7 @@ stmt  level    source
    54          /****************************编码器初始化****************************
    55          函数：  void encoder_init(void)
    56          功能：  编码器初始化
-C251 COMPILER V5.60.0,  speed                                                              20/03/25  16:34:11  PAGE 2   
+C251 COMPILER V5.60.0,  speed                                                              20/03/25  17:37:51  PAGE 2   
 
    57          参数：  无
    58          说明：  ctimer_count_init(CTIM0_P34);
@@ -134,7 +134,7 @@ stmt  level    source
   120   1        if(flag_end)
   121   1        {
   122   2          T_inku_wait=T_inku_wait+5;
-C251 COMPILER V5.60.0,  speed                                                              20/03/25  16:34:11  PAGE 3   
+C251 COMPILER V5.60.0,  speed                                                              20/03/25  17:37:51  PAGE 3   
 
   123   2        }
   124   1        if(T_inku_J)
@@ -202,7 +202,7 @@ stmt  level    source
   185   2         if (right_PWM>0)                    //右轮
   186   2         {
   187   3           right_PWM = right_PWM<=Duty_Max ? right_PWM : Duty_Max;
-C251 COMPILER V5.60.0,  speed                                                              20/03/25  16:34:11  PAGE 4   
+C251 COMPILER V5.60.0,  speed                                                              20/03/25  17:37:51  PAGE 4   
 
   188   3           Right_DIR_Pin=0;      
   189   3           pwm_duty(Right_PWM_Pin,right_PWM);//正转   

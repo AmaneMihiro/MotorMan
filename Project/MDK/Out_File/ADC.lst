@@ -1,4 +1,4 @@
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  16:34:12  PAGE 1   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  17:37:52  PAGE 1   
 
 
 C251 COMPILER V5.60.0, COMPILATION OF MODULE ADC
@@ -66,7 +66,7 @@ stmt  level    source
    55            -59,
    56            -58,
    57            -57,
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  16:34:12  PAGE 2   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  17:37:52  PAGE 2   
 
    58            -56,
    59            -55,
@@ -134,7 +134,7 @@ stmt  level    source
   121   1        k = adc_once(adcn, ch);
   122   1        if (i > j)
   123   1        {
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  16:34:12  PAGE 3   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  17:37:52  PAGE 3   
 
   124   2          tmp = i, i = j, j = tmp;
   125   2        }
@@ -202,7 +202,7 @@ stmt  level    source
   187   2          AD_V[i] = ((adc_value[i] - adc_min[i]) * 100) / (adc_max[i] - adc_min[i]);
   188   2          if (AD_V[i] <= 0)
   189   2          {
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  16:34:12  PAGE 4   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  17:37:52  PAGE 4   
 
   190   3            AD_V[i] = 0;
   191   3          }
@@ -270,7 +270,7 @@ stmt  level    source
   253   1      
   254   1        ad_sum = left_value + right_value + 1; // 计算电感之和
   255   1      
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  16:34:12  PAGE 5   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  17:37:52  PAGE 5   
 
   256   1        // 计算电感之差
   257   1      
@@ -338,7 +338,7 @@ stmt  level    source
   311   2          //          annulus_t=annulus_t+5;
   312   2        }
   313   1      }
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  16:34:12  PAGE 6   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  17:37:52  PAGE 6   
 
   314          
   315          int8 testflag;
@@ -406,7 +406,7 @@ stmt  level    source
   374   2          testflag = 5;
   375   2          road_type.in_annulus_right = 0;
   376   2          road_type.on_annulus_right = 1;
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  16:34:12  PAGE 7   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  17:37:52  PAGE 7   
 
   377   2          BUZZ_ON;
   378   2        }
@@ -474,7 +474,7 @@ stmt  level    source
   438   2          //        //���󻷵�����ƫ�����
   439   2          //        if(road_type.in_annulus_left ==1 && road_type.on_annulus_left==0 )
   440   2          //        {
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  16:34:12  PAGE 8   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  17:37:52  PAGE 8   
 
   441   2          //            //error = Cha_x_bi_he(Left_Adc,Left_Shu_Adc,Right_Adc,Right_Shu_Adc)*20;
   442   2          //            error = -15;
@@ -542,7 +542,7 @@ stmt  level    source
   502          /**********************************电磁所有总处理***************************************
   503          函数：  void Get_deviation(void)
   504          功能：  电磁所有总处理
-C251 COMPILER V5.60.0,  ADC                                                                20/03/25  16:34:12  PAGE 9   
+C251 COMPILER V5.60.0,  ADC                                                                20/03/25  17:37:52  PAGE 9   
 
   505          参数：  无
   506          说明：  放中断调用此函数即可
